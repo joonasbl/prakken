@@ -1,0 +1,46 @@
+Alkemia,ei
+Erätaidot,val
+Esiintyminen,kar
+Haavojen hoito,val
+Hallinto,val
+Heittäminen,ket
+Heraldiikka,ei
+Hiivintä,ket
+Historia,ei
+Hyppy ja kiipeily,ket
+Ihmistuntemus,val
+Johtaminen,sis
+Jouset,ket
+Juonittelu,val
+Kadut ja kapakat,val
+Kaupanhieronta,kar
+Kauppareitit,ei
+Keihäät,ket
+Kielitaito,ei
+Kilvet,voi
+Kirjat ja tieteet,ei
+Kirottu maa,ei
+Kovistelu,sis
+Kädentaidot,ei
+Laulu ja soitto,kar
+Lukutaito,ei
+Lyömäaseet,voi
+Metsästys,val
+Miekat,voi
+Purjehdus,ei
+Rakentaminen,ei
+Ratsastus,ket
+Runoniekka,kar
+Salatieteet,ei
+Sorminäppäryys,ei
+Sotataito,val
+Tappelu,erikois
+Tarut ja legendat,ei
+Tiirikointi,ei
+Uhkapeli,val
+Uiminen,voi
+Uskonto,ei
+Veitset,ket
+Viettely,kar
+Väistö,ket
+Yrtit ja myrkyt,ei
