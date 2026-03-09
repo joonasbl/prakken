@@ -33,13 +33,22 @@ The primary goal is to make attribute management fast, clear, and visually organ
 - Display a list of base attributes with default numeric values.
 - Allow inline editing of each attribute via numeric input.
 - Centralize attribute state in a dedicated store for predictable updates.
+- Display numerical skill levels derived from attributes, with a point-buy system and caps.
 
 **Planned / Future**
-- Having numerical skill levels
-- Persist stats locally (e.g., browser storage) so they survive reloads.
+- Full multi-step character creator (wizard) with 8 stages in order:
+  1. Roll stats
+  2. Choose background
+  3. Advantages and disadvantages
+  4. Sub-stats
+  5. Skills
+  6. Equipment
+  7. Name and additional details
+  8. Summary and save
+- Persist stats and characters locally (e.g., browser storage) so they survive reloads.
 - Support multiple characters and quick switching between them.
 - Add derived stats and validation (e.g., min/max values, total points).
-- Introduce routing-based views (e.g., `About`, `Settings`, `Character list`).
+- Introduce routing-based views (e.g., `About`, `Settings`, `Character list`, `Create character`).
 
 ### 5. UX & Interaction Design
 

@@ -23,14 +23,20 @@ The entry point `App.vue` currently renders a `StatsPage` component as the main 
 
 - **`src/App.vue`**: Root Vue component that sets up the main layout and renders `StatsPage`.
 - **`src/components/`**:
-  - `StatsPage.vue`: Main stats view/component rendered by `App.vue`.
-  - `NameComponent.vue` and other components: Shared, reusable UI pieces.
+  - `StatsPage.vue`: Main stats and skills view/component rendered by `App.vue`.
+  - `NameComponent.vue`: Displays/edits the character’s name.
+  - `SkillsList.vue`: Displays skills, their derived base levels, and point-buy bonuses.
 - **`src/views/`**:
-  - `AboutView.vue`: Example routed view (if enabled via router).
+  - `HomeView.vue`: Main landing page.
+  - `AboutView.vue`: Example routed view.
+  - (Planned) `CreateCharacterView.vue`: Multi-step character creation wizard (8 stages).
 - **`src/stores/`**:
-  - `stats.ts`: Pinia store(s) for managing application statistics and related state.
+  - `stats.ts`: Pinia store for managing base attributes.
+  - `skills.ts`: Pinia store for skills configuration and point-buy bonuses.
+  - (Planned) `characterCreation.ts`: Store for the in-progress character draft across all 8 steps.
 - **`src/types/`**:
-  - `attributes.ts`: Shared TypeScript types and interfaces used across components and stores.
+  - `attributes.ts`: Shared TypeScript types used across components and stores.
+  - `skills.ts`: Types describing skills, base codes, and bonuses.
 
 > Note: Some paths are inferred from the repo and may evolve as the project grows.
 
