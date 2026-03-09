@@ -4,7 +4,7 @@ import type { Skill, SkillBaseCode } from '@/types/skills'
 const createSkill = (name: string, baseCode: SkillBaseCode): Skill => ({
   name,
   baseCode,
-  level: 0,
+  bonus: 0,
 })
 
 export const useSkillsStore = defineStore('skills', {
@@ -59,12 +59,17 @@ export const useSkillsStore = defineStore('skills', {
     ] as Skill[],
   }),
   actions: {
-    setLevel(name: string, level: number) {
-      this.skillList.forEach((skill) => {
-        if (skill.name === name) {
-          skill.level = level
-        }
-      })
+    increaseBonus(name: string) {
+      const skill = this.skillList.find((item) => item.name === name)
+      if (!skill) return
+
+      skill.bonus += 1
+    },
+    decreaseBonus(name: string) {
+      const skill = this.skillList.find((item) => item.name === name)
+      if (!skill || skill.bonus <= 0) return
+
+      skill.bonus -= 1
     },
   },
 })

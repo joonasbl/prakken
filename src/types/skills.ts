@@ -3,6 +3,6 @@ export type SkillBaseCode = 'voi' | 'val' | 'kar' | 'ket' | 'sis' | 'ei' | 'erik
 export type Skill = {
   name: string
   baseCode: SkillBaseCode
-  level: number
+  bonus: number
 }
 

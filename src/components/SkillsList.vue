@@ -1,43 +1,89 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useSkillsStore } from '@/stores/skills'
+import { useStatsStore } from '@/stores/stats'
+import type { SkillBaseCode } from '@/types/skills'
 
 const skillsStore = useSkillsStore()
+const statsStore = useStatsStore()
+
+const baseCodeToAttributeName: Record<SkillBaseCode, string | null> = {
+  voi: 'Voima',
+  val: 'Valppaus',
+  kar: 'Karisma',
+  ket: 'Ketteryys',
+  sis: 'Sisukkuus',
+  ei: null,
+  erikois: null,
+}
 
 const mappedSkills = computed(() =>
-  skillsStore.skillList.map((skill) => ({
-    ...skill,
-    baseLabel:
-      skill.baseCode === 'voi'
-        ? 'Voima'
-        : skill.baseCode === 'val'
-          ? 'Valppaus'
-          : skill.baseCode === 'kar'
-            ? 'Karisma'
-            : skill.baseCode === 'ket'
-              ? 'Ketteryys'
-              : skill.baseCode === 'sis'
-                ? 'Sisukkuus'
-                : skill.baseCode === 'erikois'
-                  ? 'Erikois'
-                  : null,
-  })),
+  skillsStore.skillList.map((skill) => {
+    const attributeName = baseCodeToAttributeName[skill.baseCode]
+    const attribute =
+      attributeName != null
+        ? statsStore.attList.find((attr) => attr.name === attributeName)
+        : undefined
+
+    const baseLevel = attribute ? Math.ceil(attribute.value / 2) : 6
+    const level = baseLevel + skill.bonus
+
+    return {
+      ...skill,
+      baseLabel: attributeName,
+      baseLevel,
+      level,
+    }
+  }),
 )
 
-const handleInput = (name: string, event: InputEvent) => {
-  const target = event.target as HTMLInputElement | null
-  if (!target) return
+const calculateSkillCost = (baseLevel: number, bonus: number): number => {
+  let cost = 0
+  for (let i = 0; i < bonus; i += 1) {
+    const currentLevel = baseLevel + i
+    cost += currentLevel < 10 ? 1 : 2
+  }
+  return cost
+}
 
-  const parsed = Number.parseInt(target.value, 10)
-  if (Number.isNaN(parsed)) return
+const totalSpentPoints = computed(() =>
+  skillsStore.skillList.reduce((sum, skill) => {
+    const attributeName = baseCodeToAttributeName[skill.baseCode]
+    const attribute =
+      attributeName != null
+        ? statsStore.attList.find((attr) => attr.name === attributeName)
+        : undefined
 
-  skillsStore.setLevel(name, parsed)
+    const baseLevel = attribute ? Math.ceil(attribute.value / 2) : 6
+    return sum + calculateSkillCost(baseLevel, skill.bonus)
+  }, 0),
+)
+
+const remainingPoints = computed(() => 100 - totalSpentPoints.value)
+
+const handleIncrease = (skillName: string, baseLevel: number, bonus: number) => {
+  const currentLevel = baseLevel + bonus
+  if (currentLevel >= 15) return
+
+  const nextCost = currentLevel < 10 ? 1 : 2
+  if (totalSpentPoints.value + nextCost > 100) return
+
+  skillsStore.increaseBonus(skillName)
+}
+
+const handleDecrease = (skillName: string) => {
+  skillsStore.decreaseBonus(skillName)
 }
 </script>
 
 <template>
   <div class="skills-container">
-    <h2 class="skills-title">Taidot</h2>
+    <div class="skills-header">
+      <h2 class="skills-title">Taidot</h2>
+      <span class="skills-pool">
+        Pisteitä jäljellä: {{ remainingPoints }}
+      </span>
+    </div>
     <div class="skills-grid">
       <div
         v-for="skill in mappedSkills"
@@ -50,13 +96,24 @@ const handleInput = (name: string, event: InputEvent) => {
             ({{ skill.baseLabel }})
           </span>
         </div>
-        <div class="skills-input">
-          <input
-            class="skill-input has-text-centered"
-            type="number"
-            :value="skill.level"
-            @input="(event) => handleInput(skill.name, event as InputEvent)"
-          />
+        <div class="skills-controls">
+          <button
+            type="button"
+            class="skills-button"
+            @click="handleDecrease(skill.name)"
+          >
+            -
+          </button>
+          <span class="skills-level">
+            {{ skill.level }}
+          </span>
+          <button
+            type="button"
+            class="skills-button"
+            @click="handleIncrease(skill.name, skill.baseLevel, skill.bonus)"
+          >
+            +
+          </button>
         </div>
       </div>
     </div>
@@ -68,10 +125,21 @@ const handleInput = (name: string, event: InputEvent) => {
   margin: 1.5rem;
 }
 
+.skills-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
 .skills-title {
   font-size: 1.25rem;
   font-weight: 600;
-  margin-bottom: 0.75rem;
+}
+
+.skills-pool {
+  font-size: 0.9rem;
+  opacity: 0.75;
 }
 
 .skills-grid {
@@ -97,16 +165,28 @@ const handleInput = (name: string, event: InputEvent) => {
   opacity: 0.7;
 }
 
-.skills-input {
+.skills-controls {
   display: flex;
-  justify-content: flex-end;
+  align-items: center;
+  gap: 0.25rem;
 }
 
-.skill-input {
-  width: 3rem;
+.skills-button {
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 9999px;
+  border: none;
   background-color: grey;
-  border-radius: 20px;
-  height: 2rem;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.skills-level {
+  font-size: 0.95rem;
+  font-weight: 600;
+  min-width: 2rem;
+  text-align: center;
 }
 </style>
 
