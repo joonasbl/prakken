@@ -11,7 +11,6 @@ import { RouterView } from 'vue-router'
       </div>
     </hero>
     <nav class="nav">
-      <RouterLink to="/" class="nav-link">Hahmo</RouterLink>
       <RouterLink to="/characters" class="nav-link">Hahmot</RouterLink>
       <RouterLink to="/create-character" class="nav-link nav-primary">Luo uusi</RouterLink>
     </nav>

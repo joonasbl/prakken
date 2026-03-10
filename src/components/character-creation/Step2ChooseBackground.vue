@@ -57,7 +57,8 @@ const selectBackground = (id: string) => {
 
 .description {
   margin-bottom: 1.5rem;
-  color: #666;
+  color: #34495e;
+  font-weight: 500;
 }
 
 .backgrounds-grid {
@@ -68,15 +69,16 @@ const selectBackground = (id: string) => {
 
 .background-card {
   padding: 1.25rem;
-  border: 2px solid #e0e0e0;
+  border: 2px solid #bdc3c7;
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.3s;
+  background-color: #ffffff;
 }
 
 .background-card:hover {
   border-color: #3498db;
-  background-color: #f8f9fa;
+  background-color: #ecf0f1;
 }
 
 .background-card.selected {
@@ -86,23 +88,30 @@ const selectBackground = (id: string) => {
 
 .background-name {
   font-size: 1.2rem;
-  font-weight: 600;
+  font-weight: 700;
   margin-bottom: 0.5rem;
-  color: #2c3e50;
+  color: #1a252f;
 }
 
 .background-description {
-  color: #666;
+  color: #34495e;
   margin-bottom: 1rem;
   font-size: 0.9rem;
+  line-height: 1.4;
 }
 
 .background-bonuses {
-  font-size: 0.85rem;
+  font-size: 0.9rem;
+  color: #2c3e50;
 }
 
 .bonus-section {
   margin-bottom: 0.5rem;
+}
+
+.bonus-section strong {
+  color: #1a252f;
+  font-weight: 600;
 }
 
 .bonus-section ul {
@@ -111,6 +120,7 @@ const selectBackground = (id: string) => {
 }
 
 .bonus-section li {
-  color: #27ae60;
+  color: #1a252f;
+  padding: 0.2rem 0;
 }
 </style>

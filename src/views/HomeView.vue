@@ -1,9 +1,23 @@
 <script setup lang="ts">
-import StatsPage from '@/components/StatsPage.vue'
+import { onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import { useCharactersStore } from '@/stores/characters'
+
+const router = useRouter()
+const charactersStore = useCharactersStore()
+
+onMounted(() => {
+  charactersStore.loadFromStorage()
+  if (charactersStore.characterCount === 0) {
+    router.replace('/create-character')
+  } else {
+    router.replace('/characters')
+  }
+})
 </script>
 
 <template>
   <main>
-    <StatsPage />
+    <p>Ladataan...</p>
   </main>
 </template>

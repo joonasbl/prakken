@@ -68,7 +68,7 @@ const handleSave = () => {
 
     <div class="summary-section">
       <h3>Tausta</h3>
-      <p>{{ wizardStore.draft.background?.name || 'Ei valittu' }}</p>
+      <p class="background-name">{{ wizardStore.draft.background?.name || 'Ei valittu' }}</p>
       <p class="description">{{ wizardStore.draft.background?.description }}</p>
     </div>
 
@@ -144,14 +144,16 @@ const handleSave = () => {
 </template>
 
 <style scoped>
+@import url('https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap');
+
 .summary-step {
   padding: 1rem 0;
 }
 
 .summary-section {
-  margin-bottom: 2rem;
-  padding-bottom: 1.5rem;
-  border-bottom: 1px solid #e0e0e0;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #bdc3c7;
 }
 
 .summary-section:last-child {
@@ -159,20 +161,29 @@ const handleSave = () => {
 }
 
 .summary-section h3 {
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: #2c3e50;
-  margin-bottom: 1rem;
+  font-family: 'MedievalSharp', cursive;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #0d1216;
+  margin-bottom: 0.75rem;
+  letter-spacing: 1px;
 }
 
 .character-name {
   font-size: 1.5rem;
   font-weight: 700;
-  color: #3498db;
+  color: #1a252f;
+}
+
+.background-name {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #1a252f;
+  margin-bottom: 0.5rem;
 }
 
 .description {
-  color: #666;
+  color: #34495e;
   font-size: 0.9rem;
 }
 
@@ -186,13 +197,18 @@ const handleSave = () => {
   display: flex;
   justify-content: space-between;
   padding: 0.5rem 0.75rem;
-  background-color: #f8f9fa;
+  background-color: #d5dbdb;
   border-radius: 4px;
+}
+
+.attr-item span:first-child {
+  font-weight: 600;
+  color: #1a252f;
 }
 
 .attr-value {
   font-weight: 700;
-  color: #3498db;
+  color: #1a252f;
 }
 
 .list {
@@ -202,12 +218,9 @@ const handleSave = () => {
 }
 
 .list li {
-  padding: 0.5rem 0;
-  border-bottom: 1px solid #f0f0f0;
-}
-
-.list li:last-child {
-  border-bottom: none;
+  padding: 0.25rem 0;
+  font-weight: 600;
+  color: #1a252f;
 }
 
 .substats-grid {
@@ -220,13 +233,18 @@ const handleSave = () => {
   display: flex;
   justify-content: space-between;
   padding: 0.5rem 0.75rem;
-  background-color: #f8f9fa;
+  background-color: #d5dbdb;
   border-radius: 4px;
+}
+
+.substat-item span:first-child {
+  color: #1a252f;
+  font-weight: 600;
 }
 
 .substat-item span:last-child {
   font-weight: 700;
-  color: #3498db;
+  color: #1a252f;
 }
 
 .skills-list {
@@ -239,21 +257,24 @@ const handleSave = () => {
   display: flex;
   justify-content: space-between;
   padding: 0.5rem 0.75rem;
-  background-color: #f8f9fa;
+  background-color: #d5dbdb;
   border-radius: 4px;
+}
+
+.skill-item span:first-child {
+  color: #1a252f;
+  font-weight: 600;
 }
 
 .skill-level {
   font-weight: 700;
-  color: #27ae60;
+  color: #1a252f;
 }
 
 .save-actions {
   display: flex;
   justify-content: center;
   margin-top: 2rem;
-  padding-top: 1.5rem;
-  border-top: 2px solid #e0e0e0;
 }
 
 .save-button {
