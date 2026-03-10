@@ -73,7 +73,8 @@ const totalSpentPoints = computed(() =>
   }, 0),
 )
 
-const remainingPoints = computed(() => 100 - totalSpentPoints.value)
+const skillPointLimit = computed(() => wizardStore.skillPointLimit)
+const remainingPoints = computed(() => skillPointLimit.value - totalSpentPoints.value)
 
 const handleIncrease = (skill: Skill, baseLevel: number, bonus: number) => {
   const currentLevel = baseLevel + bonus
@@ -102,7 +103,7 @@ const handleDecrease = (skill: Skill) => {
   <div class="skills-step">
     <div class="skills-header">
       <span>Pisteitä jäljellä: <strong>{{ remainingPoints }}</strong></span>
-      <span>Käytetty: <strong>{{ totalSpentPoints }}</strong> / 100</span>
+      <span>Käytetty: <strong>{{ totalSpentPoints }}</strong> / {{ skillPointLimit }}</span>
     </div>
 
     <div class="skills-grid">

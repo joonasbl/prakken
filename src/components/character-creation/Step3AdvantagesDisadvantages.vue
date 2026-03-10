@@ -1,8 +1,11 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useCharacterCreationStore } from '@/stores/characterCreation'
+import AttributeChoiceModal from './AttributeChoiceModal.vue'
 
 const wizardStore = useCharacterCreationStore()
+
+const showModal = ref(false)
 
 const MAX_SELECTIONS = 5
 
@@ -11,6 +14,14 @@ const hasAdvantage = (id: string) =>
 
 const hasDisadvantage = (id: string) =>
   wizardStore.selectedDisadvantages.some((d) => d.id === id)
+
+const hasLahjakas = computed(() => hasAdvantage('lahjakas'))
+
+watch(hasLahjakas, (newValue) => {
+  if (newValue) {
+    showModal.value = true
+  }
+})
 
 const canAddAdvantage = computed(() => {
   const advCount = wizardStore.selectedAdvantages.length
@@ -140,6 +151,8 @@ const selectionStatus = computed(() => {
         </div>
       </div>
     </div>
+
+    <AttributeChoiceModal v-model="showModal" @close="showModal = false" />
   </div>
 </template>
 

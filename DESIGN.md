@@ -189,6 +189,25 @@ Aarre, Alkemisti, Asiantuntija, Eläinkuiskaaja, Haukankatse, Huuliltalukija, Hy
 #### Disadvantages (36 total)
 Ahne, Arpi, Hentoluinen, Hidas, Huono kuulo, Hämäräsokea, Irstas, Juoppo, Kammo, Kostonhimoinen, Kunniallinen, Käsipuoli, Kääpiö, Lainsuojaton, Lähinäköinen, Lähimmäisiä, Muotopuoli, Mykkä, Nuori, Oikku, Pahamaineinen, Painajaisia, Peluri, Rampa, Rasisti, Riippuvuus, Silmäpuoli, Taikauskoinen, Tuntomerkki, Uninen, Uskovainen, Vallanahne, Vasalli, Velkaa, Vihollinen, Äkkipikainen
 
+#### Advantage & Disadvantage Special Effects
+
+Some advantages and disadvantages have special effects beyond their basic description:
+
+| Trait | Type | Effect |
+|-------|------|--------|
+| **Ikä ja kokemus** | Advantage | Sets skill point pool to **120 points** (instead of 100) |
+| **Nuori** | Disadvantage | Sets skill point pool to **70 points** (instead of 100) |
+| **Lahjakas** | Advantage | Player chooses **+1 to two attributes** (can be same attribute twice, max +2 per attribute) |
+| **Sitkeä** | Advantage | **+5 veripisteet** (hit points) |
+| **Kookas** | Advantage | **+2 syvä haava** (severe wound threshold) |
+| **Hentoluinen** | Disadvantage | **-2 syvä haava** (severe wound threshold) |
+
+**Notes:**
+- Skill point effects replace the base 100 points entirely (they don't stack)
+- Substat modifiers (veripisteet, syvä haava) are cumulative if multiple sources exist
+- Lahjakas opens a modal dialog for attribute selection when chosen
+- Attribute choices from Lahjakas are tracked separately and applied to final character stats
+
 ### 11. Future Enhancements & Direction
 
 - Add **persistence** (local storage or backend API).

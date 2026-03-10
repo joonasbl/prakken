@@ -9,6 +9,8 @@ import type {
   Equipment,
   CharacterDraft,
   CharacterCreationStep,
+  AdvantageEffect,
+  DisadvantageEffect,
 } from '@/types/character'
 
 const defaultAttributes: Attr[] = [
@@ -73,14 +75,14 @@ const advantages: Advantage[] = [
   { id: 'haukankatse', name: 'Haukankatse', description: 'Näet erinomaisen hyvin kauas.', cost: 1 },
   { id: 'huuliltalukija', name: 'Huuliltalukija', description: 'Ymmärrät puhetta huulilta lukemalla.', cost: 1 },
   { id: 'hyvaimaineinen', name: 'Hyvämaineinen', description: 'Sinulla on hyvä maine yhteisössä.', cost: 1 },
-  { id: 'ika_ja_kokemus', name: 'Ikä ja kokemus', description: 'Vuodet ovat tuoneet viisautta.', cost: 2 },
+  { id: 'ika_ja_kokemus', name: 'Ikä ja kokemus', description: 'Vuodet ovat tuoneet viisautta.', cost: 2, effect: { type: 'skillPoints', value: 120 } as AdvantageEffect },
   { id: 'jaaverinen', name: 'Jääverinen', description: 'Kylmyys ei haittaa sinua.', cost: 1 },
   { id: 'kahlekuningas', name: 'Kahlekuningas', description: 'Olet taitava vapautumaan sidoksista.', cost: 1 },
   { id: 'kaunis', name: 'Kaunis', description: 'Ulkonäkösi avaa ovia.', cost: 1 },
   { id: 'kissajalat', name: 'Kissajalat', description: 'Putoat aina jaloillesi.', cost: 1 },
-  { id: 'kookas', name: 'Kookas', description: 'Olet pitkä ja vaikuttava.', cost: 1 },
+  { id: 'kookas', name: 'Kookas', description: 'Olet pitkä ja vaikuttava.', cost: 1, effect: { type: 'substat', stat: 'syvaHaava', value: 2 } as AdvantageEffect },
   { id: 'kovanaama', name: 'Kovanaama', description: 'Kestät kipua hyvin.', cost: 2 },
-  { id: 'lahjakas', name: 'Lahjakas', description: 'Sinulla on luontainen lahja johonkin.', cost: 2 },
+  { id: 'lahjakas', name: 'Lahjakas', description: 'Valitse kaksi ominaisuutta ja saat +1 niihin.', cost: 2, effect: { type: 'attributeChoice', count: 2, value: 1 } as AdvantageEffect },
   { id: 'laskupaa', name: 'Laskupää', description: 'Olet nopea laskemaan.', cost: 1 },
   { id: 'lemmikki', name: 'Lemmikki', description: 'Sinulla on uskollinen eläinkumppani.', cost: 1 },
   { id: 'nopea', name: 'Nopea', description: 'Olet erityisen nopea liikkeissäsi.', cost: 2 },
@@ -88,7 +90,7 @@ const advantages: Advantage[] = [
   { id: 'ottolapsi', name: 'Ottolapsi', description: 'Sinulla on rakastava adoptioperhe.', cost: 1 },
   { id: 'raudanvatsa', name: 'Rautavatsa', description: 'Vatsasi kestää mitä tahansa.', cost: 1 },
   { id: 'rohkea', name: 'Rohkea', description: 'Pelko ei tunne sinulle tietä.', cost: 1 },
-  { id: 'sitkea', name: 'Sitkeä', description: '+5 veripistettä.', cost: 3 },
+  { id: 'sitkea', name: 'Sitkeä', description: '+5 veripistettä.', cost: 3, effect: { type: 'substat', stat: 'veripisteet', value: 5 } as AdvantageEffect },
   { id: 'suhteita', name: 'Suhteita', description: 'Tunnet tärkeitä henkilöitä.', cost: 2 },
   { id: 'sukeltaja', name: 'Sukeltaja', description: 'Pystyt pidättämään hengitystäsi pitkään.', cost: 1 },
   { id: 'suuntavaisto', name: 'Suuntavaisto', description: 'Et eksy koskaan.', cost: 1 },
@@ -107,7 +109,7 @@ const advantages: Advantage[] = [
 const disadvantages: Disadvantage[] = [
   { id: 'ahne', name: 'Ahne', description: 'Haluat aina enemmän.', benefit: 1 },
   { id: 'arpi', name: 'Arpi', description: 'Sinulla on näkyvä arpi.', benefit: 1 },
-  { id: 'hentoluinen', name: 'Hentoluinen', description: 'Luisi ovat hauraat.', benefit: 2 },
+  { id: 'hentoluinen', name: 'Hentoluinen', description: 'Luisi ovat hauraat.', benefit: 2, effect: { type: 'substat', stat: 'syvaHaava', value: -2 } as DisadvantageEffect },
   { id: 'hidas', name: 'Hidas', description: 'Liikut hitaammin kuin muut.', benefit: 2 },
   { id: 'huono_kuulo', name: 'Huono kuulo', description: 'Kuulosi ovat heikot.', benefit: 1 },
   { id: 'hamarasokea', name: 'Hämäräsokea', description: 'Et näe hämärässä kunnolla.', benefit: 1 },
@@ -123,7 +125,7 @@ const disadvantages: Disadvantage[] = [
   { id: 'lahimmaisia', name: 'Lähimmäisiä', description: 'Autat aina muita.', benefit: 1 },
   { id: 'muotopuoli', name: 'Muotopuoli', description: 'Sinulla on synnynnäinen vika.', benefit: 2 },
   { id: 'mykka', name: 'Mykkä', description: 'Et pysty puhumaan.', benefit: 3 },
-  { id: 'nuori', name: 'Nuori', description: 'Olet kokematon.', benefit: 1 },
+  { id: 'nuori', name: 'Nuori', description: 'Olet kokematon.', benefit: 1, effect: { type: 'skillPoints', value: 70 } as DisadvantageEffect },
   { id: 'oikku', name: 'Oikku', description: 'Mielialasi vaihtelevat.', benefit: 1 },
   { id: 'pahamaineinen', name: 'Pahamaineinen', description: 'Maineesi on huono.', benefit: 2 },
   { id: 'painajaisia', name: 'Painajaisia', description: 'Kärsit yököisistä unista.', benefit: 1 },
@@ -156,6 +158,7 @@ export const useCharacterCreationStore = defineStore('characterCreation', {
   state: (): {
     currentStep: CharacterCreationStep
     draft: CharacterDraft
+    attributeChoices: Record<string, number>
   } => {
     return {
       currentStep: 1,
@@ -169,6 +172,7 @@ export const useCharacterCreationStore = defineStore('characterCreation', {
         subStats: null,
         equipment: [],
       },
+      attributeChoices: {},
     }
   },
   getters: {
@@ -181,6 +185,53 @@ export const useCharacterCreationStore = defineStore('characterCreation', {
     hasSelectedBackground: (state) => state.draft.background !== null,
     selectedAdvantages: (state) => state.draft.advantages,
     selectedDisadvantages: (state) => state.draft.disadvantages,
+    skillPointLimit: (state): number => {
+      let base = 100
+      for (const adv of state.draft.advantages) {
+        if (adv.effect?.type === 'skillPoints') {
+          base = adv.effect.value
+        }
+      }
+      for (const dis of state.draft.disadvantages) {
+        if (dis.effect?.type === 'skillPoints') {
+          base = dis.effect.value
+        }
+      }
+      return base
+    },
+    substatModifiers: (state): { veripisteet: number; syvaHaava: number } => {
+      let veripisteet = 0
+      let syvaHaava = 0
+      for (const adv of state.draft.advantages) {
+        if (adv.effect?.type === 'substat') {
+          if (adv.effect.stat === 'veripisteet') veripisteet += adv.effect.value
+          if (adv.effect.stat === 'syvaHaava') syvaHaava += adv.effect.value
+        }
+      }
+      for (const dis of state.draft.disadvantages) {
+        if (dis.effect?.type === 'substat') {
+          if (dis.effect.stat === 'veripisteet') veripisteet += dis.effect.value
+          if (dis.effect.stat === 'syvaHaava') syvaHaava += dis.effect.value
+        }
+      }
+      return { veripisteet, syvaHaava }
+    },
+    attributeChoiceBonus: (state): Record<string, number> => {
+      const bonus: Record<string, number> = {}
+      for (const [attrName, value] of Object.entries(state.attributeChoices)) {
+        bonus[attrName] = (bonus[attrName] || 0) + value
+      }
+      return bonus
+    },
+    pendingAttributeChoices: (state): number => {
+      const lahjakas = state.draft.advantages.find((a) => a.id === 'lahjakas')
+      if (!lahjakas || !lahjakas.effect || lahjakas.effect.type !== 'attributeChoice') {
+        return 0
+      }
+      const totalChoices = lahjakas.effect.count
+      const usedChoices = Object.values(state.attributeChoices).reduce((sum, v) => sum + v, 0)
+      return totalChoices - usedChoices
+    },
   },
   actions: {
     nextStep() {
@@ -208,6 +259,7 @@ export const useCharacterCreationStore = defineStore('characterCreation', {
         subStats: null,
         equipment: [],
       }
+      this.attributeChoices = {}
     },
     setAttributes(attributes: Attr[]) {
       this.draft.attributes = attributes
@@ -225,6 +277,10 @@ export const useCharacterCreationStore = defineStore('characterCreation', {
       const index = this.draft.advantages.findIndex((a) => a.id === advantage.id)
       if (index >= 0) {
         this.draft.advantages.splice(index, 1)
+        // Clear attribute choices if removing Lahjakas
+        if (advantage.id === 'lahjakas') {
+          this.attributeChoices = {}
+        }
       } else {
         this.draft.advantages.push(advantage)
       }
@@ -236,6 +292,16 @@ export const useCharacterCreationStore = defineStore('characterCreation', {
       } else {
         this.draft.disadvantages.push(disadvantage)
       }
+    },
+    setAttributeChoice(attrName: string, value: number) {
+      if (value <= 0) {
+        delete this.attributeChoices[attrName]
+      } else {
+        this.attributeChoices[attrName] = value
+      }
+    },
+    clearAttributeChoices() {
+      this.attributeChoices = {}
     },
     setSubStats(subStats: SubStats) {
       this.draft.subStats = subStats

@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import { useCharacterCreationStore } from '@/stores/characterCreation'
 import type { SubStats } from '@/types/character'
+import ModifierBadge from './ModifierBadge.vue'
 
 const wizardStore = useCharacterCreationStore()
 
@@ -59,6 +60,8 @@ const calculateDerivedStats = () => {
 }
 
 const hasSubStats = computed(() => wizardStore.draft.subStats !== null)
+
+const substatModifiers = computed(() => wizardStore.substatModifiers)
 </script>
 
 <template>
@@ -79,23 +82,37 @@ const hasSubStats = computed(() => wizardStore.draft.subStats !== null)
     <div v-else class="stats-display">
       <div class="stat-card">
         <span class="stat-label">Veripisteet</span>
-        <span class="stat-value">{{ wizardStore.draft.subStats?.veripisteet }}</span>
+        <div class="stat-value-row">
+          <span class="stat-value">{{ wizardStore.draft.subStats?.veripisteet }}</span>
+          <ModifierBadge
+            v-if="substatModifiers.veripisteet !== 0"
+            :modifier="substatModifiers.veripisteet"
+            source="etu/haitta"
+          />
+        </div>
         <span class="stat-desc">Terveys + Voima</span>
       </div>
       <div class="stat-card">
         <span class="stat-label">Vauriobonus</span>
         <span class="stat-value">{{ wizardStore.draft.subStats?.vauriobonus }}</span>
-        <span class="stat-desc">Voima / 2</span>
+        <span class="stat-desc">Voima</span>
       </div>
       <div class="stat-card">
         <span class="stat-label">Syvä haava</span>
-        <span class="stat-value">{{ wizardStore.draft.subStats?.syvaHaava }}</span>
-        <span class="stat-desc">Terveys / 2</span>
+        <div class="stat-value-row">
+          <span class="stat-value">{{ wizardStore.draft.subStats?.syvaHaava }}</span>
+          <ModifierBadge
+            v-if="substatModifiers.syvaHaava !== 0"
+            :modifier="substatModifiers.syvaHaava"
+            source="etu/haitta"
+          />
+        </div>
+        <span class="stat-desc">Voima + Terveys</span>
       </div>
       <div class="stat-card">
         <span class="stat-label">Kantokyky</span>
         <span class="stat-value">{{ wizardStore.draft.subStats?.kantokyky }}</span>
-        <span class="stat-desc">Voima × 2</span>
+        <span class="stat-desc">Voima × 20</span>
       </div>
     </div>
   </div>
@@ -152,6 +169,14 @@ const hasSubStats = computed(() => wizardStore.draft.subStats !== null)
   font-size: 2rem;
   font-weight: 700;
   color: #3498db;
+  margin-bottom: 0.5rem;
+}
+
+.stat-value-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
   margin-bottom: 0.5rem;
 }
 

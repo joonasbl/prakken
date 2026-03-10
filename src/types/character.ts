@@ -9,18 +9,29 @@ export type Background = {
   skillBonuses: Partial<Record<string, number>>
 }
 
+export type AdvantageEffect =
+  | { type: 'skillPoints'; value: number }
+  | { type: 'substat'; stat: 'veripisteet' | 'syvaHaava'; value: number }
+  | { type: 'attributeChoice'; count: number; value: number }
+
 export type Advantage = {
   id: string
   name: string
   description: string
   cost: number
+  effect?: AdvantageEffect
 }
+
+export type DisadvantageEffect =
+  | { type: 'skillPoints'; value: number }
+  | { type: 'substat'; stat: 'veripisteet' | 'syvaHaava'; value: number }
 
 export type Disadvantage = {
   id: string
   name: string
   description: string
   benefit: number
+  effect?: DisadvantageEffect
 }
 
 export type SubStats = {
