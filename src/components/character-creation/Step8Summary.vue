@@ -3,6 +3,10 @@ import { computed } from 'vue'
 import { useCharacterCreationStore } from '@/stores/characterCreation'
 import type { SkillBaseCode } from '@/types/skills'
 
+const emit = defineEmits<{
+  save: []
+}>()
+
 const wizardStore = useCharacterCreationStore()
 
 const baseCodeToAttributeName: Record<SkillBaseCode, string | null> = {
@@ -35,6 +39,10 @@ const skillsWithLevels = computed(() =>
 const totalEquipmentWeight = computed(() =>
   wizardStore.draft.equipment.reduce((sum, e) => sum + e.weight, 0)
 )
+
+const handleSave = () => {
+  emit('save')
+}
 </script>
 
 <template>
@@ -125,6 +133,12 @@ const totalEquipmentWeight = computed(() =>
           {{ item.name }}
         </li>
       </ul>
+    </div>
+
+    <div class="save-actions">
+      <button type="button" class="save-button" @click="handleSave">
+        Tallenna hahmo
+      </button>
     </div>
   </div>
 </template>
@@ -232,5 +246,29 @@ const totalEquipmentWeight = computed(() =>
 .skill-level {
   font-weight: 700;
   color: #27ae60;
+}
+
+.save-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 2px solid #e0e0e0;
+}
+
+.save-button {
+  padding: 1rem 2.5rem;
+  background-color: #27ae60;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.save-button:hover {
+  background-color: #229954;
 }
 </style>

@@ -50,6 +50,8 @@ export type Character = {
   subStats: SubStats
   equipment: Equipment[]
   createdAt: number
+  updatedAt: number
+  version: string
 }
 
 export type CharacterDraft = {

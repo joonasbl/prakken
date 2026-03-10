@@ -22,6 +22,16 @@ const router = createRouter({
       name: 'create-character',
       component: () => import('../views/CreateCharacterView.vue'),
     },
+    {
+      path: '/characters',
+      name: 'characters',
+      component: () => import('../views/CharacterListView.vue'),
+    },
+    {
+      path: '/character/:id',
+      name: 'character-sheet',
+      component: () => import('../views/CharacterSheetView.vue'),
+    },
   ],
 })
 

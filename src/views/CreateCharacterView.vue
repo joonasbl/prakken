@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useCharacterCreationStore } from '@/stores/characterCreation'
+import { useCharactersStore } from '@/stores/characters'
 import Step1RollStats from '@/components/character-creation/Step1RollStats.vue'
 import Step2ChooseBackground from '@/components/character-creation/Step2ChooseBackground.vue'
 import Step3AdvantagesDisadvantages from '@/components/character-creation/Step3AdvantagesDisadvantages.vue'
@@ -13,6 +14,7 @@ import Step8Summary from '@/components/character-creation/Step8Summary.vue'
 
 const router = useRouter()
 const wizardStore = useCharacterCreationStore()
+const charactersStore = useCharactersStore()
 
 const currentStep = computed(() => wizardStore.currentStepNum)
 const stepTitles: Record<number, string> = {
@@ -67,6 +69,12 @@ const handlePrevious = () => {
   }
 }
 
+const saveCharacter = () => {
+  const character = charactersStore.saveCharacter(wizardStore.draft)
+  wizardStore.resetWizard()
+  router.push(`/character/${character.id}`)
+}
+
 const finishCharacterCreation = () => {
   router.push('/')
   wizardStore.resetWizard()
@@ -113,7 +121,7 @@ const cancelWizard = () => {
         <Step5Skills v-else-if="currentStep === 5" />
         <Step6Equipment v-else-if="currentStep === 6" />
         <Step7NameAndDetails v-else-if="currentStep === 7" />
-        <Step8Summary v-else-if="currentStep === 8" />
+        <Step8Summary v-else-if="currentStep === 8" @save="saveCharacter" />
       </div>
     </div>
 
