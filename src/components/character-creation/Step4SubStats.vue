@@ -12,11 +12,47 @@ const calculateDerivedStats = () => {
   const voima = getAttr('Voima')
   const terveys = getAttr('Terveys')
 
+  // Vauriobonus table based on Voima
+  const calculateVauriobonus = (voima: number): number => {
+    if (voima <= 5) return -2
+    if (voima <= 9) return -1
+    if (voima <= 14) return 0
+    if (voima <= 17) return 1
+    if (voima <= 19) return 2
+    return 3 // voima 20
+  }
+
+  // Veripisteet table based on Terveys
+  const calculateVeripisteet = (terveys: number): number => {
+    if (terveys === 1) return 10
+    if (terveys <= 3) return 11
+    if (terveys <= 5) return 12
+    if (terveys <= 7) return 13
+    if (terveys <= 9) return 14
+    if (terveys <= 11) return 15
+    if (terveys <= 13) return 16
+    if (terveys <= 15) return 17
+    if (terveys <= 17) return 18
+    if (terveys <= 19) return 19
+    return 20 // terveys 20
+  }
+
+  // Syvä haava table based on Voima + Terveys
+  const calculateSyvaHaava = (voima: number, terveys: number): number => {
+    const sum = voima + terveys
+    if (sum <= 10) return 5
+    if (sum <= 17) return 6
+    if (sum <= 24) return 7
+    if (sum <= 31) return 8
+    if (sum <= 38) return 9
+    return 10 // 39-40
+  }
+
   const subStats: SubStats = {
-    veripisteet: terveys + voima,
-    vauriobonus: Math.floor(voima / 2),
-    syvaHaava: Math.floor(terveys / 2),
-    kantokyky: voima * 2,
+    veripisteet: calculateVeripisteet(terveys),
+    vauriobonus: calculateVauriobonus(voima),
+    syvaHaava: calculateSyvaHaava(voima, terveys),
+    kantokyky: voima * 20,
   }
 
   wizardStore.setSubStats(subStats)
