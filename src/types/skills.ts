@@ -4,5 +4,7 @@ export type Skill = {
   name: string
   baseCode: SkillBaseCode
   bonus: number
+  learned: boolean
+  backgroundSkill: boolean
 }
 

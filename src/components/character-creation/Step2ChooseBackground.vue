@@ -32,15 +32,15 @@ const selectBackground = (id: string) => {
             <strong>Ominaisuusbonukset:</strong>
             <ul>
               <li v-for="(bonus, stat) in bg.statBonuses" :key="stat">
-                +{{ bonus }} {{ stat }}
+                {{ bonus >= 0 ? '+' : '' }}{{ bonus }} {{ stat }}
               </li>
             </ul>
           </div>
           <div v-if="Object.keys(bg.skillBonuses).length > 0" class="bonus-section">
-            <strong>Taitobonukset:</strong>
+            <strong>Taidot:</strong>
             <ul>
               <li v-for="(bonus, skill) in bg.skillBonuses" :key="skill">
-                +{{ bonus }} {{ skill }}
+                {{ skill }}
               </li>
             </ul>
           </div>

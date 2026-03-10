@@ -178,16 +178,57 @@ Implemented 8-step wizard for creating new characters:
 2. **Choose Background** - 6 backgrounds with stat and skill bonuses
 3. **Advantages & Disadvantages** - Select 1-5 of each (must be balanced)
 4. **Sub-stats** - Auto-calculate derived stats
-5. **Skills** - Point-buy system (100 points) with skill caps
+5. **Skills** - Learn and raise skills with point-buy system
 6. **Equipment** - Select starter equipment
 7. **Name & Details** - Enter character name
 8. **Summary** - Review and save character
+
+#### Skill Learning System
+
+Skills must be **learned** before they can be raised:
+
+| Action | Cost | Description |
+|--------|------|-------------|
+| **Learn skill** | 2 points | Makes skill available; sets level to base (attribute/2, min 6) |
+| **Raise skill** | 1-2 points | Increases level by +1 (cost 1 if level < 10, cost 2 if level ≥ 10) |
+| **Unlearn skill** | Refunds 2 points | Only possible if skill hasn't been raised |
+
+**Rules:**
+- Background skills are **automatically learned** with +1 bonus (no learning cost)
+- Maximum skill level: 15
+- Unlearned skills show level as 0 and cannot be used
+- Learning a skill doesn't raise it—only makes it available at base level
+
+**Point costs example:**
+- Learn skill (base 7): 2 points → level 7
+- Raise to 8: +1 point → level 8
+- Raise to 9: +1 point → level 9
+- Raise to 10: +2 points → level 10
+- Total for level 10: 6 points
 
 #### Advantages (36 total)
 Aarre, Alkemisti, Asiantuntija, Eläinkuiskaaja, Haukankatse, Huuliltalukija, Hyvämaineinen, Ikä ja kokemus, Jääverinen, Kahlekuningas, Kaunis, Kissajalat, Kookas, Kovanaama, Lahjakas, Laskupää, Lemmikki, Nopea, Onnekas, Ottolapsi, Rautavatsa, Rohkea, Sitkeä, Suhteita, Sukeltaja, Suuntavaisto, Tarkkakorvainen, Tarkkamuistinen, Uhkaava, Vaikukoira, Vaisto, Valevainu, Velhonverta, Viinapää, Ystävä, Yösilmät
 
 #### Disadvantages (36 total)
 Ahne, Arpi, Hentoluinen, Hidas, Huono kuulo, Hämäräsokea, Irstas, Juoppo, Kammo, Kostonhimoinen, Kunniallinen, Käsipuoli, Kääpiö, Lainsuojaton, Lähinäköinen, Lähimmäisiä, Muotopuoli, Mykkä, Nuori, Oikku, Pahamaineinen, Painajaisia, Peluri, Rampa, Rasisti, Riippuvuus, Silmäpuoli, Taikauskoinen, Tuntomerkki, Uninen, Uskovainen, Vallanahne, Vasalli, Velkaa, Vihollinen, Äkkipikainen
+
+#### Backgrounds (11 total)
+
+| Background | Stat Bonuses | Skills Learned |
+|------------|--------------|----------------|
+| **Aatelinen** | Karisma +2 | Heraldiikka, Kilvet, Lukutaito, Ratsastus, Uskonto, Veitset, Väistö |
+| **Ritari** | Karisma +1, Voima +1 | Heraldiikka, Keihäät, Kilvet, Miekat, Ratsastus, Sotataito, Väistö |
+| **Pappi** | Karisma +1, Valppaus +1 | Esiintyminen, Haavojen hoito, Historia, Kilvet, Uskonto, Lukutaito, Väistö |
+| **Porvari** | Sisukkuus +1, Valppaus +1 | Esiintyminen, Kaupanhieronta, Kauppareitit, Kilvet, Lukutaito, Veitset, Väistö |
+| **Kaupunkilainen** | — | Esiintyminen, Ihmistuntemus, Kadut ja kapakat, Kaupanhieronta, Kilvet, Kädentaidot, Tappelu, Veitset, Väistö |
+| **Maalainen** | Terveys +1 | Haavojen hoito, Kilvet, Kädentaidot, Lyömäaseet, Tappelu, Väistö |
+| **Irtolainen** | — | Haavojen hoito, Hiivintä, Kadut ja kapakat, Kaupanhieronta, Kilvet, Sorminäppäryys, Tappelu, Uhkapeli, Väistö |
+| **Rosvo** | — | Erätaidot, Haavojen hoito, Hiivintä, Kilvet, Kovistelu, Lyömäaseet, Tappelu, Uhkapeli, Väistö |
+| **Paimentolainen** | Ketteryys +2, Sisukkuus +1, Karisma -1 | Haavojen hoito, Heittäminen, Keihäät, Kilvet, Kirottu maa, Ratsastus, Tarut ja legendat, Väistö |
+| **Vuoristolainen** | Voima +2, Terveys +1, Ketteryys -1 | Hyppy ja kiipeily, Kilvet, Erätaidot, Kädentaidot, Kovistelu, Lyömäaseet, Tappelu, Uiminen, Väistö |
+| **Metsäläinen** | Valppaus +2, Ketteryys +1, Karisma -1 | Erätaidot, Hiivintä, Jouset, Kilvet, Metsästys, Sorminäppäryys, Veitset, Väistö, Yrtit ja myrkyt |
+
+**Note:** Background skills are automatically **learned** (no learning cost), but start at base level (no bonus). Players can raise them with skill points if desired.
 
 #### Advantage & Disadvantage Special Effects
 

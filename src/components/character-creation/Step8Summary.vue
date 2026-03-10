@@ -21,7 +21,7 @@ const baseCodeToAttributeName: Record<SkillBaseCode, string | null> = {
 
 const skillsWithLevels = computed(() =>
   wizardStore.draft.skills
-    .filter((skill) => skill.bonus > 0)
+    .filter((skill) => skill.learned)
     .map((skill) => {
       const attributeName = baseCodeToAttributeName[skill.baseCode]
       const attribute =
@@ -32,7 +32,7 @@ const skillsWithLevels = computed(() =>
       const baseLevel = attribute ? Math.ceil(attribute.value / 2) : 6
       const level = baseLevel + skill.bonus
 
-      return { ...skill, level }
+      return { ...skill, level, baseLabel: attributeName }
     }),
 )
 
@@ -113,7 +113,7 @@ const handleSave = () => {
     </div>
 
     <div class="summary-section" v-if="skillsWithLevels.length > 0">
-      <h3>Taidot ({{ skillsWithLevels.length }})</h3>
+      <h3>Taidot ({{ skillsWithLevels.length }} opittu)</h3>
       <div class="skills-list">
         <div
           v-for="skill in skillsWithLevels"

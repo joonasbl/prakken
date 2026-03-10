@@ -5,6 +5,8 @@ const createSkill = (name: string, baseCode: SkillBaseCode): Skill => ({
   name,
   baseCode,
   bonus: 0,
+  learned: false,
+  backgroundSkill: false,
 })
 
 export const useSkillsStore = defineStore('skills', {
