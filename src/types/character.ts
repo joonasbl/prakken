@@ -20,6 +20,7 @@ export type Advantage = {
   description: string
   cost: number
   effect?: AdvantageEffect
+  conflicts?: string[]
 }
 
 export type DisadvantageEffect =
@@ -32,6 +33,7 @@ export type Disadvantage = {
   description: string
   benefit: number
   effect?: DisadvantageEffect
+  conflicts?: string[]
 }
 
 export type SubStats = {

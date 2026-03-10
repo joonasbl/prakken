@@ -23,33 +23,19 @@ watch(hasLahjakas, (newValue) => {
   }
 })
 
-const canAddAdvantage = computed(() => {
-  const advCount = wizardStore.selectedAdvantages.length
-  const disCount = wizardStore.selectedDisadvantages.length
-  // Can add advantage if under max and won't exceed disadvantages by more than 1
-  return advCount < MAX_SELECTIONS && advCount <= disCount
-})
+const canSelectMoreAdvantages = computed(() =>
+  wizardStore.selectedAdvantages.length < MAX_SELECTIONS
+)
 
-const canAddDisadvantage = computed(() => {
-  const advCount = wizardStore.selectedAdvantages.length
-  const disCount = wizardStore.selectedDisadvantages.length
-  // Can add disadvantage if under max and haven't exceeded advantages
-  return disCount < MAX_SELECTIONS && disCount < advCount
-})
+const canSelectMoreDisadvantages = computed(() =>
+  wizardStore.selectedDisadvantages.length < MAX_SELECTIONS
+)
 
-const canRemoveAdvantage = computed(() => {
-  const advCount = wizardStore.selectedAdvantages.length
-  const disCount = wizardStore.selectedDisadvantages.length
-  // Can remove if we have more advantages than disadvantages
-  return advCount > disCount
-})
+const getAdvantageConflict = (id: string) =>
+  wizardStore.hasConflictingAdvantage(id)
 
-const canRemoveDisadvantage = computed(() => {
-  const advCount = wizardStore.selectedAdvantages.length
-  const disCount = wizardStore.selectedDisadvantages.length
-  // Can remove if we have more disadvantages than needed to match advantages
-  return disCount > advCount
-})
+const getDisadvantageConflict = (id: string) =>
+  wizardStore.hasConflictingDisadvantage(id)
 
 const toggleAdvantage = (id: string) => {
   const advantage = wizardStore.availableAdvantages.find((a) => a.id === id)
@@ -57,11 +43,15 @@ const toggleAdvantage = (id: string) => {
 
   const isSelected = hasAdvantage(id)
   if (isSelected) {
-    if (canRemoveAdvantage.value) {
-      wizardStore.toggleAdvantage(advantage)
-    }
+    wizardStore.toggleAdvantage(advantage)
   } else {
-    if (canAddAdvantage.value) {
+    // Check for conflicts
+    const conflict = getAdvantageConflict(id)
+    if (conflict) {
+      alert(`Et voi valita ${advantage.name}, koska sinulla on ${conflict}. Poista ${conflict} ensin.`)
+      return
+    }
+    if (canSelectMoreAdvantages.value) {
       wizardStore.toggleAdvantage(advantage)
     }
   }
@@ -73,11 +63,15 @@ const toggleDisadvantage = (id: string) => {
 
   const isSelected = hasDisadvantage(id)
   if (isSelected) {
-    if (canRemoveDisadvantage.value) {
-      wizardStore.toggleDisadvantage(disadvantage)
-    }
+    wizardStore.toggleDisadvantage(disadvantage)
   } else {
-    if (canAddDisadvantage.value) {
+    // Check for conflicts
+    const conflict = getDisadvantageConflict(id)
+    if (conflict) {
+      alert(`Et voi valita ${disadvantage.name}, koska sinulla on ${conflict}. Poista ${conflict} ensin.`)
+      return
+    }
+    if (canSelectMoreDisadvantages.value) {
       wizardStore.toggleDisadvantage(disadvantage)
     }
   }
@@ -86,16 +80,20 @@ const toggleDisadvantage = (id: string) => {
 const selectionStatus = computed(() => {
   const advCount = wizardStore.selectedAdvantages.length
   const disCount = wizardStore.selectedDisadvantages.length
+  const isBalanced = advCount === disCount
+
   if (advCount === 0 && disCount === 0) {
-    return { text: 'Valitse vähintään yksi etu ja yksi haitta', class: 'info' }
+    return { text: 'Valitse edut ja haitat (määrän tulee olla sama)', class: 'info' }
   }
-  if (disCount < advCount) {
-    return { text: `Valitse ${advCount - disCount} haittaa lisää`, class: 'warning' }
+  if (!isBalanced) {
+    const diff = Math.abs(advCount - disCount)
+    if (advCount > disCount) {
+      return { text: `Valitse ${diff} haittaa lisää`, class: 'warning' }
+    } else {
+      return { text: `Valitse ${diff} etua lisää`, class: 'warning' }
+    }
   }
-  if (disCount === advCount) {
-    return { text: 'Edut ja haitat tasapainossa', class: 'ok' }
-  }
-  return { text: 'Liikaa haittoja', class: 'warning' }
+  return { text: `Tasapainossa (${advCount} etua, ${disCount} haittaa)`, class: 'ok' }
 })
 </script>
 
@@ -118,12 +116,16 @@ const selectionStatus = computed(() => {
             class="option-card"
             :class="{
               selected: hasAdvantage(adv.id),
-              'disabled': !canAddAdvantage && !hasAdvantage(adv.id),
+              'disabled': (!canSelectMoreAdvantages && !hasAdvantage(adv.id)) || getAdvantageConflict(adv.id),
+              'has-conflict': getAdvantageConflict(adv.id),
             }"
             @click="toggleAdvantage(adv.id)"
           >
             <div class="option-header">
               <span class="option-name">{{ adv.name }}</span>
+              <span v-if="getAdvantageConflict(adv.id)" class="conflict-badge">
+                Ristiriita: {{ getAdvantageConflict(adv.id) }}
+              </span>
             </div>
             <p class="option-description">{{ adv.description }}</p>
           </div>
@@ -137,14 +139,18 @@ const selectionStatus = computed(() => {
             v-for="dis in wizardStore.availableDisadvantages"
             :key="dis.id"
             class="option-card disadvantage"
-            :class="{ 
+            :class="{
               selected: hasDisadvantage(dis.id),
-              'disabled': !canAddDisadvantage && !hasDisadvantage(dis.id),
+              'disabled': (!canSelectMoreDisadvantages && !hasDisadvantage(dis.id)) || getDisadvantageConflict(dis.id),
+              'has-conflict': getDisadvantageConflict(dis.id),
             }"
             @click="toggleDisadvantage(dis.id)"
           >
             <div class="option-header">
               <span class="option-name">{{ dis.name }}</span>
+              <span v-if="getDisadvantageConflict(dis.id)" class="conflict-badge">
+                Ristiriita: {{ getDisadvantageConflict(dis.id) }}
+              </span>
             </div>
             <p class="option-description">{{ dis.description }}</p>
           </div>
@@ -190,6 +196,19 @@ const selectionStatus = computed(() => {
 
 .option-card.disabled:hover {
   border-color: #e0e0e0;
+}
+
+.option-card.has-conflict {
+  border-color: #e74c3c;
+  background-color: #fdedec;
+}
+
+.conflict-badge {
+  display: block;
+  font-size: 0.7rem;
+  color: #e74c3c;
+  font-weight: 600;
+  margin-top: 0.25rem;
 }
 
 .sections-container {

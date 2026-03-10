@@ -37,9 +37,8 @@ const canProceed = computed(() => {
     case 2:
       return wizardStore.hasSelectedBackground
     case 3:
-      // Must have equal number of advantages and disadvantages, at least 1 of each
-      return wizardStore.selectedAdvantages.length > 0 &&
-        wizardStore.selectedAdvantages.length === wizardStore.selectedDisadvantages.length
+      // Must have equal number of advantages and disadvantages
+      return wizardStore.isAdvAdvantageBalanced
     case 4:
       return wizardStore.draft.subStats !== null
     case 5:

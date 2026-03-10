@@ -75,12 +75,12 @@ const advantages: Advantage[] = [
   { id: 'haukankatse', name: 'Haukankatse', description: 'Näet erinomaisen hyvin kauas.', cost: 1 },
   { id: 'huuliltalukija', name: 'Huuliltalukija', description: 'Ymmärrät puhetta huulilta lukemalla.', cost: 1 },
   { id: 'hyvaimaineinen', name: 'Hyvämaineinen', description: 'Sinulla on hyvä maine yhteisössä.', cost: 1 },
-  { id: 'ika_ja_kokemus', name: 'Ikä ja kokemus', description: 'Vuodet ovat tuoneet viisautta.', cost: 2, effect: { type: 'skillPoints', value: 120 } as AdvantageEffect },
+  { id: 'ika_ja_kokemus', name: 'Ikä ja kokemus', description: 'Vuodet ovat tuoneet viisautta.', cost: 2, effect: { type: 'skillPoints', value: 120 } as AdvantageEffect, conflicts: ['nuori'] },
   { id: 'jaaverinen', name: 'Jääverinen', description: 'Kylmyys ei haittaa sinua.', cost: 1 },
   { id: 'kahlekuningas', name: 'Kahlekuningas', description: 'Olet taitava vapautumaan sidoksista.', cost: 1 },
   { id: 'kaunis', name: 'Kaunis', description: 'Ulkonäkösi avaa ovia.', cost: 1 },
   { id: 'kissajalat', name: 'Kissajalat', description: 'Putoat aina jaloillesi.', cost: 1 },
-  { id: 'kookas', name: 'Kookas', description: 'Olet pitkä ja vaikuttava.', cost: 1, effect: { type: 'substat', stat: 'syvaHaava', value: 2 } as AdvantageEffect },
+  { id: 'kookas', name: 'Kookas', description: 'Olet pitkä ja vaikuttava.', cost: 1, effect: { type: 'substat', stat: 'syvaHaava', value: 2 } as AdvantageEffect, conflicts: ['hentoluinen'] },
   { id: 'kovanaama', name: 'Kovanaama', description: 'Kestät kipua hyvin.', cost: 2 },
   { id: 'lahjakas', name: 'Lahjakas', description: 'Valitse kaksi ominaisuutta ja saat +1 niihin.', cost: 2, effect: { type: 'attributeChoice', count: 2, value: 1 } as AdvantageEffect },
   { id: 'laskupaa', name: 'Laskupää', description: 'Olet nopea laskemaan.', cost: 1 },
@@ -109,7 +109,7 @@ const advantages: Advantage[] = [
 const disadvantages: Disadvantage[] = [
   { id: 'ahne', name: 'Ahne', description: 'Haluat aina enemmän.', benefit: 1 },
   { id: 'arpi', name: 'Arpi', description: 'Sinulla on näkyvä arpi.', benefit: 1 },
-  { id: 'hentoluinen', name: 'Hentoluinen', description: 'Luisi ovat hauraat.', benefit: 2, effect: { type: 'substat', stat: 'syvaHaava', value: -2 } as DisadvantageEffect },
+  { id: 'hentoluinen', name: 'Hentoluinen', description: 'Luisi ovat hauraat.', benefit: 2, effect: { type: 'substat', stat: 'syvaHaava', value: -2 } as DisadvantageEffect, conflicts: ['kookas'] },
   { id: 'hidas', name: 'Hidas', description: 'Liikut hitaammin kuin muut.', benefit: 2 },
   { id: 'huono_kuulo', name: 'Huono kuulo', description: 'Kuulosi ovat heikot.', benefit: 1 },
   { id: 'hamarasokea', name: 'Hämäräsokea', description: 'Et näe hämärässä kunnolla.', benefit: 1 },
@@ -125,7 +125,7 @@ const disadvantages: Disadvantage[] = [
   { id: 'lahimmaisia', name: 'Lähimmäisiä', description: 'Autat aina muita.', benefit: 1 },
   { id: 'muotopuoli', name: 'Muotopuoli', description: 'Sinulla on synnynnäinen vika.', benefit: 2 },
   { id: 'mykka', name: 'Mykkä', description: 'Et pysty puhumaan.', benefit: 3 },
-  { id: 'nuori', name: 'Nuori', description: 'Olet kokematon.', benefit: 1, effect: { type: 'skillPoints', value: 70 } as DisadvantageEffect },
+  { id: 'nuori', name: 'Nuori', description: 'Olet kokematon.', benefit: 1, effect: { type: 'skillPoints', value: 70 } as DisadvantageEffect, conflicts: ['ika_ja_kokemus'] },
   { id: 'oikku', name: 'Oikku', description: 'Mielialasi vaihtelevat.', benefit: 1 },
   { id: 'pahamaineinen', name: 'Pahamaineinen', description: 'Maineesi on huono.', benefit: 2 },
   { id: 'painajaisia', name: 'Painajaisia', description: 'Kärsit yököisistä unista.', benefit: 1 },
@@ -231,6 +231,31 @@ export const useCharacterCreationStore = defineStore('characterCreation', {
       const totalChoices = lahjakas.effect.count
       const usedChoices = Object.values(state.attributeChoices).reduce((sum, v) => sum + v, 0)
       return totalChoices - usedChoices
+    },
+    hasConflictingAdvantage: (state) => (advantageId: string): string | null => {
+      const adv = advantages.find((a) => a.id === advantageId)
+      if (!adv?.conflicts) return null
+      for (const conflictId of adv.conflicts) {
+        if (state.draft.disadvantages.some((d) => d.id === conflictId)) {
+          const conflict = disadvantages.find((d) => d.id === conflictId)
+          return conflict?.name || null
+        }
+      }
+      return null
+    },
+    hasConflictingDisadvantage: (state) => (disadvantageId: string): string | null => {
+      const dis = disadvantages.find((d) => d.id === disadvantageId)
+      if (!dis?.conflicts) return null
+      for (const conflictId of dis.conflicts) {
+        if (state.draft.advantages.some((a) => a.id === conflictId)) {
+          const conflict = advantages.find((a) => a.id === conflictId)
+          return conflict?.name || null
+        }
+      }
+      return null
+    },
+    isAdvAdvantageBalanced: (state): boolean => {
+      return state.draft.advantages.length === state.draft.disadvantages.length
     },
   },
   actions: {
