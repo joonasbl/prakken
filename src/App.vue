@@ -1,9 +1,5 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
-import StatsPage from './components/StatsPage.vue';
-
-
-
+import { RouterView } from 'vue-router'
 </script>
 
 <template>
@@ -14,14 +10,11 @@ import StatsPage from './components/StatsPage.vue';
         </h1>
       </div>
     </hero>
-
   </header>
 
   <main>
-    <StatsPage />
+    <RouterView />
   </main>
-
-
 </template>
 
 <style scoped></style>
