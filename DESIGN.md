@@ -122,10 +122,78 @@ Data currently lives entirely in-memory. Persistence, validation rules, and deri
   - Easy to add new attributes or views without refactoring the core architecture.
   - Store structure supports additional fields and actions in a straightforward way.
 
-### 9. Future Enhancements & Direction
+### 9. Derived Stats (Sub-stats)
+
+The following derived stats are calculated from base attributes:
+
+#### Veripisteet (Hit Points)
+Based on **Terveys**:
+
+| Terveys | Veripisteet |
+|---------|-------------|
+| 1       | 10          |
+| 2-3     | 11          |
+| 4-5     | 12          |
+| 6-7     | 13          |
+| 8-9     | 14          |
+| 10-11   | 15          |
+| 12-13   | 16          |
+| 14-15   | 17          |
+| 16-17   | 18          |
+| 18-19   | 19          |
+| 20      | 20          |
+
+#### Vauriobonus (Damage Bonus)
+Based on **Voima**:
+
+| Voima   | Vauriobonus |
+|---------|-------------|
+| ...5    | -2          |
+| 6-9     | -1          |
+| 10-14   | 0           |
+| 15-17   | +1          |
+| 18-19   | +2          |
+| 20      | +3          |
+
+#### Syvä haava (Severe Wound Threshold)
+Based on **Voima + Terveys** sum:
+
+| VOI+TER  | Syvä haava |
+|----------|------------|
+| ...10    | 5          |
+| 11-17    | 6          |
+| 18-24    | 7          |
+| 25-31    | 8          |
+| 32-38    | 9          |
+| 39-40    | 10         |
+
+#### Kantokyky (Carrying Capacity)
+Simple formula: **Voima × 20**
+
+### 10. Character Creation Wizard
+
+Implemented 8-step wizard for creating new characters:
+
+1. **Roll Stats** - 4d6 drop lowest for each attribute, or manual adjustment
+2. **Choose Background** - 6 backgrounds with stat and skill bonuses
+3. **Advantages & Disadvantages** - Select 1-5 of each (must be balanced)
+4. **Sub-stats** - Auto-calculate derived stats
+5. **Skills** - Point-buy system (100 points) with skill caps
+6. **Equipment** - Select starter equipment
+7. **Name & Details** - Enter character name
+8. **Summary** - Review and save character
+
+#### Advantages (36 total)
+Aarre, Alkemisti, Asiantuntija, Eläinkuiskaaja, Haukankatse, Huuliltalukija, Hyvämaineinen, Ikä ja kokemus, Jääverinen, Kahlekuningas, Kaunis, Kissajalat, Kookas, Kovanaama, Lahjakas, Laskupää, Lemmikki, Nopea, Onnekas, Ottolapsi, Rautavatsa, Rohkea, Sitkeä, Suhteita, Sukeltaja, Suuntavaisto, Tarkkakorvainen, Tarkkamuistinen, Uhkaava, Vaikukoira, Vaisto, Valevainu, Velhonverta, Viinapää, Ystävä, Yösilmät
+
+#### Disadvantages (36 total)
+Ahne, Arpi, Hentoluinen, Hidas, Huono kuulo, Hämäräsokea, Irstas, Juoppo, Kammo, Kostonhimoinen, Kunniallinen, Käsipuoli, Kääpiö, Lainsuojaton, Lähinäköinen, Lähimmäisiä, Muotopuoli, Mykkä, Nuori, Oikku, Pahamaineinen, Painajaisia, Peluri, Rampa, Rasisti, Riippuvuus, Silmäpuoli, Taikauskoinen, Tuntomerkki, Uninen, Uskovainen, Vallanahne, Vasalli, Velkaa, Vihollinen, Äkkipikainen
+
+### 11. Future Enhancements & Direction
 
 - Add **persistence** (local storage or backend API).
-- Introduce **validation and constraints** (e.g., total points cap, minimum/maximum per stat).
-- Add **theming and improved styling** (e.g., Tailwind, component libraries) to modernize the UI.
-- Expand to a full **character sheet** with additional modules like equipment, skills, and notes.
+- Support **multiple characters** with quick switching.
+- Add **theming and improved styling** (e.g., Tailwind, component libraries).
+- Expand character sheet with **inventory management** and **equipment weight tracking**.
+- Add **character export/import** functionality.
 
