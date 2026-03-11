@@ -99,60 +99,64 @@ const selectionStatus = computed(() => {
 
 <template>
   <div class="adv-disadv">
-    <div class="points-display">
-      <span>Valittu: {{ wizardStore.selectedAdvantages.length }} etua / {{ wizardStore.selectedDisadvantages.length }} haittaa</span>
-      <span :class="selectionStatus.class">
-        {{ selectionStatus.text }}
-      </span>
+    <div class="notification mb-4" :class="{
+      'is-success': selectionStatus.class === 'ok',
+      'is-warning': selectionStatus.class === 'warning',
+      'is-info': selectionStatus.class === 'info',
+    }">
+      <p class="has-text-weight-semibold">
+        Valittu: {{ wizardStore.selectedAdvantages.length }} etua / {{ wizardStore.selectedDisadvantages.length }} haittaa
+      </p>
+      <p>{{ selectionStatus.text }}</p>
     </div>
 
-    <div class="sections-container">
-      <div class="section">
-        <h3>Edut (max 5)</h3>
+    <div class="columns is-desktop">
+      <div class="column">
+        <div class="is-size-5 has-text-weight-bold mb-3" style="font-family: 'MedievalSharp', cursive;">Edut (max 5)</div>
         <div class="options-grid">
           <div
             v-for="adv in wizardStore.availableAdvantages"
             :key="adv.id"
-            class="option-card"
+            class="card option-card mb-2"
             :class="{
-              selected: hasAdvantage(adv.id),
-              'disabled': (!canSelectMoreAdvantages && !hasAdvantage(adv.id)) || getAdvantageConflict(adv.id),
+              'is-selected': hasAdvantage(adv.id),
+              'is-disabled': (!canSelectMoreAdvantages && !hasAdvantage(adv.id)) || getAdvantageConflict(adv.id),
               'has-conflict': getAdvantageConflict(adv.id),
             }"
             @click="toggleAdvantage(adv.id)"
           >
-            <div class="option-header">
-              <span class="option-name">{{ adv.name }}</span>
-              <span v-if="getAdvantageConflict(adv.id)" class="conflict-badge">
+            <div class="card-content p-3">
+              <div class="is-size-7 has-text-weight-bold mb-1">{{ adv.name }}</div>
+              <p class="is-size-7 has-text-grey">{{ adv.description }}</p>
+              <p v-if="getAdvantageConflict(adv.id)" class="is-size-7 has-text-danger has-text-weight-bold mt-1">
                 Ristiriita: {{ getAdvantageConflict(adv.id) }}
-              </span>
+              </p>
             </div>
-            <p class="option-description">{{ adv.description }}</p>
           </div>
         </div>
       </div>
 
-      <div class="section">
-        <h3>Haitat (max 5)</h3>
+      <div class="column">
+        <div class="is-size-5 has-text-weight-bold mb-3" style="font-family: 'MedievalSharp', cursive;">Haitat (max 5)</div>
         <div class="options-grid">
           <div
             v-for="dis in wizardStore.availableDisadvantages"
             :key="dis.id"
-            class="option-card disadvantage"
+            class="card option-card disadvantage mb-2"
             :class="{
-              selected: hasDisadvantage(dis.id),
-              'disabled': (!canSelectMoreDisadvantages && !hasDisadvantage(dis.id)) || getDisadvantageConflict(dis.id),
+              'is-selected': hasDisadvantage(dis.id),
+              'is-disabled': (!canSelectMoreDisadvantages && !hasDisadvantage(dis.id)) || getDisadvantageConflict(dis.id),
               'has-conflict': getDisadvantageConflict(dis.id),
             }"
             @click="toggleDisadvantage(dis.id)"
           >
-            <div class="option-header">
-              <span class="option-name">{{ dis.name }}</span>
-              <span v-if="getDisadvantageConflict(dis.id)" class="conflict-badge">
+            <div class="card-content p-3">
+              <div class="is-size-7 has-text-weight-bold mb-1">{{ dis.name }}</div>
+              <p class="is-size-7 has-text-grey">{{ dis.description }}</p>
+              <p v-if="getDisadvantageConflict(dis.id)" class="is-size-7 has-text-danger has-text-weight-bold mt-1">
                 Ristiriita: {{ getDisadvantageConflict(dis.id) }}
-              </span>
+              </p>
             </div>
-            <p class="option-description">{{ dis.description }}</p>
           </div>
         </div>
       </div>
@@ -167,35 +171,40 @@ const selectionStatus = computed(() => {
   padding: 1rem 0;
 }
 
-.points-display {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 1.5rem;
-  padding: 1rem;
-  background-color: #f8f9fa;
-  border-radius: 4px;
-  font-weight: 600;
+.options-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 0.5rem;
+  max-height: 400px;
+  overflow-y: auto;
+  padding: 0.5rem;
 }
 
-.points-display .ok {
-  color: #27ae60;
+.option-card {
+  cursor: pointer;
+  transition: all 0.3s;
+  border: 2px solid transparent;
 }
 
-.points-display .warning {
-  color: #e74c3c;
+.option-card:hover:not(.is-disabled) {
+  border-color: #3498db;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.points-display .info {
-  color: #3498db;
+.option-card.is-selected {
+  border-color: #27ae60;
+  background-color: #e8f8f5;
 }
 
-.option-card.disabled {
-  opacity: 0.4;
+.option-card.is-disabled {
+  opacity: 0.5;
   cursor: not-allowed;
 }
 
-.option-card.disabled:hover {
-  border-color: #e0e0e0;
+.option-card.is-disabled:hover {
+  transform: none;
+  box-shadow: none;
 }
 
 .option-card.has-conflict {
@@ -203,67 +212,8 @@ const selectionStatus = computed(() => {
   background-color: #fdedec;
 }
 
-.conflict-badge {
-  display: block;
-  font-size: 0.7rem;
-  color: #e74c3c;
-  font-weight: 600;
-  margin-top: 0.25rem;
-}
-
-.sections-container {
-  display: grid;
-  gap: 2rem;
-}
-
-.section h3 {
-  font-size: 1.2rem;
-  margin-bottom: 1rem;
-  color: #2c3e50;
-}
-
-.options-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 0.75rem;
-}
-
-.option-card {
-  padding: 1rem;
-  border: 2px solid #e0e0e0;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.3s;
-}
-
-.option-card:hover {
-  border-color: #3498db;
-}
-
-.option-card.selected {
-  border-color: #27ae60;
-  background-color: #e8f8f5;
-}
-
-.option-card.disadvantage.selected {
+.option-card.disadvantage.is-selected {
   border-color: #e74c3c;
   background-color: #fdedec;
-}
-
-.option-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 0.5rem;
-}
-
-.option-name {
-  font-weight: 600;
-  color: #2c3e50;
-}
-
-.option-description {
-  font-size: 0.85rem;
-  color: #666;
 }
 </style>

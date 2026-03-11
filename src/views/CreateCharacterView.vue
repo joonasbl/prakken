@@ -89,57 +89,60 @@ const cancelWizard = () => {
 
 <template>
   <div class="wizard-container">
-    <div class="wizard-header">
-      <h1 class="wizard-title">Hahmon luonti</h1>
-      <button type="button" class="button-cancel" @click="cancelWizard">
+    <div class="is-flex is-justify-content-space-between is-align-items-center mb-5">
+      <h1 class="title is-2" style="font-family: 'MedievalSharp', cursive;">Hahmon luonti</h1>
+      <button type="button" class="button is-danger is-outlined is-small" @click="cancelWizard">
         Peruuta
       </button>
     </div>
 
-    <div class="progress-bar">
-      <div
-        v-for="step in 8"
-        :key="step"
-        class="progress-step"
-        :class="{
-          'is-active': currentStep === step,
-          'is-completed': currentStep > step,
-        }"
-      >
-        <span class="step-number">{{ step }}</span>
+    <div class="steps-container mb-5">
+      <div class="columns is-variable is-1">
+        <div class="column" v-for="step in 8" :key="step">
+          <div class="step-indicator has-text-centered" :class="{
+            'is-active': currentStep === step,
+            'is-completed': currentStep > step,
+          }">
+            <span class="step-number">{{ step }}</span>
+          </div>
+        </div>
+      </div>
+      <p class="has-text-centered is-size-7 has-text-grey mt-2">{{ stepTitle }}</p>
+    </div>
+
+    <div class="card step-card">
+      <div class="card-content">
+        <div class="step-component">
+          <Step1RollStats v-if="currentStep === 1" />
+          <Step2ChooseBackground v-else-if="currentStep === 2" />
+          <Step3AdvantagesDisadvantages v-else-if="currentStep === 3" />
+          <Step4SubStats v-else-if="currentStep === 4" />
+          <Step5Skills v-else-if="currentStep === 5" />
+          <Step6Equipment v-else-if="currentStep === 6" />
+          <Step7NameAndDetails v-else-if="currentStep === 7" />
+          <Step8Summary v-else-if="currentStep === 8" @save="saveCharacter" />
+        </div>
       </div>
     </div>
 
-    <div class="step-content">
-      <h2 class="step-title">{{ stepTitle }}</h2>
-      <div class="step-component">
-        <Step1RollStats v-if="currentStep === 1" />
-        <Step2ChooseBackground v-else-if="currentStep === 2" />
-        <Step3AdvantagesDisadvantages v-else-if="currentStep === 3" />
-        <Step4SubStats v-else-if="currentStep === 4" />
-        <Step5Skills v-else-if="currentStep === 5" />
-        <Step6Equipment v-else-if="currentStep === 6" />
-        <Step7NameAndDetails v-else-if="currentStep === 7" />
-        <Step8Summary v-else-if="currentStep === 8" @save="saveCharacter" />
-      </div>
-    </div>
-
-    <div class="wizard-footer">
+    <div class="is-flex is-justify-content-space-between mt-5">
       <button
         type="button"
-        class="button-previous"
+        class="button is-light"
         :disabled="currentStep === 1"
         @click="handlePrevious"
       >
-        Edellinen
+        <span class="icon"><i class="fas fa-arrow-left"></i></span>
+        <span>Edellinen</span>
       </button>
       <button
         type="button"
-        class="button-next"
+        class="button is-primary"
         :disabled="!canProceed"
         @click="handleNext"
       >
-        {{ currentStep === 8 ? 'Valmis' : 'Seuraava' }}
+        <span>{{ currentStep === 8 ? 'Valmis' : 'Seuraava' }}</span>
+        <span class="icon"><i class="fas fa-arrow-right"></i></span>
       </button>
     </div>
   </div>
@@ -152,71 +155,27 @@ const cancelWizard = () => {
   padding: 2rem;
 }
 
-.wizard-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 2rem;
-}
-
-.wizard-title {
-  font-size: 2rem;
-  font-weight: 700;
-  color: #2c3e50;
-}
-
-.button-cancel {
-  padding: 0.5rem 1rem;
-  border: 1px solid #dc3545;
-  background-color: transparent;
-  color: #dc3545;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 0.9rem;
-}
-
-.button-cancel:hover {
-  background-color: #dc3545;
-  color: white;
-}
-
-.progress-bar {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 2rem;
+.steps-container {
   position: relative;
 }
 
-.progress-bar::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background-color: #e0e0e0;
-  transform: translateY(-50%);
-  z-index: 0;
-}
-
-.progress-step {
+.step-indicator {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background-color: #e0e0e0;
+  background-color: #bdc3c7;
   display: flex;
   align-items: center;
   justify-content: center;
-  position: relative;
-  z-index: 1;
+  margin: 0 auto;
   transition: background-color 0.3s;
 }
 
-.progress-step.is-active {
+.step-indicator.is-active {
   background-color: #3498db;
 }
 
-.progress-step.is-completed {
+.step-indicator.is-completed {
   background-color: #27ae60;
 }
 
@@ -225,57 +184,7 @@ const cancelWizard = () => {
   font-weight: 600;
 }
 
-.step-content {
-  background-color: white;
-  border-radius: 8px;
-  padding: 2rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  margin-bottom: 2rem;
-}
-
-.step-title {
-  font-size: 1.5rem;
-  font-weight: 600;
-  margin-bottom: 1.5rem;
-  color: #2c3e50;
-}
-
-.wizard-footer {
-  display: flex;
-  justify-content: space-between;
-}
-
-.button-previous,
-.button-next {
-  padding: 0.75rem 2rem;
-  border: none;
-  border-radius: 4px;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.button-previous {
-  background-color: #ecf0f1;
-  color: #2c3e50;
-}
-
-.button-previous:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.button-next {
-  background-color: #3498db;
-  color: white;
-}
-
-.button-next:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.button-next:not(:disabled):hover {
-  background-color: #2980b9;
+.step-card {
+  min-height: 400px;
 }
 </style>

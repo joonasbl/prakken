@@ -13,36 +13,40 @@ const selectBackground = (id: string) => {
 
 <template>
   <div class="choose-background">
-    <p class="description">
+    <p class="subtitle is-5 mb-5">
       Valitse hahmollesi tausta. Tausta antaa bonuksia ominaisuuksiin ja taitoihin.
     </p>
 
-    <div class="backgrounds-grid">
-      <div
-        v-for="bg in wizardStore.availableBackgrounds"
-        :key="bg.id"
-        class="background-card"
-        :class="{ selected: wizardStore.draft.background?.id === bg.id }"
-        @click="selectBackground(bg.id)"
-      >
-        <h3 class="background-name">{{ bg.name }}</h3>
-        <p class="background-description">{{ bg.description }}</p>
-        <div class="background-bonuses">
-          <div v-if="Object.keys(bg.statBonuses).length > 0" class="bonus-section">
-            <strong>Ominaisuusbonukset:</strong>
-            <ul>
-              <li v-for="(bonus, stat) in bg.statBonuses" :key="stat">
-                {{ bonus >= 0 ? '+' : '' }}{{ bonus }} {{ stat }}
-              </li>
-            </ul>
-          </div>
-          <div v-if="Object.keys(bg.skillBonuses).length > 0" class="bonus-section">
-            <strong>Taidot:</strong>
-            <ul>
-              <li v-for="(bonus, skill) in bg.skillBonuses" :key="skill">
-                {{ skill }}
-              </li>
-            </ul>
+    <div class="columns is-multiline">
+      <div class="column is-4" v-for="bg in wizardStore.availableBackgrounds" :key="bg.id">
+        <div 
+          class="card background-card"
+          :class="{ 'is-selected': wizardStore.draft.background?.id === bg.id }"
+          @click="selectBackground(bg.id)"
+        >
+          <div class="card-content">
+            <div class="content">
+              <h3 class="title is-4 mb-2">{{ bg.name }}</h3>
+              <p class="is-size-7 mb-3">{{ bg.description }}</p>
+              
+              <div v-if="Object.keys(bg.statBonuses).length > 0" class="mb-3">
+                <strong class="is-size-7 has-text-dark">Ominaisuusbonukset:</strong>
+                <ul class="is-size-7 mt-1 mb-0">
+                  <li v-for="(bonus, stat) in bg.statBonuses" :key="stat">
+                    <span class="tag is-info is-light is-small mr-1">{{ bonus >= 0 ? '+' : '' }}{{ bonus }} {{ stat }}</span>
+                  </li>
+                </ul>
+              </div>
+              
+              <div v-if="Object.keys(bg.skillBonuses).length > 0">
+                <strong class="is-size-7 has-text-dark">Taidot:</strong>
+                <div class="tags are-small mt-1">
+                  <span class="tag is-success is-light" v-for="(bonus, skill) in bg.skillBonuses" :key="skill">
+                    {{ skill }}
+                  </span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -55,72 +59,21 @@ const selectBackground = (id: string) => {
   padding: 1rem 0;
 }
 
-.description {
-  margin-bottom: 1.5rem;
-  color: #34495e;
-  font-weight: 500;
-}
-
-.backgrounds-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 1rem;
-}
-
 .background-card {
-  padding: 1.25rem;
-  border: 2px solid #bdc3c7;
-  border-radius: 8px;
   cursor: pointer;
   transition: all 0.3s;
-  background-color: #ffffff;
+  height: 100%;
+  border: 2px solid transparent;
 }
 
 .background-card:hover {
   border-color: #3498db;
-  background-color: #ecf0f1;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.background-card.selected {
+.background-card.is-selected {
   border-color: #27ae60;
   background-color: #e8f8f5;
-}
-
-.background-name {
-  font-size: 1.2rem;
-  font-weight: 700;
-  margin-bottom: 0.5rem;
-  color: #1a252f;
-}
-
-.background-description {
-  color: #34495e;
-  margin-bottom: 1rem;
-  font-size: 0.9rem;
-  line-height: 1.4;
-}
-
-.background-bonuses {
-  font-size: 0.9rem;
-  color: #2c3e50;
-}
-
-.bonus-section {
-  margin-bottom: 0.5rem;
-}
-
-.bonus-section strong {
-  color: #1a252f;
-  font-weight: 600;
-}
-
-.bonus-section ul {
-  margin: 0.25rem 0 0 1rem;
-  padding: 0;
-}
-
-.bonus-section li {
-  color: #1a252f;
-  padding: 0.2rem 0;
 }
 </style>

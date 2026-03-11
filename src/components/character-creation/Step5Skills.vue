@@ -147,65 +147,68 @@ const handleUnlearn = (skill: Skill) => {
 
 <template>
   <div class="skills-step">
-    <div class="skills-header">
-      <span>Pisteitä jäljellä: <strong>{{ remainingPoints }}</strong></span>
-      <span>
-        Käytetty: <strong>{{ totalSpentPoints }}</strong> / {{ skillPointLimit }}
-        ({{ learnedSkillsCount }} opittu)
-      </span>
+    <div class="notification is-info is-light mb-4">
+      <div class="is-flex is-justify-content-space-between">
+        <p class="has-text-weight-semibold">Pisteitä jäljellä: <span class="is-size-4 has-text-info">{{ remainingPoints }}</span></p>
+        <p>Käytetty: <span class="has-text-info">{{ totalSpentPoints }}</span> / {{ skillPointLimit }} ({{ learnedSkillsCount }} opittu)</p>
+      </div>
     </div>
 
     <div class="skills-grid">
       <div
         v-for="skill in mappedSkills"
         :key="skill.name"
-        class="skill-row"
-        :class="{ learned: skill.learned }"
+        class="card skill-row mb-2"
+        :class="{ 'is-learned': skill.learned }"
       >
-        <div class="skill-label">
-          <p>{{ skill.name }}</p>
-          <span v-if="skill.baseLabel" class="skill-base">
-            ({{ skill.baseLabel }})
-          </span>
-        </div>
-        
-        <div v-if="!skill.learned" class="skill-learn-control">
-          <button
-            type="button"
-            class="skill-btn learn-btn"
-            :disabled="!canLearnSkill(skill)"
-            @click="handleLearn(skill)"
-          >
-            Opettele ({{ SKILL_LEARN_COST }}p)
-          </button>
-        </div>
-        
-        <div v-else class="skill-controls">
-          <button
-            type="button"
-            class="skill-btn decrease-btn"
-            :disabled="skill.bonus <= 0"
-            @click="handleDecrease(skill)"
-          >
-            -
-          </button>
-          <span class="skill-level">{{ skill.level }}</span>
-          <button
-            type="button"
-            class="skill-btn increase-btn"
-            :disabled="!canRaiseSkill(skill, skill.baseLevel)"
-            @click="handleIncrease(skill, skill.baseLevel)"
-          >
-            +
-          </button>
-          <button
-            v-if="skill.bonus === 0"
-            type="button"
-            class="skill-btn unlearn-btn"
-            @click="handleUnlearn(skill)"
-          >
-            ×
-          </button>
+        <div class="card-content p-3">
+          <div class="is-flex is-justify-content-space-between is-align-items-center">
+            <div class="skill-label">
+              <p class="is-size-7 has-text-weight-bold mb-1">{{ skill.name }}</p>
+              <span v-if="skill.baseLabel" class="tag is-success is-light is-small">
+                {{ skill.baseLabel }}
+              </span>
+            </div>
+
+            <div v-if="!skill.learned" class="skill-learn-control">
+              <button
+                type="button"
+                class="button is-success is-small is-rounded"
+                :disabled="!canLearnSkill(skill)"
+                @click="handleLearn(skill)"
+              >
+                Opettele ({{ SKILL_LEARN_COST }}p)
+              </button>
+            </div>
+
+            <div v-else class="skill-controls is-flex is-align-items-center gap-2">
+              <button
+                type="button"
+                class="button is-danger is-small is-rounded"
+                :disabled="skill.bonus <= 0"
+                @click="handleDecrease(skill)"
+              >
+                <span class="icon is-small"><i class="fas fa-minus"></i></span>
+              </button>
+              <span class="skill-level is-size-5 has-text-weight-bold">{{ skill.level }}</span>
+              <button
+                type="button"
+                class="button is-info is-small is-rounded"
+                :disabled="!canRaiseSkill(skill, skill.baseLevel)"
+                @click="handleIncrease(skill, skill.baseLevel)"
+              >
+                <span class="icon is-small"><i class="fas fa-plus"></i></span>
+              </button>
+              <button
+                v-if="skill.bonus === 0"
+                type="button"
+                class="button is-light is-small is-rounded"
+                @click="handleUnlearn(skill)"
+              >
+                <span class="icon is-small"><i class="fas fa-times"></i></span>
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -217,138 +220,32 @@ const handleUnlearn = (skill: Skill) => {
   padding: 1rem 0;
 }
 
-.skills-header {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 1.5rem;
-  padding: 1rem;
-  background-color: #f8f9fa;
-  border-radius: 4px;
-  font-size: 1rem;
-}
-
-.skills-header strong {
-  color: #3498db;
-}
-
 .skills-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 0.75rem;
+  gap: 0.5rem;
   max-height: 500px;
   overflow-y: auto;
   padding: 0.5rem;
 }
 
 .skill-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.75rem;
-  background-color: #f8f9fa;
-  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s;
   border: 2px solid transparent;
 }
 
-.skill-row.learned {
+.skill-row:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.skill-row.is-learned {
   border-color: #27ae60;
   background-color: #e8f8f5;
 }
 
-.skill-label {
-  display: flex;
-  flex-direction: column;
-}
-
-.skill-label p {
-  font-weight: 600;
-  color: #2c3e50;
-  margin: 0;
-}
-
-.skill-base {
-  font-size: 0.75rem;
-  color: #666;
-}
-
-.skill-controls {
-  display: flex;
-  align-items: center;
+.gap-2 {
   gap: 0.5rem;
-}
-
-.skill-learn-control {
-  display: flex;
-}
-
-.skill-btn {
-  width: 28px;
-  height: 28px;
-  border: none;
-  border-radius: 50%;
-  background-color: #3498db;
-  color: white;
-  font-weight: 600;
-  cursor: pointer;
-  font-size: 0.85rem;
-  transition: background-color 0.2s, opacity 0.2s;
-}
-
-.skill-btn:hover:not(:disabled) {
-  background-color: #2980b9;
-}
-
-.skill-btn:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-}
-
-.skill-btn.learn-btn {
-  width: auto;
-  padding: 0.4rem 0.75rem;
-  border-radius: 4px;
-  font-size: 0.8rem;
-  background-color: #27ae60;
-}
-
-.skill-btn.learn-btn:hover:not(:disabled) {
-  background-color: #229954;
-}
-
-.skill-btn.decrease-btn {
-  background-color: #e74c3c;
-}
-
-.skill-btn.decrease-btn:hover:not(:disabled) {
-  background-color: #c0392b;
-}
-
-.skill-btn.increase-btn {
-  background-color: #3498db;
-}
-
-.skill-btn.increase-btn:hover:not(:disabled) {
-  background-color: #2980b9;
-}
-
-.skill-btn.unlearn-btn {
-  background-color: #95a5a6;
-  font-size: 1rem;
-}
-
-.skill-btn.unlearn-btn:hover:not(:disabled) {
-  background-color: #7f8c8d;
-}
-
-.skill-level {
-  font-size: 1rem;
-  font-weight: 700;
-  min-width: 2rem;
-  text-align: center;
-  color: #2c3e50;
-}
-
-.skill-row.learned .skill-level {
-  color: #27ae60;
 }
 </style>

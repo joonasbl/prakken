@@ -66,53 +66,67 @@ const substatModifiers = computed(() => wizardStore.substatModifiers)
 
 <template>
   <div class="sub-stats">
-    <p class="description">
+    <p class="subtitle is-6 mb-5 has-text-grey">
       Johdannaiset arvot lasketaan ominaisuuksista. Nämä kuvaavat hahmosi peruskykyjä.
     </p>
 
-    <button
-      v-if="!hasSubStats"
-      type="button"
-      class="calculate-button"
-      @click="calculateDerivedStats"
-    >
-      Laske johdannaiset
-    </button>
+    <div v-if="!hasSubStats" class="has-text-centered py-6">
+      <button type="button" class="button is-info is-medium is-rounded" @click="calculateDerivedStats">
+        <span class="icon"><i class="fas fa-calculator"></i></span>
+        <span>Laske johdannaiset</span>
+      </button>
+    </div>
 
-    <div v-else class="stats-display">
-      <div class="stat-card">
-        <span class="stat-label">Veripisteet</span>
-        <div class="stat-value-row">
-          <span class="stat-value">{{ wizardStore.draft.subStats?.veripisteet }}</span>
-          <ModifierBadge
-            v-if="substatModifiers.veripisteet !== 0"
-            :modifier="substatModifiers.veripisteet"
-            source="etu/haitta"
-          />
+    <div v-else class="columns is-multiline">
+      <div class="column is-3">
+        <div class="card has-text-centered">
+          <div class="card-content">
+            <p class="is-size-7 has-text-grey mb-2">Veripisteet</p>
+            <div class="is-flex is-justify-content-center is-align-items-center gap-2 mb-2">
+              <p class="is-size-2 has-text-weight-bold has-text-info">{{ wizardStore.draft.subStats?.veripisteet }}</p>
+              <ModifierBadge
+                v-if="substatModifiers.veripisteet !== 0"
+                :modifier="substatModifiers.veripisteet"
+                source="etu/haitta"
+              />
+            </div>
+            <p class="is-size-7 has-text-grey">Terveys + Voima</p>
+          </div>
         </div>
-        <span class="stat-desc">Terveys + Voima</span>
       </div>
-      <div class="stat-card">
-        <span class="stat-label">Vauriobonus</span>
-        <span class="stat-value">{{ wizardStore.draft.subStats?.vauriobonus }}</span>
-        <span class="stat-desc">Voima</span>
-      </div>
-      <div class="stat-card">
-        <span class="stat-label">Syvä haava</span>
-        <div class="stat-value-row">
-          <span class="stat-value">{{ wizardStore.draft.subStats?.syvaHaava }}</span>
-          <ModifierBadge
-            v-if="substatModifiers.syvaHaava !== 0"
-            :modifier="substatModifiers.syvaHaava"
-            source="etu/haitta"
-          />
+      <div class="column is-3">
+        <div class="card has-text-centered">
+          <div class="card-content">
+            <p class="is-size-7 has-text-grey mb-2">Vauriobonus</p>
+            <p class="is-size-2 has-text-weight-bold has-text-info mb-2">{{ wizardStore.draft.subStats?.vauriobonus }}</p>
+            <p class="is-size-7 has-text-grey">Voima</p>
+          </div>
         </div>
-        <span class="stat-desc">Voima + Terveys</span>
       </div>
-      <div class="stat-card">
-        <span class="stat-label">Kantokyky</span>
-        <span class="stat-value">{{ wizardStore.draft.subStats?.kantokyky }}</span>
-        <span class="stat-desc">Voima × 20</span>
+      <div class="column is-3">
+        <div class="card has-text-centered">
+          <div class="card-content">
+            <p class="is-size-7 has-text-grey mb-2">Syvä haava</p>
+            <div class="is-flex is-justify-content-center is-align-items-center gap-2 mb-2">
+              <p class="is-size-2 has-text-weight-bold has-text-info">{{ wizardStore.draft.subStats?.syvaHaava }}</p>
+              <ModifierBadge
+                v-if="substatModifiers.syvaHaava !== 0"
+                :modifier="substatModifiers.syvaHaava"
+                source="etu/haitta"
+              />
+            </div>
+            <p class="is-size-7 has-text-grey">Voima + Terveys</p>
+          </div>
+        </div>
+      </div>
+      <div class="column is-3">
+        <div class="card has-text-centered">
+          <div class="card-content">
+            <p class="is-size-7 has-text-grey mb-2">Kantokyky</p>
+            <p class="is-size-2 has-text-weight-bold has-text-info mb-2">{{ wizardStore.draft.subStats?.kantokyky }}</p>
+            <p class="is-size-7 has-text-grey">Voima × 20</p>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -123,66 +137,7 @@ const substatModifiers = computed(() => wizardStore.substatModifiers)
   padding: 1rem 0;
 }
 
-.description {
-  margin-bottom: 1.5rem;
-  color: #666;
-}
-
-.calculate-button {
-  padding: 1rem 2rem;
-  border: none;
-  border-radius: 4px;
-  background-color: #3498db;
-  color: white;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.calculate-button:hover {
-  background-color: #2980b9;
-}
-
-.stats-display {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 1rem;
-}
-
-.stat-card {
-  padding: 1.25rem;
-  background-color: #f8f9fa;
-  border-radius: 8px;
-  text-align: center;
-  border: 2px solid #e0e0e0;
-}
-
-.stat-label {
-  display: block;
-  font-weight: 600;
-  color: #2c3e50;
-  margin-bottom: 0.5rem;
-}
-
-.stat-value {
-  display: block;
-  font-size: 2rem;
-  font-weight: 700;
-  color: #3498db;
-  margin-bottom: 0.5rem;
-}
-
-.stat-value-row {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.gap-2 {
   gap: 0.5rem;
-  margin-bottom: 0.5rem;
-}
-
-.stat-desc {
-  display: block;
-  font-size: 0.75rem;
-  color: #666;
 }
 </style>
