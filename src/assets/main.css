@@ -1,10 +1,22 @@
-/* Import fantasy fonts */
-@import url('https://fonts.googleapis.com/css2?family=Almendra+SC&family=EB+Garamond:ital,wght@0,400;0,600;1,400&display=swap');
+/* ============================================
+   PRAKKEN - Main Styles
+   Fantasy Theme Integration
+   ============================================ */
 
-/* Apply to your Bulma classes */
+/* Import fantasy fonts */
+@import url('https://fonts.googleapis.com/css2?family=Almendra+SC:ital@0;1&family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap');
+
+/* Import fantasy theme */
+@import './fantasy-theme.css';
+
+/* ============================================
+   Base Typography Overrides
+   ============================================ */
+
 .title,
 .label,
-.button {
+.button,
+.navbar-item {
   font-family: 'Almendra SC', serif;
   letter-spacing: 0.05rem;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
@@ -12,15 +24,59 @@
 
 body,
 p,
-.tag {
+.tag,
+.input,
+.select {
   font-family: 'EB Garamond', serif;
   font-size: 1.1rem;
 }
 
-/* Gold text effect for main titles */
-.main-title {
-  background: linear-gradient(to bottom, #cfb53b 0%, #927e20 100%);
+/* ============================================
+   Gold Text Effect
+   ============================================ */
+
+.main-title,
+.title.is-1 {
+  background: linear-gradient(135deg, #f4d03f 0%, #d4af37 50%, #996515 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0px 2px 2px rgba(0, 0, 0, 0.3));
+  background-clip: text;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+}
+
+/* ============================================
+   Custom Scrollbar
+   ============================================ */
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-bg-tertiary);
+  border-radius: var(--radius-md);
+  border: 2px solid var(--color-bg-primary);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--border-color-light);
+}
+
+/* ============================================
+   Selection Color
+   ============================================ */
+
+::selection {
+  background: rgba(212, 175, 55, 0.3);
+  color: var(--color-text-primary);
+}
+
+::-moz-selection {
+  background: rgba(212, 175, 55, 0.3);
+  color: var(--color-text-primary);
 }

@@ -117,13 +117,15 @@ const isComplete = computed(() => pendingChoices.value === 0)
 </template>
 
 <style scoped>
+@import '@/assets/fantasy-theme.css';
+
 .modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.7);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -131,12 +133,23 @@ const isComplete = computed(() => pendingChoices.value === 0)
 }
 
 .modal-content {
-  background-color: white;
-  border-radius: 12px;
+  background: var(--gradient-card);
+  border-radius: var(--radius-lg);
   padding: 1.5rem;
   max-width: 500px;
   width: 90%;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--shadow-lg), 0 0 30px rgba(212, 175, 55, 0.2);
+  border: 1px solid var(--border-gold);
+}
+
+.modal-content::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--gradient-border);
 }
 
 .modal-header {
@@ -148,22 +161,25 @@ const isComplete = computed(() => pendingChoices.value === 0)
 
 .modal-header h2 {
   font-size: 1.25rem;
-  color: #2c3e50;
+  color: var(--color-gold-primary);
   margin: 0;
+  font-family: var(--font-heading);
+  letter-spacing: 0.05em;
 }
 
 .close-btn {
   background: none;
   border: none;
   font-size: 2rem;
-  color: #95a5a6;
+  color: var(--color-text-muted);
   cursor: pointer;
   line-height: 1;
   padding: 0;
+  transition: color 0.3s ease;
 }
 
 .close-btn:hover {
-  color: #2c3e50;
+  color: var(--color-gold-primary);
 }
 
 .modal-body {
@@ -171,7 +187,7 @@ const isComplete = computed(() => pendingChoices.value === 0)
 }
 
 .instruction {
-  color: #666;
+  color: var(--color-text-secondary);
   margin-bottom: 1.5rem;
   text-align: center;
 }
@@ -187,13 +203,22 @@ const isComplete = computed(() => pendingChoices.value === 0)
   justify-content: space-between;
   align-items: center;
   padding: 0.75rem 1rem;
-  background-color: #f8f9fa;
-  border-radius: 6px;
+  background: var(--color-bg-tertiary);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  transition: all 0.3s ease;
+}
+
+.attribute-row:hover {
+  border-color: var(--border-gold);
+  box-shadow: 0 0 10px rgba(212, 175, 55, 0.2);
 }
 
 .attr-name {
   font-weight: 600;
-  color: #2c3e50;
+  color: var(--color-gold-primary);
+  font-family: var(--font-heading);
+  letter-spacing: 0.05em;
 }
 
 .attr-controls {
@@ -206,12 +231,14 @@ const isComplete = computed(() => pendingChoices.value === 0)
   width: 32px;
   height: 32px;
   border: none;
-  border-radius: 4px;
-  background-color: #3498db;
+  border-radius: var(--radius-md);
+  background: linear-gradient(135deg, #4a90d9 0%, #357abd 100%);
   color: white;
   font-weight: 600;
   cursor: pointer;
   font-size: 1.2rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(74, 144, 217, 0.3);
 }
 
 .attr-btn:disabled {
@@ -220,7 +247,9 @@ const isComplete = computed(() => pendingChoices.value === 0)
 }
 
 .attr-btn:not(:disabled):hover {
-  background-color: #2980b9;
+  background: linear-gradient(135deg, #5a9fe9 0%, #4589c9 100%);
+  box-shadow: 0 4px 16px rgba(74, 144, 217, 0.5);
+  transform: translateY(-1px);
 }
 
 .attr-value {
@@ -228,7 +257,8 @@ const isComplete = computed(() => pendingChoices.value === 0)
   font-weight: 700;
   min-width: 2rem;
   text-align: center;
-  color: #3498db;
+  color: var(--color-magic-blue);
+  text-shadow: 0 0 8px rgba(74, 144, 217, 0.4);
 }
 
 .selection-summary {
@@ -237,12 +267,13 @@ const isComplete = computed(() => pendingChoices.value === 0)
 }
 
 .selection-summary .complete {
-  color: #27ae60;
+  color: var(--color-success);
   font-weight: 600;
+  text-shadow: 0 0 8px rgba(46, 160, 67, 0.4);
 }
 
 .selection-summary .pending {
-  color: #e74c3c;
+  color: var(--color-gold-primary);
   font-weight: 600;
 }
 
@@ -253,13 +284,17 @@ const isComplete = computed(() => pendingChoices.value === 0)
 
 .done-btn {
   padding: 0.75rem 2rem;
-  background-color: #27ae60;
+  background: linear-gradient(135deg, #2ea043 0%, #248a38 100%);
   color: white;
   border: none;
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   font-weight: 600;
   cursor: pointer;
   font-size: 1rem;
+  font-family: var(--font-heading);
+  letter-spacing: 0.05em;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(46, 160, 67, 0.3);
 }
 
 .done-btn:disabled {
@@ -268,7 +303,9 @@ const isComplete = computed(() => pendingChoices.value === 0)
 }
 
 .done-btn:not(:disabled):hover {
-  background-color: #229954;
+  background: linear-gradient(135deg, #3eb053 0%, #2e9a48 100%);
+  box-shadow: 0 4px 16px rgba(46, 160, 67, 0.5);
+  transform: translateY(-1px);
 }
 
 .modal-enter-active,

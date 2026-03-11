@@ -95,18 +95,34 @@ const handleDelete = () => {
 </template>
 
 <style scoped>
+@import '@/assets/fantasy-theme.css';
+
 .character-card {
-  background-color: white;
-  border-radius: 8px;
+  background: var(--gradient-card);
+  border-radius: var(--radius-lg);
   padding: 1.25rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  border: 1px solid #e0e0e0;
-  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border-color);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.character-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--gradient-border);
+  opacity: 0.5;
 }
 
 .character-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg), var(--shadow-gold);
+  border-color: var(--border-gold);
 }
 
 .card-header {
@@ -117,15 +133,18 @@ const handleDelete = () => {
 }
 
 .character-name {
-  font-size: 1.25rem;
+  font-size: 1.4rem;
   font-weight: 700;
-  color: #2c3e50;
+  color: var(--color-gold-primary);
   margin: 0;
+  font-family: var(--font-heading);
+  letter-spacing: 0.05em;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .character-date {
   font-size: 0.8rem;
-  color: #95a5a6;
+  color: var(--color-text-muted);
 }
 
 .attributes-summary {
@@ -134,8 +153,9 @@ const handleDelete = () => {
   gap: 0.5rem;
   margin-bottom: 1rem;
   padding: 0.75rem;
-  background-color: #f8f9fa;
-  border-radius: 4px;
+  background: var(--color-bg-tertiary);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
 }
 
 .attr-item {
@@ -145,22 +165,25 @@ const handleDelete = () => {
 }
 
 .attr-label {
-  font-size: 0.7rem;
+  font-size: 0.65rem;
   font-weight: 600;
-  color: #7f8c8d;
+  color: var(--color-text-muted);
   text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-family: var(--font-heading);
 }
 
 .attr-value {
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   font-weight: 700;
-  color: #3498db;
+  color: var(--color-magic-blue);
+  text-shadow: 0 0 8px rgba(74, 144, 217, 0.4);
 }
 
 .card-details {
   margin-bottom: 1rem;
   padding-bottom: 1rem;
-  border-bottom: 1px solid #e0e0e0;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .detail-row {
@@ -170,8 +193,12 @@ const handleDelete = () => {
   font-size: 0.9rem;
 }
 
+.detail-row span {
+  color: var(--color-text-secondary);
+}
+
 .detail-row strong {
-  color: #2c3e50;
+  color: var(--color-text-primary);
 }
 
 .card-actions {
@@ -182,30 +209,38 @@ const handleDelete = () => {
 .btn-load,
 .btn-delete {
   flex: 1;
-  padding: 0.5rem;
+  padding: 0.5rem 0.75rem;
   border: none;
-  border-radius: 4px;
+  border-radius: var(--radius-md);
   font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: all 0.3s ease;
+  font-family: var(--font-heading);
+  letter-spacing: 0.05em;
 }
 
 .btn-load {
-  background-color: #3498db;
+  background: linear-gradient(135deg, #4a90d9 0%, #357abd 100%);
   color: white;
+  box-shadow: 0 2px 8px rgba(74, 144, 217, 0.3);
 }
 
 .btn-load:hover {
-  background-color: #2980b9;
+  background: linear-gradient(135deg, #5a9fe9 0%, #4589c9 100%);
+  box-shadow: 0 4px 16px rgba(74, 144, 217, 0.5);
+  transform: translateY(-1px);
 }
 
 .btn-delete {
-  background-color: #ecf0f1;
-  color: #e74c3c;
+  background: var(--color-bg-tertiary);
+  color: var(--color-danger);
+  border: 1px solid var(--border-color);
 }
 
 .btn-delete:hover {
-  background-color: #e74c3c;
+  background: var(--color-danger);
   color: white;
+  border-color: var(--color-danger);
+  box-shadow: 0 4px 16px rgba(218, 54, 51, 0.4);
 }
 </style>

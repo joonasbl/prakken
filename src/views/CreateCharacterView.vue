@@ -149,6 +149,8 @@ const cancelWizard = () => {
 </template>
 
 <style scoped>
+@import '@/assets/fantasy-theme.css';
+
 .wizard-container {
   max-width: 900px;
   margin: 0 auto;
@@ -163,28 +165,50 @@ const cancelWizard = () => {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background-color: #bdc3c7;
+  background: var(--color-bg-tertiary);
+  border: 2px solid var(--border-color);
   display: flex;
   align-items: center;
   justify-content: center;
   margin: 0 auto;
-  transition: background-color 0.3s;
+  transition: all 0.3s ease;
 }
 
 .step-indicator.is-active {
-  background-color: #3498db;
+  background: var(--gradient-gold);
+  border-color: var(--color-gold-primary);
+  box-shadow: 0 0 15px rgba(212, 175, 55, 0.5);
 }
 
 .step-indicator.is-completed {
-  background-color: #27ae60;
+  background: linear-gradient(135deg, #2ea043 0%, #248a38 100%);
+  border-color: var(--color-success);
+  box-shadow: 0 0 10px rgba(46, 160, 67, 0.4);
 }
 
 .step-number {
   color: white;
   font-weight: 600;
+  font-family: var(--font-heading);
+  letter-spacing: 0.05em;
 }
 
 .step-card {
   min-height: 400px;
+  background: var(--gradient-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+}
+
+.step-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--gradient-border);
+  opacity: 0.5;
 }
 </style>

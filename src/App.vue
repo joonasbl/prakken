@@ -5,13 +5,13 @@ import { RouterView } from 'vue-router'
 <template>
   <header>
     <div class="container has-text-centered py-4">
-      <h1 class="title is-1 has-text-primary">
-        <span class="icon"><i class="fas fa-bolt"></i></span>
-        PRAKKEN
-        <span class="icon"><i class="fas fa-bolt"></i></span>
+      <h1 class="title is-1">
+        <span class="icon animate-float"><i class="fas fa-bolt"></i></span>
+        <span class="text-gradient">PRAKKEN</span>
+        <span class="icon animate-float"><i class="fas fa-bolt"></i></span>
       </h1>
     </div>
-    <nav class="navbar has-background-light">
+    <nav class="navbar">
       <div class="container">
         <div class="navbar-menu is-active">
           <div class="navbar-end has-text-centered">
@@ -35,12 +35,9 @@ import { RouterView } from 'vue-router'
 </template>
 
 <style scoped>
+@import '@/assets/fantasy-theme.css';
+
 .main-content {
   min-height: calc(100vh - 200px);
-}
-
-.navbar-item.router-link-active {
-  background-color: #3498db !important;
-  color: white !important;
 }
 </style>

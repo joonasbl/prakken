@@ -133,11 +133,40 @@ const substatModifiers = computed(() => wizardStore.substatModifiers)
 </template>
 
 <style scoped>
+@import '@/assets/fantasy-theme.css';
+
 .sub-stats {
   padding: 1rem 0;
 }
 
 .gap-2 {
   gap: 0.5rem;
+}
+
+.card {
+  background: var(--gradient-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  border-color: var(--border-gold);
+  box-shadow: var(--shadow-lg), 0 0 15px rgba(212, 175, 55, 0.2);
+  transform: translateY(-2px);
+}
+
+.card .is-size-2 {
+  color: var(--color-magic-blue);
+  text-shadow: 0 0 12px rgba(74, 144, 217, 0.5);
+  font-family: var(--font-heading);
+  letter-spacing: 0.05em;
+}
+
+.card .is-size-7 {
+  color: var(--color-text-muted);
+  font-family: var(--font-heading);
+  letter-spacing: 0.05em;
 }
 </style>

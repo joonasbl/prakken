@@ -81,13 +81,15 @@ const updateAttribute = (name: string, delta: number) => {
 </template>
 
 <style scoped>
+@import '@/assets/fantasy-theme.css';
+
 .roll-stats {
   padding: 1rem 0;
 }
 
 .description {
   margin-bottom: 1.5rem;
-  color: #666;
+  color: var(--color-text-secondary);
 }
 
 .stats-grid {
@@ -102,13 +104,22 @@ const updateAttribute = (name: string, delta: number) => {
   justify-content: space-between;
   align-items: center;
   padding: 0.75rem 1rem;
-  background-color: #f8f9fa;
-  border-radius: 4px;
+  background: var(--color-bg-tertiary);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  transition: all 0.3s ease;
+}
+
+.stat-row:hover {
+  border-color: var(--border-gold);
+  box-shadow: 0 0 10px rgba(212, 175, 55, 0.2);
 }
 
 .stat-name {
   font-weight: 600;
-  color: #2c3e50;
+  color: var(--color-gold-primary);
+  font-family: var(--font-heading);
+  letter-spacing: 0.05em;
 }
 
 .stat-controls {
@@ -118,19 +129,28 @@ const updateAttribute = (name: string, delta: number) => {
 }
 
 .stat-btn {
-  width: 32px;
-  height: 32px;
+  width: 36px;
+  height: 36px;
   border: none;
-  border-radius: 4px;
-  background-color: #3498db;
+  border-radius: var(--radius-md);
+  background: linear-gradient(135deg, #4a90d9 0%, #357abd 100%);
   color: white;
   font-weight: 600;
   cursor: pointer;
-  font-size: 1.2rem;
+  font-size: 1.4rem;
+  line-height: 1;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(74, 144, 217, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
 }
 
 .stat-btn:hover {
-  background-color: #2980b9;
+  background: linear-gradient(135deg, #5a9fe9 0%, #4589c9 100%);
+  box-shadow: 0 4px 16px rgba(74, 144, 217, 0.5);
+  transform: translateY(-1px);
 }
 
 .stat-value {
@@ -138,6 +158,8 @@ const updateAttribute = (name: string, delta: number) => {
   font-weight: 700;
   min-width: 2rem;
   text-align: center;
+  color: var(--color-magic-blue);
+  text-shadow: 0 0 8px rgba(74, 144, 217, 0.4);
 }
 
 .stats-summary {
@@ -145,20 +167,26 @@ const updateAttribute = (name: string, delta: number) => {
   justify-content: space-between;
   align-items: center;
   padding-top: 1rem;
-  border-top: 1px solid #e0e0e0;
+  border-top: 1px solid var(--border-color);
 }
 
 .roll-button {
   padding: 0.5rem 1rem;
   border: none;
-  border-radius: 4px;
-  background-color: #27ae60;
+  border-radius: var(--radius-md);
+  background: linear-gradient(135deg, #2ea043 0%, #248a38 100%);
   color: white;
   cursor: pointer;
   font-weight: 600;
+  font-family: var(--font-heading);
+  letter-spacing: 0.05em;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(46, 160, 67, 0.3);
 }
 
 .roll-button:hover {
-  background-color: #229954;
+  background: linear-gradient(135deg, #3eb053 0%, #2e9a48 100%);
+  box-shadow: 0 4px 16px rgba(46, 160, 67, 0.5);
+  transform: translateY(-1px);
 }
 </style>

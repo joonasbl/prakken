@@ -53,6 +53,8 @@ const totalCost = computed(() =>
 </template>
 
 <style scoped>
+@import '@/assets/fantasy-theme.css';
+
 .equipment-step {
   padding: 1rem 0;
 }
@@ -62,13 +64,15 @@ const totalCost = computed(() =>
   justify-content: space-between;
   margin-bottom: 1.5rem;
   padding: 1rem;
-  background-color: #f8f9fa;
-  border-radius: 4px;
+  background: var(--color-bg-tertiary);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
   font-size: 1rem;
 }
 
 .equipment-summary strong {
-  color: #3498db;
+  color: var(--color-magic-blue);
+  text-shadow: 0 0 8px rgba(74, 144, 217, 0.4);
 }
 
 .equipment-grid {
@@ -79,19 +83,35 @@ const totalCost = computed(() =>
 
 .equipment-card {
   padding: 1rem;
-  border: 2px solid #e0e0e0;
-  border-radius: 6px;
+  border: 2px solid var(--border-color);
+  border-radius: var(--radius-md);
   cursor: pointer;
-  transition: all 0.3s;
+  transition: all 0.3s ease;
+  background: var(--gradient-card);
+  box-shadow: var(--shadow-sm);
+}
+
+.equipment-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--gradient-border);
+  opacity: 0.5;
 }
 
 .equipment-card:hover {
-  border-color: #3498db;
+  border-color: var(--color-magic-blue);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md), 0 0 10px rgba(74, 144, 217, 0.2);
 }
 
 .equipment-card.selected {
-  border-color: #27ae60;
-  background-color: #e8f8f5;
+  border-color: var(--color-success);
+  background: linear-gradient(135deg, rgba(46, 160, 67, 0.15) 0%, rgba(36, 138, 56, 0.05) 100%);
+  box-shadow: var(--shadow-md), 0 0 15px rgba(46, 160, 67, 0.3);
 }
 
 .equipment-header {
@@ -103,20 +123,23 @@ const totalCost = computed(() =>
 
 .equipment-name {
   font-weight: 600;
-  color: #2c3e50;
+  color: var(--color-gold-primary);
+  font-family: var(--font-heading);
+  letter-spacing: 0.05em;
 }
 
 .equipment-category {
   font-size: 0.75rem;
   padding: 0.2rem 0.5rem;
-  background-color: #ecf0f1;
-  border-radius: 4px;
-  color: #666;
+  background: var(--color-bg-tertiary);
+  border-radius: var(--radius-sm);
+  color: var(--color-text-muted);
+  border: 1px solid var(--border-color);
 }
 
 .equipment-description {
   font-size: 0.85rem;
-  color: #666;
+  color: var(--color-text-secondary);
   margin-bottom: 0.75rem;
 }
 
@@ -124,6 +147,6 @@ const totalCost = computed(() =>
   display: flex;
   justify-content: space-between;
   font-size: 0.8rem;
-  color: #27ae60;
+  color: var(--color-success);
 }
 </style>

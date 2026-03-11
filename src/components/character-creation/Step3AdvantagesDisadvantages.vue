@@ -167,8 +167,64 @@ const selectionStatus = computed(() => {
 </template>
 
 <style scoped>
+@import '@/assets/fantasy-theme.css';
+
 .adv-disadv {
   padding: 1rem 0;
+}
+
+/* Notification styling */
+.notification {
+  background: var(--color-bg-tertiary);
+  border: 2px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 1rem 1.25rem;
+  box-shadow: var(--shadow-md);
+  transition: all 0.3s ease;
+}
+
+.notification.is-success {
+  border-color: var(--color-success);
+  background: linear-gradient(135deg, rgba(46, 160, 67, 0.2) 0%, rgba(36, 138, 56, 0.1) 100%);
+  box-shadow: var(--shadow-md), 0 0 15px rgba(46, 160, 67, 0.3);
+}
+
+.notification.is-success .has-text-weight-semibold,
+.notification.is-success p {
+  color: var(--color-text-primary);
+}
+
+.notification.is-warning {
+  border-color: var(--color-gold-primary);
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.15) 0%, rgba(153, 102, 21, 0.1) 100%);
+  box-shadow: var(--shadow-md), 0 0 12px rgba(212, 175, 55, 0.3);
+}
+
+.notification.is-warning .has-text-weight-semibold,
+.notification.is-warning p {
+  color: var(--color-text-primary);
+}
+
+.notification.is-info {
+  border-color: var(--color-magic-blue);
+  background: linear-gradient(135deg, rgba(74, 144, 217, 0.15) 0%, rgba(53, 122, 189, 0.1) 100%);
+  box-shadow: var(--shadow-md), 0 0 12px rgba(74, 144, 217, 0.3);
+}
+
+.notification.is-info .has-text-weight-semibold,
+.notification.is-info p {
+  color: var(--color-text-primary);
+}
+
+.notification .has-text-weight-semibold {
+  font-family: var(--font-heading);
+  letter-spacing: 0.05em;
+  font-size: 1rem;
+}
+
+.notification p {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
 }
 
 .options-grid {
@@ -182,23 +238,35 @@ const selectionStatus = computed(() => {
 
 .option-card {
   cursor: pointer;
-  transition: all 0.3s;
-  border: 2px solid transparent;
+  transition: all 0.3s ease;
+  border: 2px solid var(--border-color);
+  background: var(--gradient-card);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
 }
 
 .option-card:hover:not(.is-disabled) {
-  border-color: #3498db;
+  border-color: var(--color-magic-blue);
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-md), 0 0 10px rgba(74, 144, 217, 0.2);
 }
 
 .option-card.is-selected {
-  border-color: #27ae60;
-  background-color: #e8f8f5;
+  border-color: var(--color-success);
+  background: linear-gradient(135deg, rgba(46, 160, 67, 0.2) 0%, rgba(36, 138, 56, 0.1) 100%);
+  box-shadow: var(--shadow-md), 0 0 15px rgba(46, 160, 67, 0.3);
+}
+
+.option-card.is-selected .has-text-weight-bold {
+  color: var(--color-gold-light);
+}
+
+.option-card.is-selected .is-size-7 {
+  color: var(--color-text-primary);
 }
 
 .option-card.is-disabled {
-  opacity: 0.5;
+  opacity: 0.4;
   cursor: not-allowed;
 }
 
@@ -208,12 +276,35 @@ const selectionStatus = computed(() => {
 }
 
 .option-card.has-conflict {
-  border-color: #e74c3c;
-  background-color: #fdedec;
+  border-color: var(--color-danger);
+  background: linear-gradient(135deg, rgba(218, 54, 51, 0.2) 0%, rgba(194, 40, 37, 0.1) 100%);
+  box-shadow: var(--shadow-md), 0 0 10px rgba(218, 54, 51, 0.2);
 }
 
 .option-card.disadvantage.is-selected {
-  border-color: #e74c3c;
-  background-color: #fdedec;
+  border-color: var(--color-danger);
+  background: linear-gradient(135deg, rgba(218, 54, 51, 0.2) 0%, rgba(194, 40, 37, 0.1) 100%);
+  box-shadow: var(--shadow-md), 0 0 15px rgba(218, 54, 51, 0.3);
+}
+
+.option-card.disadvantage.is-selected .has-text-weight-bold {
+  color: var(--color-gold-light);
+}
+
+.option-card .is-size-7 {
+  color: var(--color-text-secondary);
+  font-size: 0.85rem;
+  line-height: 1.4;
+}
+
+.option-card .has-text-weight-bold {
+  color: var(--color-gold-primary);
+  font-family: var(--font-heading);
+  letter-spacing: 0.05em;
+  font-size: 0.9rem;
+}
+
+.option-card.has-conflict .has-text-weight-bold {
+  color: #ff6b6b;
 }
 </style>

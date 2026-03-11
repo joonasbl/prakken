@@ -52,6 +52,8 @@ const handleDelete = (id: string) => {
 </template>
 
 <style scoped>
+@import '@/assets/fantasy-theme.css';
+
 .character-list-view {
   max-width: 1200px;
   margin: 0 auto;
@@ -67,36 +69,57 @@ const handleDelete = (id: string) => {
 
 .view-header h1 {
   font-size: 2rem;
-  color: #2c3e50;
+  color: var(--color-gold-primary);
   margin: 0;
+  font-family: var(--font-heading);
+  letter-spacing: 0.08em;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .btn-new,
 .btn-create {
   padding: 0.75rem 1.5rem;
-  background-color: #27ae60;
+  background: linear-gradient(135deg, #2ea043 0%, #248a38 100%);
   color: white;
   text-decoration: none;
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   font-weight: 600;
-  transition: background-color 0.2s;
+  transition: all 0.3s ease;
+  font-family: var(--font-heading);
+  letter-spacing: 0.05em;
+  box-shadow: 0 2px 8px rgba(46, 160, 67, 0.3);
 }
 
 .btn-new:hover,
 .btn-create:hover {
-  background-color: #229954;
+  background: linear-gradient(135deg, #3eb053 0%, #2e9a48 100%);
+  box-shadow: 0 4px 16px rgba(46, 160, 67, 0.5);
+  transform: translateY(-1px);
 }
 
 .empty-state {
   text-align: center;
   padding: 4rem 2rem;
-  background-color: #f8f9fa;
-  border-radius: 8px;
+  background: var(--color-bg-card);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-md);
+}
+
+.empty-state::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--gradient-border);
+  opacity: 0.5;
 }
 
 .empty-state p {
   font-size: 1.2rem;
-  color: #7f8c8d;
+  color: var(--color-text-secondary);
   margin-bottom: 1.5rem;
 }
 

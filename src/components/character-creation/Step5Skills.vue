@@ -8,7 +8,6 @@ const wizardStore = useCharacterCreationStore()
 const skillsStore = useSkillsStore()
 
 const SKILL_LEARN_COST = 2
-const SKILL_RAISE_COST = 1 // Cost per level up to 9, then 2
 
 onMounted(() => {
   if (wizardStore.draft.skills.length === 0) {
@@ -147,7 +146,7 @@ const handleUnlearn = (skill: Skill) => {
 
 <template>
   <div class="skills-step">
-    <div class="notification is-info is-light mb-4">
+    <div class="notification is-info mb-4">
       <div class="is-flex is-justify-content-space-between">
         <p class="has-text-weight-semibold">Pisteitä jäljellä: <span class="is-size-4 has-text-info">{{ remainingPoints }}</span></p>
         <p>Käytetty: <span class="has-text-info">{{ totalSpentPoints }}</span> / {{ skillPointLimit }} ({{ learnedSkillsCount }} opittu)</p>
@@ -200,9 +199,10 @@ const handleUnlearn = (skill: Skill) => {
                 <span class="icon is-small"><i class="fas fa-plus"></i></span>
               </button>
               <button
-                v-if="skill.bonus === 0"
                 type="button"
                 class="button is-light is-small is-rounded"
+                :disabled="skill.bonus > 0"
+                :title="skill.bonus > 0 ? 'Ei voi poistaa kun taito on korotettu' : 'Poista opittu taito'"
                 @click="handleUnlearn(skill)"
               >
                 <span class="icon is-small"><i class="fas fa-times"></i></span>
@@ -216,8 +216,42 @@ const handleUnlearn = (skill: Skill) => {
 </template>
 
 <style scoped>
+@import '@/assets/fantasy-theme.css';
+
 .skills-step {
   padding: 1rem 0;
+}
+
+/* Notification styling */
+.notification {
+  background: var(--color-bg-tertiary);
+  border: 2px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 1rem 1.25rem;
+  box-shadow: var(--shadow-md);
+  transition: all 0.3s ease;
+}
+
+.notification.is-info {
+  border-color: var(--color-magic-blue);
+  background: linear-gradient(135deg, rgba(74, 144, 217, 0.15) 0%, rgba(53, 122, 189, 0.1) 100%);
+  box-shadow: var(--shadow-md), 0 0 12px rgba(74, 144, 217, 0.3);
+}
+
+.notification.is-info .has-text-weight-semibold,
+.notification.is-info p {
+  color: var(--color-text-primary);
+}
+
+.notification .has-text-weight-semibold {
+  font-family: var(--font-heading);
+  letter-spacing: 0.05em;
+  font-size: 1rem;
+}
+
+.notification p {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
 }
 
 .skills-grid {
@@ -231,18 +265,54 @@ const handleUnlearn = (skill: Skill) => {
 
 .skill-row {
   cursor: pointer;
-  transition: all 0.3s;
-  border: 2px solid transparent;
+  transition: all 0.3s ease;
+  border: 2px solid var(--border-color);
+  background: var(--gradient-card);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
 }
 
 .skill-row:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-md), 0 0 10px rgba(74, 144, 217, 0.2);
 }
 
 .skill-row.is-learned {
-  border-color: #27ae60;
-  background-color: #e8f8f5;
+  border-color: var(--color-success);
+  background: linear-gradient(135deg, rgba(46, 160, 67, 0.2) 0%, rgba(36, 138, 56, 0.1) 100%);
+  box-shadow: var(--shadow-md), 0 0 15px rgba(46, 160, 67, 0.3);
+}
+
+.skill-row.is-learned .has-text-weight-bold {
+  color: var(--color-gold-light);
+}
+
+.skill-row.is-learned .is-size-7 {
+  color: var(--color-text-primary);
+}
+
+.skill-label .is-size-7 {
+  color: var(--color-gold-primary);
+  font-family: var(--font-heading);
+  letter-spacing: 0.05em;
+}
+
+/* Override Bulma tag styles for dark theme */
+.skill-label .tag {
+  background: linear-gradient(135deg, #2d3a35 0%, #1f2a25 100%) !important;
+  color: #8fd4a8 !important;
+  border: 1px solid #3a5d4a !important;
+  font-weight: 600;
+  font-size: 0.7rem;
+  font-family: var(--font-heading);
+  letter-spacing: 0.03em;
+}
+
+.skill-level {
+  color: var(--color-success);
+  text-shadow: 0 0 8px rgba(46, 160, 67, 0.4);
+  min-width: 2rem;
+  text-align: center;
 }
 
 .gap-2 {
