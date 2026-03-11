@@ -31,13 +31,8 @@ const totalCost = computed(() =>
     </div>
 
     <div class="equipment-grid">
-      <div
-        v-for="item in wizardStore.starterEquipment"
-        :key="item.id"
-        class="equipment-card"
-        :class="{ selected: hasEquipment(item.id) }"
-        @click="toggleEquipment(item.id)"
-      >
+      <div v-for="item in wizardStore.starterEquipment" :key="item.id" class="equipment-card"
+        :class="{ selected: hasEquipment(item.id) }" @click="toggleEquipment(item.id)">
         <div class="equipment-header">
           <span class="equipment-name">{{ item.name }}</span>
           <span class="equipment-category">{{ item.category }}</span>

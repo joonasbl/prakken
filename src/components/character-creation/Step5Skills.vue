@@ -148,18 +148,16 @@ const handleUnlearn = (skill: Skill) => {
   <div class="skills-step">
     <div class="notification is-info mb-4">
       <div class="is-flex is-justify-content-space-between">
-        <p class="has-text-weight-semibold">Pisteitä jäljellä: <span class="is-size-4 has-text-info">{{ remainingPoints }}</span></p>
-        <p>Käytetty: <span class="has-text-info">{{ totalSpentPoints }}</span> / {{ skillPointLimit }} ({{ learnedSkillsCount }} opittu)</p>
+        <p class="has-text-weight-semibold">Pisteitä jäljellä: <span class="is-size-4 has-text-info">{{ remainingPoints
+            }}</span></p>
+        <p>Käytetty: <span class="has-text-info">{{ totalSpentPoints }}</span> / {{ skillPointLimit }} ({{
+          learnedSkillsCount }} opittu)</p>
       </div>
     </div>
 
     <div class="skills-grid">
-      <div
-        v-for="skill in mappedSkills"
-        :key="skill.name"
-        class="card skill-row mb-2"
-        :class="{ 'is-learned': skill.learned }"
-      >
+      <div v-for="skill in mappedSkills" :key="skill.name" class="card skill-row mb-2"
+        :class="{ 'is-learned': skill.learned }">
         <div class="card-content p-3">
           <div class="is-flex is-justify-content-space-between is-align-items-center">
             <div class="skill-label">
@@ -170,41 +168,25 @@ const handleUnlearn = (skill: Skill) => {
             </div>
 
             <div v-if="!skill.learned" class="skill-learn-control">
-              <button
-                type="button"
-                class="button is-success is-small is-rounded"
-                :disabled="!canLearnSkill(skill)"
-                @click="handleLearn(skill)"
-              >
+              <button type="button" class="button is-success is-small is-rounded" :disabled="!canLearnSkill(skill)"
+                @click="handleLearn(skill)">
                 Opettele ({{ SKILL_LEARN_COST }}p)
               </button>
             </div>
 
             <div v-else class="skill-controls is-flex is-align-items-center gap-2">
-              <button
-                type="button"
-                class="button is-danger is-small is-rounded"
-                :disabled="skill.bonus <= 0"
-                @click="handleDecrease(skill)"
-              >
+              <button type="button" class="button is-danger is-small is-rounded" :disabled="skill.bonus <= 0"
+                @click="handleDecrease(skill)">
                 <span class="icon is-small"><i class="fas fa-minus"></i></span>
               </button>
               <span class="skill-level is-size-5 has-text-weight-bold">{{ skill.level }}</span>
-              <button
-                type="button"
-                class="button is-info is-small is-rounded"
-                :disabled="!canRaiseSkill(skill, skill.baseLevel)"
-                @click="handleIncrease(skill, skill.baseLevel)"
-              >
+              <button type="button" class="button is-info is-small is-rounded"
+                :disabled="!canRaiseSkill(skill, skill.baseLevel)" @click="handleIncrease(skill, skill.baseLevel)">
                 <span class="icon is-small"><i class="fas fa-plus"></i></span>
               </button>
-              <button
-                type="button"
-                class="button is-light is-small is-rounded"
-                :disabled="skill.bonus > 0"
+              <button type="button" class="button is-light is-small is-rounded" :disabled="skill.bonus > 0"
                 :title="skill.bonus > 0 ? 'Ei voi poistaa kun taito on korotettu' : 'Poista opittu taito'"
-                @click="handleUnlearn(skill)"
-              >
+                @click="handleUnlearn(skill)">
                 <span class="icon is-small"><i class="fas fa-times"></i></span>
               </button>
             </div>

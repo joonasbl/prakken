@@ -105,26 +105,22 @@ const selectionStatus = computed(() => {
       'is-info': selectionStatus.class === 'info',
     }">
       <p class="has-text-weight-semibold">
-        Valittu: {{ wizardStore.selectedAdvantages.length }} etua / {{ wizardStore.selectedDisadvantages.length }} haittaa
+        Valittu: {{ wizardStore.selectedAdvantages.length }} etua / {{ wizardStore.selectedDisadvantages.length }}
+        haittaa
       </p>
       <p>{{ selectionStatus.text }}</p>
     </div>
 
     <div class="columns is-desktop">
       <div class="column">
-        <div class="is-size-5 has-text-weight-bold mb-3" style="font-family: 'MedievalSharp', cursive;">Edut (max 5)</div>
+        <div class="is-size-5 has-text-weight-bold mb-3" style="font-family: 'MedievalSharp', cursive;">Edut (max 5)
+        </div>
         <div class="options-grid">
-          <div
-            v-for="adv in wizardStore.availableAdvantages"
-            :key="adv.id"
-            class="card option-card mb-2"
-            :class="{
-              'is-selected': hasAdvantage(adv.id),
-              'is-disabled': (!canSelectMoreAdvantages && !hasAdvantage(adv.id)) || getAdvantageConflict(adv.id),
-              'has-conflict': getAdvantageConflict(adv.id),
-            }"
-            @click="toggleAdvantage(adv.id)"
-          >
+          <div v-for="adv in wizardStore.availableAdvantages" :key="adv.id" class="card option-card mb-2" :class="{
+            'is-selected': hasAdvantage(adv.id),
+            'is-disabled': (!canSelectMoreAdvantages && !hasAdvantage(adv.id)) || getAdvantageConflict(adv.id),
+            'has-conflict': getAdvantageConflict(adv.id),
+          }" @click="toggleAdvantage(adv.id)">
             <div class="card-content p-3">
               <div class="is-size-7 has-text-weight-bold mb-1">{{ adv.name }}</div>
               <p class="is-size-7 has-text-grey">{{ adv.description }}</p>
@@ -137,19 +133,15 @@ const selectionStatus = computed(() => {
       </div>
 
       <div class="column">
-        <div class="is-size-5 has-text-weight-bold mb-3" style="font-family: 'MedievalSharp', cursive;">Haitat (max 5)</div>
+        <div class="is-size-5 has-text-weight-bold mb-3" style="font-family: 'MedievalSharp', cursive;">Haitat (max 5)
+        </div>
         <div class="options-grid">
-          <div
-            v-for="dis in wizardStore.availableDisadvantages"
-            :key="dis.id"
-            class="card option-card disadvantage mb-2"
-            :class="{
+          <div v-for="dis in wizardStore.availableDisadvantages" :key="dis.id"
+            class="card option-card disadvantage mb-2" :class="{
               'is-selected': hasDisadvantage(dis.id),
               'is-disabled': (!canSelectMoreDisadvantages && !hasDisadvantage(dis.id)) || getDisadvantageConflict(dis.id),
               'has-conflict': getDisadvantageConflict(dis.id),
-            }"
-            @click="toggleDisadvantage(dis.id)"
-          >
+            }" @click="toggleDisadvantage(dis.id)">
             <div class="card-content p-3">
               <div class="is-size-7 has-text-weight-bold mb-1">{{ dis.name }}</div>
               <p class="is-size-7 has-text-grey">{{ dis.description }}</p>

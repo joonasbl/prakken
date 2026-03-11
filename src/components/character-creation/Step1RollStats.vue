@@ -45,26 +45,14 @@ const updateAttribute = (name: string, delta: number) => {
     </p>
 
     <div class="stats-grid">
-      <div
-        v-for="attr in wizardStore.draft.attributes"
-        :key="attr.name"
-        class="stat-row"
-      >
+      <div v-for="attr in wizardStore.draft.attributes" :key="attr.name" class="stat-row">
         <span class="stat-name">{{ attr.name }}</span>
         <div class="stat-controls">
-          <button
-            type="button"
-            class="stat-btn"
-            @click="updateAttribute(attr.name, -1)"
-          >
+          <button type="button" class="stat-btn" @click="updateAttribute(attr.name, -1)">
             -
           </button>
           <span class="stat-value">{{ attr.value }}</span>
-          <button
-            type="button"
-            class="stat-btn"
-            @click="updateAttribute(attr.name, 1)"
-          >
+          <button type="button" class="stat-btn" @click="updateAttribute(attr.name, 1)">
             +
           </button>
         </div>

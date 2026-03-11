@@ -13,15 +13,8 @@ const updateName = (event: Event) => {
   <div class="name-step">
     <div class="form-group">
       <label for="character-name">Hahmon nimi</label>
-      <input
-        id="character-name"
-        type="text"
-        class="name-input"
-        placeholder="Syötä hahmon nimi..."
-        :value="wizardStore.draft.name"
-        @input="updateName"
-        autofocus
-      />
+      <input id="character-name" type="text" class="name-input" placeholder="Syötä hahmon nimi..."
+        :value="wizardStore.draft.name" @input="updateName" autofocus />
     </div>
 
     <div class="details-section">

@@ -14,26 +14,24 @@ const selectBackground = (id: string) => {
 <template>
   <div class="choose-background">
     <p class="subtitle is-5 mb-5">
-      Valitse hahmollesi tausta. Tausta antaa bonuksia ominaisuuksiin ja taitoihin.
+      Valitse hahmollesi syntyperä. Syntyperä antaa bonuksia ominaisuuksiin ja taitoihin.
     </p>
 
     <div class="columns is-multiline">
       <div class="column is-4" v-for="bg in wizardStore.availableBackgrounds" :key="bg.id">
-        <div 
-          class="card background-card"
-          :class="{ 'is-selected': wizardStore.draft.background?.id === bg.id }"
-          @click="selectBackground(bg.id)"
-        >
+        <div class="card background-card" :class="{ 'is-selected': wizardStore.draft.background?.id === bg.id }"
+          @click="selectBackground(bg.id)">
           <div class="card-content">
             <div class="content">
               <h3 class="title is-4 mb-2">{{ bg.name }}</h3>
               <p class="is-size-7 mb-3">{{ bg.description }}</p>
-              
+
               <div v-if="Object.keys(bg.statBonuses).length > 0" class="mb-3">
                 <strong class="is-size-7">Ominaisuusbonukset:</strong>
                 <ul class="is-size-7 mt-1 mb-0">
                   <li v-for="(bonus, stat) in bg.statBonuses" :key="stat">
-                    <span class="tag is-info is-light is-small mr-1">{{ bonus != null && bonus >= 0 ? '+' : '' }}{{ bonus }} {{ stat }}</span>
+                    <span class="tag is-info is-light is-small mr-1">{{ bonus != null && bonus >= 0 ? '+' : '' }}{{
+                      bonus }} {{ stat }}</span>
                   </li>
                 </ul>
               </div>

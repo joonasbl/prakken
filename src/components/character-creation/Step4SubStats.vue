@@ -84,11 +84,8 @@ const substatModifiers = computed(() => wizardStore.substatModifiers)
             <p class="is-size-7 has-text-grey mb-2">Veripisteet</p>
             <div class="is-flex is-justify-content-center is-align-items-center gap-2 mb-2">
               <p class="is-size-2 has-text-weight-bold has-text-info">{{ wizardStore.draft.subStats?.veripisteet }}</p>
-              <ModifierBadge
-                v-if="substatModifiers.veripisteet !== 0"
-                :modifier="substatModifiers.veripisteet"
-                source="etu/haitta"
-              />
+              <ModifierBadge v-if="substatModifiers.veripisteet !== 0" :modifier="substatModifiers.veripisteet"
+                source="etu/haitta" />
             </div>
             <p class="is-size-7 has-text-grey">Terveys + Voima</p>
           </div>
@@ -98,7 +95,8 @@ const substatModifiers = computed(() => wizardStore.substatModifiers)
         <div class="card has-text-centered">
           <div class="card-content">
             <p class="is-size-7 has-text-grey mb-2">Vauriobonus</p>
-            <p class="is-size-2 has-text-weight-bold has-text-info mb-2">{{ wizardStore.draft.subStats?.vauriobonus }}</p>
+            <p class="is-size-2 has-text-weight-bold has-text-info mb-2">{{ wizardStore.draft.subStats?.vauriobonus }}
+            </p>
             <p class="is-size-7 has-text-grey">Voima</p>
           </div>
         </div>
@@ -109,11 +107,8 @@ const substatModifiers = computed(() => wizardStore.substatModifiers)
             <p class="is-size-7 has-text-grey mb-2">Syvä haava</p>
             <div class="is-flex is-justify-content-center is-align-items-center gap-2 mb-2">
               <p class="is-size-2 has-text-weight-bold has-text-info">{{ wizardStore.draft.subStats?.syvaHaava }}</p>
-              <ModifierBadge
-                v-if="substatModifiers.syvaHaava !== 0"
-                :modifier="substatModifiers.syvaHaava"
-                source="etu/haitta"
-              />
+              <ModifierBadge v-if="substatModifiers.syvaHaava !== 0" :modifier="substatModifiers.syvaHaava"
+                source="etu/haitta" />
             </div>
             <p class="is-size-7 has-text-grey">Voima + Terveys</p>
           </div>

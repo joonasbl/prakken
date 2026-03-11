@@ -78,7 +78,7 @@ const handleSave = () => {
       <div class="card-content">
         <div class="section-header">
           <span class="header-icon"><i class="fas fa-shield-alt"></i></span>
-          <span>Tausta</span>
+          <span>Syntyperä</span>
         </div>
         <p class="background-name">{{ wizardStore.draft.background.name }}</p>
         <p class="background-description">{{ wizardStore.draft.background.description }}</p>
@@ -109,30 +109,35 @@ const handleSave = () => {
 
     <div class="card mb-4" v-if="wizardStore.draft.subStats">
       <div class="card-content">
-        <div class="is-size-5 has-text-weight-bold mb-3" style="font-family: 'MedievalSharp', cursive;">Johdannaiset</div>
+        <div class="is-size-5 has-text-weight-bold mb-3" style="font-family: 'MedievalSharp', cursive;">Aliominaisuudet
+        </div>
         <div class="columns is-multiline">
           <div class="column is-3">
             <div class="box has-text-centered p-3">
               <div class="is-size-7 has-text-grey mb-1">Veripisteet</div>
-              <div class="is-size-4 has-text-weight-bold has-text-success">{{ wizardStore.draft.subStats.veripisteet }}</div>
+              <div class="is-size-4 has-text-weight-bold has-text-success">{{ wizardStore.draft.subStats.veripisteet }}
+              </div>
             </div>
           </div>
           <div class="column is-3">
             <div class="box has-text-centered p-3">
               <div class="is-size-7 has-text-grey mb-1">Vauriobonus</div>
-              <div class="is-size-4 has-text-weight-bold has-text-success">{{ wizardStore.draft.subStats.vauriobonus }}</div>
+              <div class="is-size-4 has-text-weight-bold has-text-success">{{ wizardStore.draft.subStats.vauriobonus }}
+              </div>
             </div>
           </div>
           <div class="column is-3">
             <div class="box has-text-centered p-3">
               <div class="is-size-7 has-text-grey mb-1">Syvä haava</div>
-              <div class="is-size-4 has-text-weight-bold has-text-success">{{ wizardStore.draft.subStats.syvaHaava }}</div>
+              <div class="is-size-4 has-text-weight-bold has-text-success">{{ wizardStore.draft.subStats.syvaHaava }}
+              </div>
             </div>
           </div>
           <div class="column is-3">
             <div class="box has-text-centered p-3">
               <div class="is-size-7 has-text-grey mb-1">Kantokyky</div>
-              <div class="is-size-4 has-text-weight-bold has-text-success">{{ wizardStore.draft.subStats.kantokyky }}</div>
+              <div class="is-size-4 has-text-weight-bold has-text-success">{{ wizardStore.draft.subStats.kantokyky }}
+              </div>
             </div>
           </div>
         </div>
@@ -141,7 +146,8 @@ const handleSave = () => {
 
     <div class="card mb-4" v-if="skillsWithLevels.length > 0">
       <div class="card-content">
-        <div class="is-size-5 has-text-weight-bold mb-3" style="font-family: 'MedievalSharp', cursive;">Taidot ({{ skillsWithLevels.length }} opittu)</div>
+        <div class="is-size-5 has-text-weight-bold mb-3" style="font-family: 'MedievalSharp', cursive;">Taidot ({{
+          skillsWithLevels.length }} opittu)</div>
         <div class="columns is-multiline">
           <div class="column is-4" v-for="skill in skillsWithLevels" :key="skill.name">
             <div class="box p-3">
@@ -155,7 +161,8 @@ const handleSave = () => {
 
     <div class="card mb-4" v-if="wizardStore.draft.equipment.length > 0">
       <div class="card-content">
-        <div class="is-size-5 has-text-weight-bold mb-3" style="font-family: 'MedievalSharp', cursive;">Varusteet ({{ wizardStore.draft.equipment.length }} kpl, {{ totalEquipmentWeight }} kg)</div>
+        <div class="is-size-5 has-text-weight-bold mb-3" style="font-family: 'MedievalSharp', cursive;">Varusteet ({{
+          wizardStore.draft.equipment.length }} kpl, {{ totalEquipmentWeight }} kg)</div>
         <ul class="content">
           <li v-for="item in wizardStore.draft.equipment" :key="item.id">
             {{ item.name }}
@@ -188,7 +195,7 @@ const handleSave = () => {
   background: linear-gradient(135deg, #2a3140 0%, #1f2630 50%, #1a1f26 100%);
   border: 2px solid var(--border-gold);
   border-radius: var(--radius-lg);
-  box-shadow: 
+  box-shadow:
     0 4px 16px rgba(0, 0, 0, 0.5),
     0 0 30px rgba(212, 175, 55, 0.1),
     inset 0 1px 0 rgba(255, 255, 255, 0.1);
@@ -253,7 +260,7 @@ const handleSave = () => {
   background: linear-gradient(180deg, #242b36 0%, #1a2028 100%);
   border: 2px solid var(--border-color);
   border-radius: var(--radius-lg);
-  box-shadow: 
+  box-shadow:
     0 4px 16px rgba(0, 0, 0, 0.5),
     inset 0 1px 0 rgba(255, 255, 255, 0.08);
   position: relative;
@@ -311,7 +318,7 @@ const handleSave = () => {
   gap: 0.5rem;
   position: relative;
   transition: all 0.3s ease;
-  box-shadow: 
+  box-shadow:
     0 2px 8px rgba(0, 0, 0, 0.4),
     inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
@@ -329,7 +336,7 @@ const handleSave = () => {
 
 .attr-card:hover {
   border-color: var(--border-gold);
-  box-shadow: 
+  box-shadow:
     0 4px 16px rgba(0, 0, 0, 0.5),
     0 0 15px rgba(212, 175, 55, 0.2),
     inset 0 1px 0 rgba(255, 255, 255, 0.1);
@@ -350,7 +357,7 @@ const handleSave = () => {
   font-size: 1.8rem;
   font-weight: 700;
   font-family: var(--font-heading);
-  text-shadow: 
+  text-shadow:
     0 2px 4px rgba(0, 0, 0, 0.5),
     0 0 20px rgba(232, 237, 244, 0.3);
   letter-spacing: 0.05em;
@@ -449,6 +456,20 @@ const handleSave = () => {
   color: #b8c5d6 !important;
   font-family: var(--font-heading);
   letter-spacing: 0.05em;
+  font-size: 0.8rem;
+}
+
+/* Equipment list items */
+.summary-step .content li {
+  color: #b8c5d6 !important;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  padding: 0.4rem 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.summary-step .content li:last-child {
+  border-bottom: none;
 }
 
 .summary-step .tag {
@@ -476,7 +497,7 @@ const handleSave = () => {
   .attributes-grid {
     grid-template-columns: repeat(3, 1fr);
   }
-  
+
   .character-name {
     font-size: 1.5rem;
   }
