@@ -251,9 +251,113 @@ Some advantages and disadvantages have special effects beyond their basic descri
 
 ### 11. Future Enhancements & Direction
 
-- Add **persistence** (local storage or backend API).
-- Support **multiple characters** with quick switching.
-- Add **theming and improved styling** (e.g., Tailwind, component libraries).
-- Expand character sheet with **inventory management** and **equipment weight tracking**.
-- Add **character export/import** functionality.
+#### Phase 1: Core Improvements (Current Sprint)
+- ✅ **Fantasy theme overhaul** - Dark theme with gold accents, improved contrast
+- ✅ **Character creation wizard** - 8-step flow fully implemented
+- ✅ **Skill system** - Learn/raise mechanics with point costs
+- ✅ **Advantages/Disadvantages** - 36 of each with special effects
+- ✅ **Multiple character support** - List view with save/load/delete
+
+#### Phase 2: Enhanced Features (Next)
+- [ ] **Mobile responsiveness**
+  - [ ] Mobile-first stylesheet overhaul
+  - [ ] Touch-friendly controls and gestures
+  - [ ] Collapsible sections for small screens
+  - [ ] Mobile navigation menu
+- [ ] **Active Character View** (Play Mode)
+  - [ ] Health tracker (current/max HP) with quick adjust buttons
+  - [ ] Experience points tracker
+  - [ ] Money/gold counter
+  - [ ] Severe wound tracker with status indicators
+  - [ ] Quick equipment access (favorites/equipped items)
+  - [ ] In-game notes section
+  - [ ] One-click healing/rest recovery
+- [ ] **Character sheet improvements**
+  - [ ] Inventory management with weight tracking
+  - [ ] Equipment weight encumbrance effects
+  - [ ] Combat tracker integration
+  - [ ] Spell/magic system (if applicable)
+- [ ] **Export/Import functionality**
+  - [ ] JSON export/import for character sharing
+  - [ ] PDF character sheet generation
+  - [ ] Print-friendly styling
+- [ ] **Advanced character options**
+  - [ ] Character portraits/images
+  - [ ] Custom backgrounds (user-defined)
+  - [ ] Custom advantages/disadvantages
+  - [ ] Level-up system and experience tracking
+
+#### Phase 3: Backend Integration (Future)
+- [ ] **Go Backend API** (scaffolded in `/backend`)
+  - [ ] PostgreSQL database integration
+  - [ ] RESTful API endpoints for characters
+  - [ ] User authentication (optional)
+  - [ ] Cloud sync for characters
+- [ ] **Frontend API Integration**
+  - [ ] Replace localStorage with API calls
+  - [ ] Offline-first architecture with sync
+  - [ ] Real-time updates (WebSocket)
+- [ ] **Multi-user Features**
+  - [ ] User accounts and authentication
+  - [ ] Character sharing between users
+  - [ ] Campaign/group management
+  - [ ] GM tools for viewing player characters
+
+#### Phase 4: Advanced Features (Long-term)
+- [ ] **Mobile App**
+  - [ ] Responsive design improvements
+  - [ ] PWA (Progressive Web App) support
+  - [ ] Native mobile app (React Native/Flutter)
+- [ ] **Game Master Tools**
+  - [ ] NPC generator
+  - [ ] Encounter builder
+  - [ ] Loot/random table rollers
+  - [ ] Session notes and tracking
+- [ ] **Community Features**
+  - [ ] Public character gallery
+  - [ ] Homebrew content sharing
+  - [ ] Rules reference integration
+  - [ ] Multi-language support (i18n)
+
+### 12. Technical Roadmap
+
+#### Current Architecture
+```
+Prakken/
+├── frontend/           # Vue 3 + TypeScript + Pinia
+│   ├── src/
+│   │   ├── components/
+│   │   ├── views/
+│   │   ├── stores/     # Pinia state management
+│   │   ├── types/      # TypeScript types
+│   │   └── assets/     # CSS (fantasy dark theme)
+│   └── Storage: localStorage (current)
+├── backend/            # Go + Gin + PostgreSQL (future)
+│   ├── cmd/
+│   ├── api/
+│   └── internal/
+└── docker-compose.yml  # Full stack orchestration
+```
+
+#### Migration Path to Backend
+1. **Keep localStorage** for development and offline use
+2. **Add API service layer** in frontend for backend calls
+3. **Implement sync logic** - localStorage first, sync to backend when available
+4. **Add authentication** when multi-user features are needed
+5. **Deploy** - Docker Compose for full stack, or frontend-only for localStorage mode
+
+#### Performance Goals
+- Initial load: < 2 seconds
+- Character save/load: < 500ms
+- Offline support: Full functionality without backend
+- Bundle size: Keep under 500KB (gzipped)
+
+### 13. Design Principles
+
+1. **Offline-first**: App works fully without backend
+2. **Progressive enhancement**: Basic features work everywhere, advanced features require backend
+3. **Dark theme by default**: Fantasy aesthetic with excellent contrast
+4. **Mobile-responsive**: Works on phones, tablets, and desktop
+5. **Finnish language first**: UI in Finnish, with i18n support for future languages
+6. **Accessibility**: WCAG 2.1 AA compliance for contrast and keyboard navigation
 

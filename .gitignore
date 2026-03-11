@@ -29,4 +29,13 @@ coverage
 
 *.tsbuildinfo
 
+# Backend
+backend/vendor/
+backend/main
+backend/*.exe
+backend/*.out
+
+# Docker
+docker-compose.override.yml
+
 .

@@ -1,45 +1,137 @@
 # Prakken
 
-This template should help get you started developing with Vue 3 in Vite.
+A fantasy character management system for tabletop RPGs, built with Vue 3 and Go.
 
-## Recommended IDE Setup
+## Project Structure
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+```
+Prakken/
+├── backend/            # Go (Golang) Source Code
+│   ├── cmd/            # Main entry points (main.go)
+│   ├── internal/       # Private library code (DB logic, RPG rules)
+│   ├── api/            # Gin routes & handlers
+│   └── go.mod
+├── frontend/           # Vue 3 Source Code
+│   ├── src/
+│   ├── public/
+│   └── package.json
+├── docker-compose.yml  # Spins up Go, Vue, and PostgreSQL
+└── README.md
+```
 
-## Type Support for `.vue` Imports in TS
+## Quick Start
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
+### Using Docker Compose (Recommended)
 
-## Customize configuration
+```bash
+# Start all services (PostgreSQL, Go backend, Vue frontend)
+docker-compose up -d
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+# Frontend: http://localhost:5173
+# Backend API: http://localhost:8080
+# Database: localhost:5432
 
-## Project Setup
+# Stop all services
+docker-compose down
+```
 
-```sh
+### Development Without Docker
+
+#### Backend (Go)
+
+```bash
+cd backend
+
+# Install dependencies
+go mod download
+
+# Run the server
+go run cmd/main.go
+
+# Server runs on http://localhost:8080
+```
+
+#### Frontend (Vue 3)
+
+```bash
+cd frontend
+
+# Install dependencies
 npm install
-```
 
-### Compile and Hot-Reload for Development
-
-```sh
+# Run development server
 npm run dev
+
+# Frontend runs on http://localhost:5173
 ```
 
-### Type-Check, Compile and Minify for Production
+## Tech Stack
 
-```sh
+- **Frontend**: Vue 3, TypeScript, Pinia, Vue Router, Vite
+- **Backend**: Go 1.21, Gin Framework
+- **Database**: PostgreSQL 15
+- **Styling**: Custom fantasy dark theme with CSS
+
+## API Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/health` | Health check |
+| GET | `/api/characters` | List all characters |
+| GET | `/api/characters/:id` | Get character by ID |
+| POST | `/api/characters` | Create new character |
+| PUT | `/api/characters/:id` | Update character |
+| DELETE | `/api/characters/:id` | Delete character |
+
+## Development
+
+### Backend Commands
+
+```bash
+cd backend
+
+# Run tests
+go test ./...
+
+# Build
+go build -o main cmd/main.go
+
+# Run
+./main
+```
+
+### Frontend Commands
+
+```bash
+cd frontend
+
+# Install dependencies
+npm install
+
+# Run dev server
+npm run dev
+
+# Build for production
 npm run build
-```
 
-### Run Unit Tests with [Vitest](https://vitest.dev/)
+# Type check
+npm run type-check
 
-```sh
-npm run test:unit
-```
-
-### Lint with [ESLint](https://eslint.org/)
-
-```sh
+# Lint
 npm run lint
 ```
+
+## Database Schema
+
+The application uses PostgreSQL with the following tables:
+
+- `characters` - Character basic info (name, background)
+- `attributes` - Character attributes (Voima, Terveys, etc.)
+- `skills` - Character skills with bonuses
+- `advantages` - Character advantages
+- `disadvantages` - Character disadvantages
+- `equipment` - Character equipment items
+
+## License
+
+MIT
