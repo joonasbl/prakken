@@ -4,95 +4,173 @@
    rich colors, gold accents, and mystical effects
    ============================================ */
 
+/* ============================================
+   CSS Variables - Design Tokens
+   ============================================ */
+
 :root {
-  /* Primary Colors - Deep Fantasy Palette */
+  /* ------------------------------------------
+     Primary Colors - Deep Fantasy Palette
+     ------------------------------------------ */
   --color-bg-primary: #0d1117;
   --color-bg-secondary: #161b22;
   --color-bg-tertiary: #21262d;
   --color-bg-card: #1c2128;
   --color-bg-hover: #262c36;
-  
-  /* Accent Colors - Mystical Gold & Magic */
+
+  /* ------------------------------------------
+     Accent Colors - Mystical Gold & Magic
+     ------------------------------------------ */
   --color-gold-primary: #d4af37;
   --color-gold-light: #f4d03f;
   --color-gold-dark: #996515;
   --color-magic-blue: #4a90d9;
   --color-magic-purple: #8b5cf6;
   --color-magic-cyan: #06b6d4;
-  
-  /* Text Colors */
+
+  /* ------------------------------------------
+     Text Colors
+     ------------------------------------------ */
   --color-text-primary: #f0f6fc;
   --color-text-secondary: #8b949e;
   --color-text-muted: #6e7681;
   --color-text-gold: #d4af37;
-  
-  /* Status Colors */
+
+  /* ------------------------------------------
+     Status Colors - Feedback States
+     ------------------------------------------ */
   --color-success: #2ea043;
   --color-success-bg: rgba(46, 160, 67, 0.15);
   --color-danger: #da3633;
   --color-danger-bg: rgba(218, 54, 51, 0.15);
   --color-info: #388bfd;
   --color-info-bg: rgba(56, 139, 253, 0.15);
-  
-  /* Borders & Shadows */
+  --color-warning: #d29922;
+  --color-warning-bg: rgba(210, 153, 34, 0.15);
+
+  /* ------------------------------------------
+     Borders & Dividers
+     ------------------------------------------ */
   --border-color: #30363d;
   --border-color-light: #484f58;
   --border-gold: rgba(212, 175, 55, 0.3);
+
+  /* ------------------------------------------
+     Shadows - Depth & Elevation
+     ------------------------------------------ */
   --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
   --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
   --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
   --shadow-gold: 0 0 20px rgba(212, 175, 55, 0.3);
-  
-  /* Gradients */
+  --shadow-gold-strong: 0 0 20px rgba(212, 175, 55, 0.6);
+
+  /* ------------------------------------------
+     Gradients - Decorative Backgrounds
+     ------------------------------------------ */
   --gradient-gold: linear-gradient(135deg, #f4d03f 0%, #d4af37 50%, #996515 100%);
   --gradient-magic: linear-gradient(135deg, #4a90d9 0%, #8b5cf6 50%, #d4af37 100%);
   --gradient-card: linear-gradient(180deg, #21262d 0%, #161b22 100%);
   --gradient-border: linear-gradient(135deg, #d4af37, #8b5cf6, #4a90d9);
-  
-  /* Typography */
+  --gradient-magic-blue: linear-gradient(135deg, #3d5a7a 0%, #2d4a5f 100%);
+  --gradient-forest: linear-gradient(135deg, #2d4c31 0%, #1f3a24 100%);
+  --gradient-crimson: linear-gradient(135deg, #5c2b2b 0%, #4a2222 100%);
+  --gradient-slate: linear-gradient(135deg, #3e4a59 0%, #2d3a45 100%);
+  --gradient-amber: linear-gradient(135deg, #5c4a2b 0%, #4a3a22 100%);
+  --gradient-neutral: linear-gradient(135deg, #3a4048 0%, #2a3038 100%);
+
+  /* ------------------------------------------
+     Typography - Fonts & Sizes
+     ------------------------------------------ */
   --font-heading: 'Almendra SC', cursive, serif;
   --font-body: 'EB Garamond', Georgia, serif;
-  
-  /* Spacing */
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-base: 1rem;
+  --font-size-lg: 1.1rem;
+  --font-size-xl: 1.25rem;
+  --font-size-2xl: 1.5rem;
+  --font-size-3xl: 1.75rem;
+  --font-size-4xl: 2.5rem;
+
+  /* ------------------------------------------
+     Spacing - Padding & Margins
+     ------------------------------------------ */
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+
+  /* ------------------------------------------
+     Border Radius - Rounded Corners
+     ------------------------------------------ */
   --radius-sm: 4px;
   --radius-md: 8px;
   --radius-lg: 12px;
   --radius-xl: 16px;
+
+  /* ------------------------------------------
+     Transitions - Animation Timing
+     ------------------------------------------ */
+  --transition-fast: 0.15s ease;
+  --transition-base: 0.3s ease;
+  --transition-slow: 0.5s ease;
+
+  /* ------------------------------------------
+     Z-Index Scale - Layering
+     ------------------------------------------ */
+  --z-dropdown: 10;
+  --z-sticky: 100;
+  --z-modal: 1000;
+  --z-tooltip: 10000;
 }
 
 /* ============================================
-   Global Styles
+   Global Reset & Base Styles
    ============================================ */
 
-* {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
 
+/* ------------------------------------------
+   Body - Main Application Background
+   ------------------------------------------ */
+
 body {
   background: var(--color-bg-primary);
-  background-image: 
+  background-image:
     radial-gradient(ellipse at top, rgba(139, 92, 246, 0.1) 0%, transparent 50%),
     radial-gradient(ellipse at bottom, rgba(74, 144, 217, 0.08) 0%, transparent 50%);
   background-attachment: fixed;
   color: var(--color-text-primary);
   font-family: var(--font-body);
+  font-size: var(--font-size-lg);
   line-height: 1.6;
   min-height: 100vh;
+  margin: 0;
 }
 
 /* ============================================
    Typography
    ============================================ */
 
+/* ------------------------------------------
+   Headings - Fantasy Display Font
+   ------------------------------------------ */
+
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-heading);
   letter-spacing: 0.08em;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
   margin: 0;
+  font-weight: normal;
 }
 
 h1 {
-  font-size: 2.5rem;
+  font-size: var(--font-size-4xl);
   background: var(--gradient-gold);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -101,26 +179,39 @@ h1 {
 }
 
 h2 {
-  font-size: 1.75rem;
+  font-size: var(--font-size-3xl);
   color: var(--color-gold-primary);
   border-bottom: 2px solid var(--border-gold);
-  padding-bottom: 0.5rem;
+  padding-bottom: var(--space-sm);
 }
 
 h3 {
-  font-size: 1.25rem;
+  font-size: var(--font-size-xl);
   color: var(--color-text-primary);
 }
+
+h4 {
+  font-size: var(--font-size-lg);
+  color: var(--color-text-secondary);
+}
+
+/* ------------------------------------------
+   Body Text & Paragraphs
+   ------------------------------------------ */
 
 p {
   color: var(--color-text-secondary);
   margin: 0;
 }
 
+/* ------------------------------------------
+   Links - Interactive Text
+   ------------------------------------------ */
+
 a {
   color: var(--color-magic-cyan);
   text-decoration: none;
-  transition: color 0.2s ease;
+  transition: color var(--transition-fast);
 }
 
 a:hover {
@@ -131,20 +222,24 @@ a:hover {
    Header & Navigation
    ============================================ */
 
+/* ------------------------------------------
+   Site Header - Sticky Top Bar
+   ------------------------------------------ */
+
 header {
   background: var(--color-bg-secondary);
   border-bottom: 2px solid var(--border-gold);
   box-shadow: var(--shadow-md);
   position: sticky;
   top: 0;
-  z-index: 100;
+  z-index: var(--z-sticky);
 }
 
 header .title {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.75rem;
+  gap: var(--space-sm);
   margin: 0;
 }
 
@@ -152,6 +247,10 @@ header .title .icon {
   color: var(--color-gold-primary);
   filter: drop-shadow(0 0 8px rgba(212, 175, 55, 0.5));
 }
+
+/* ------------------------------------------
+   Navigation Bar - Menu Items
+   ------------------------------------------ */
 
 .navbar {
   background: var(--color-bg-tertiary) !important;
@@ -162,10 +261,10 @@ header .title .icon {
   color: var(--color-text-secondary) !important;
   font-family: var(--font-heading);
   letter-spacing: 0.05em;
-  transition: all 0.3s ease;
+  transition: all var(--transition-base);
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: var(--space-xs);
 }
 
 .navbar-item:hover {
@@ -192,6 +291,10 @@ header .title .icon {
    Cards & Containers
    ============================================ */
 
+/* ------------------------------------------
+   Card Components - Content Containers
+   ------------------------------------------ */
+
 .card,
 .character-card,
 .section {
@@ -203,6 +306,7 @@ header .title .icon {
   overflow: hidden;
 }
 
+/* Decorative top border accent */
 .card::before,
 .character-card::before,
 .section::before {
@@ -216,17 +320,22 @@ header .title .icon {
   opacity: 0.5;
 }
 
+/* Hover lift effect */
 .card:hover,
 .character-card:hover {
   border-color: var(--border-gold);
   box-shadow: var(--shadow-lg), var(--shadow-gold);
   transform: translateY(-2px);
-  transition: all 0.3s ease;
+  transition: all var(--transition-base);
 }
 
 /* ============================================
    Buttons
    ============================================ */
+
+/* ------------------------------------------
+   Base Button Styles
+   ------------------------------------------ */
 
 button,
 .btn,
@@ -237,11 +346,12 @@ button,
   padding: 0.625rem 1.25rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all var(--transition-base);
   position: relative;
   overflow: hidden;
 }
 
+/* Shimmer effect on hover */
 button::before,
 .btn::before,
 .button::before {
@@ -252,7 +362,7 @@ button::before,
   width: 100%;
   height: 100%;
   background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-  transition: left 0.5s ease;
+  transition: left var(--transition-slow);
 }
 
 button:hover::before,
@@ -261,14 +371,17 @@ button:hover::before,
   left: 100%;
 }
 
-/* Primary Button - Magic Blue */
+/* ------------------------------------------
+   Primary Button - Magic Blue Theme
+   ------------------------------------------ */
+
 button[type="button"],
 .btn-primary,
 .button.is-primary {
-  background: linear-gradient(135deg, #3d5a7a 0%, #2d4a5f 100%);
+  background: var(--gradient-magic-blue);
   border: 1px solid var(--color-gold-primary);
   color: var(--color-text-primary);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  box-shadow: var(--shadow-sm);
 }
 
 button[type="button"]:hover,
@@ -279,26 +392,32 @@ button[type="button"]:hover,
   transform: translateY(-1px);
 }
 
-/* Gold Button */
+/* ------------------------------------------
+   Gold Button - Premium Accent
+   ------------------------------------------ */
+
 .btn-gold {
   background: var(--gradient-gold);
-  color: #0d1117;
+  color: var(--color-bg-primary);
   border: 1px solid var(--color-gold-light);
   box-shadow: 0 2px 8px rgba(212, 175, 55, 0.4);
 }
 
 .btn-gold:hover {
-  box-shadow: 0 4px 16px rgba(212, 175, 55, 0.6);
+  box-shadow: var(--shadow-gold-strong);
   transform: translateY(-1px);
 }
 
-/* Success Button - Forest Green */
+/* ------------------------------------------
+   Success Button - Forest Green Theme
+   ------------------------------------------ */
+
 .btn-success,
 .button.is-success {
-  background: linear-gradient(135deg, #2d4c31 0%, #1f3a24 100%);
+  background: var(--gradient-forest);
   border: 1px solid var(--color-gold-primary);
   color: var(--color-text-primary);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  box-shadow: var(--shadow-sm);
 }
 
 .btn-success:hover,
@@ -308,13 +427,16 @@ button[type="button"]:hover,
   transform: translateY(-1px);
 }
 
-/* Danger Button - Muted Crimson */
+/* ------------------------------------------
+   Danger Button - Crimson Theme
+   ------------------------------------------ */
+
 .btn-danger,
 .button.is-danger {
-  background: linear-gradient(135deg, #5c2b2b 0%, #4a2222 100%);
+  background: var(--gradient-crimson);
   border: 1px solid #a38b5d;
   color: var(--color-text-primary);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  box-shadow: var(--shadow-sm);
 }
 
 .btn-danger:hover,
@@ -324,13 +446,16 @@ button[type="button"]:hover,
   transform: translateY(-1px);
 }
 
-/* Info Button - Slate Blue */
+/* ------------------------------------------
+   Info Button - Slate Blue Theme
+   ------------------------------------------ */
+
 .btn-info,
 .button.is-info {
-  background: linear-gradient(135deg, #3e4a59 0%, #2d3a45 100%);
+  background: var(--gradient-slate);
   border: 1px solid var(--color-gold-primary);
   color: var(--color-text-primary);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  box-shadow: var(--shadow-sm);
 }
 
 .btn-info:hover,
@@ -340,13 +465,16 @@ button[type="button"]:hover,
   transform: translateY(-1px);
 }
 
-/* Warning Button - Amber */
+/* ------------------------------------------
+   Warning Button - Amber Theme
+   ------------------------------------------ */
+
 .btn-warning,
 .button.is-warning {
-  background: linear-gradient(135deg, #5c4a2b 0%, #4a3a22 100%);
+  background: var(--gradient-amber);
   border: 1px solid var(--color-gold-primary);
   color: var(--color-text-primary);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  box-shadow: var(--shadow-sm);
 }
 
 .btn-warning:hover,
@@ -356,13 +484,16 @@ button[type="button"]:hover,
   transform: translateY(-1px);
 }
 
-/* Light Button - Neutral Gray */
+/* ------------------------------------------
+   Light Button - Neutral Gray Theme
+   ------------------------------------------ */
+
 .btn-light,
 .button.is-light {
-  background: linear-gradient(135deg, #3a4048 0%, #2a3038 100%);
+  background: var(--gradient-neutral);
   border: 1px solid var(--border-color-light);
   color: var(--color-text-primary);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  box-shadow: var(--shadow-sm);
 }
 
 .btn-light:hover,
@@ -372,7 +503,10 @@ button[type="button"]:hover,
   transform: translateY(-1px);
 }
 
-/* Secondary Button */
+/* ------------------------------------------
+   Secondary Button - Subtle Action
+   ------------------------------------------ */
+
 .btn-secondary {
   background: var(--color-bg-tertiary);
   color: var(--color-text-primary);
@@ -385,7 +519,10 @@ button[type="button"]:hover,
   color: var(--color-gold-primary);
 }
 
-/* Disabled Button */
+/* ------------------------------------------
+   Disabled State
+   ------------------------------------------ */
+
 button:disabled,
 .btn:disabled,
 .button:disabled {
@@ -395,8 +532,12 @@ button:disabled,
 }
 
 /* ============================================
-   Inputs & Forms
+   Forms & Inputs
    ============================================ */
+
+/* ------------------------------------------
+   Form Controls - Input, Select, Textarea
+   ------------------------------------------ */
 
 input,
 select,
@@ -406,11 +547,12 @@ textarea {
   border-radius: var(--radius-md);
   color: var(--color-text-primary);
   font-family: var(--font-body);
-  font-size: 1rem;
+  font-size: var(--font-size-base);
   padding: 0.625rem 0.875rem;
-  transition: all 0.3s ease;
+  transition: all var(--transition-base);
 }
 
+/* Focus state with magic blue glow */
 input:focus,
 select:focus,
 textarea:focus {
@@ -422,6 +564,10 @@ textarea:focus {
 input::placeholder {
   color: var(--color-text-muted);
 }
+
+/* ------------------------------------------
+   Form Labels
+   ------------------------------------------ */
 
 label {
   font-family: var(--font-heading);
@@ -448,6 +594,10 @@ li {
    Utility Classes
    ============================================ */
 
+/* ------------------------------------------
+   Text Utilities
+   ------------------------------------------ */
+
 .text-gold {
   color: var(--color-gold-primary) !important;
 }
@@ -463,9 +613,9 @@ li {
   background-clip: text;
 }
 
-.border-gold {
-  border-color: var(--border-gold) !important;
-}
+/* ------------------------------------------
+   Background Utilities
+   ------------------------------------------ */
 
 .bg-card {
   background: var(--color-bg-card);
@@ -475,9 +625,21 @@ li {
   background: var(--color-bg-secondary);
 }
 
+/* ------------------------------------------
+   Border Utilities
+   ------------------------------------------ */
+
+.border-gold {
+  border-color: var(--border-gold) !important;
+}
+
 /* ============================================
-   Animations
+   Animations & Effects
    ============================================ */
+
+/* ------------------------------------------
+   Keyframe Definitions
+   ------------------------------------------ */
 
 @keyframes shimmer {
   0% { opacity: 0.5; }
@@ -496,6 +658,10 @@ li {
   50% { transform: translateY(-5px); }
 }
 
+/* ------------------------------------------
+   Animation Utility Classes
+   ------------------------------------------ */
+
 .animate-glow {
   animation: glow 2s ease-in-out infinite;
 }
@@ -505,7 +671,7 @@ li {
 }
 
 /* ============================================
-   Scrollbar Styling
+   Custom Scrollbar
    ============================================ */
 
 ::-webkit-scrollbar {
@@ -528,38 +694,50 @@ li {
 }
 
 /* ============================================
-   Main Content Area
+   Layout & Structure
    ============================================ */
+
+/* ------------------------------------------
+   Main Content Area
+   ------------------------------------------ */
 
 .main-content {
   min-height: calc(100vh - 200px);
-  padding: 2rem 0;
+  padding: var(--space-xl) 0;
 }
+
+/* ------------------------------------------
+   Container - Centered Content Wrapper
+   ------------------------------------------ */
 
 .container {
   max-width: 1400px;
   margin: 0 auto;
-  padding: 0 1.5rem;
+  padding: 0 var(--space-lg);
 }
 
 /* ============================================
-   Responsive Adjustments
+   Responsive Breakpoints
    ============================================ */
 
 @media (max-width: 768px) {
   h1 {
-    font-size: 1.75rem;
+    font-size: var(--font-size-3xl);
   }
-  
+
   h2 {
-    font-size: 1.5rem;
+    font-size: var(--font-size-2xl);
   }
-  
+
   .navbar-item {
-    font-size: 0.9rem;
+    font-size: var(--font-size-sm);
   }
-  
+
   .main-content {
     min-height: calc(100vh - 180px);
+  }
+
+  .container {
+    padding: 0 var(--space-md);
   }
 }
