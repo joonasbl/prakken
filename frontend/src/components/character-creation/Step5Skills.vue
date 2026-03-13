@@ -228,21 +228,37 @@ const handleUnlearn = (skill: Skill) => {
 .notification .has-text-weight-semibold {
   font-family: var(--font-heading);
   letter-spacing: 0.05em;
-  font-size: 1rem;
+  font-size: 0.95rem;
 }
 
 .notification p {
   font-family: var(--font-body);
-  font-size: 0.95rem;
+  font-size: 0.9rem;
+}
+
+@media (min-width: 768px) {
+  .notification .has-text-weight-semibold {
+    font-size: 1rem;
+  }
+  
+  .notification p {
+    font-size: 0.95rem;
+  }
 }
 
 .skills-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: 1fr;
   gap: 0.5rem;
   max-height: 500px;
   overflow-y: auto;
   padding: 0.5rem;
+}
+
+@media (min-width: 576px) {
+  .skills-grid {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  }
 }
 
 .skill-row {
@@ -252,6 +268,7 @@ const handleUnlearn = (skill: Skill) => {
   background: var(--gradient-card);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-sm);
+  min-height: 44px;
 }
 
 .skill-row:hover {
@@ -277,6 +294,7 @@ const handleUnlearn = (skill: Skill) => {
   color: var(--color-gold-primary);
   font-family: var(--font-heading);
   letter-spacing: 0.05em;
+  font-size: 0.85rem;
 }
 
 /* Override Bulma tag styles for dark theme */
@@ -288,6 +306,9 @@ const handleUnlearn = (skill: Skill) => {
   font-size: 0.7rem;
   font-family: var(--font-heading);
   letter-spacing: 0.03em;
+  min-height: 24px;
+  display: inline-flex;
+  align-items: center;
 }
 
 .skill-level {
@@ -299,5 +320,26 @@ const handleUnlearn = (skill: Skill) => {
 
 .gap-2 {
   gap: 0.5rem;
+}
+
+/* Button controls - touch friendly */
+.button.is-small {
+  min-height: 36px;
+  min-width: 36px;
+  padding: 0 0.75rem;
+}
+
+@media (max-width: 767px) {
+  .button.is-small {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+.skill-learn-control,
+.skill-controls {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
 }
 </style>

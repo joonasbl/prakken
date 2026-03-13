@@ -138,12 +138,39 @@ const substatModifiers = computed(() => wizardStore.substatModifiers)
   gap: 0.5rem;
 }
 
+.subtitle {
+  font-size: 0.95rem;
+}
+
+@media (min-width: 768px) {
+  .subtitle {
+    font-size: 1.1rem;
+  }
+}
+
+.columns.is-multiline {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+@media (min-width: 576px) {
+  .columns.is-multiline {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.column.is-3 {
+  padding: 0;
+}
+
 .card {
   background: var(--gradient-card);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-md);
   transition: all 0.3s ease;
+  min-height: 44px;
 }
 
 .card:hover {
@@ -157,11 +184,32 @@ const substatModifiers = computed(() => wizardStore.substatModifiers)
   text-shadow: 0 0 12px rgba(74, 144, 217, 0.5);
   font-family: var(--font-heading);
   letter-spacing: 0.05em;
+  font-size: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .card .is-size-2 {
+    font-size: 2rem;
+  }
 }
 
 .card .is-size-7 {
   color: var(--color-text-muted);
   font-family: var(--font-heading);
   letter-spacing: 0.05em;
+  font-size: 0.7rem;
+}
+
+@media (min-width: 768px) {
+  .card .is-size-7 {
+    font-size: 0.8rem;
+  }
+}
+
+/* Button styling */
+.button.is-info {
+  min-height: 44px;
+  min-width: 44px;
+  padding: 0.75rem 1.5rem;
 }
 </style>

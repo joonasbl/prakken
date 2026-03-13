@@ -57,7 +57,13 @@ const handleDelete = (id: string) => {
 .character-list-view {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 1rem;
+}
+
+@media (min-width: 768px) {
+  .character-list-view {
+    padding: 2rem;
+  }
 }
 
 .view-header {
@@ -65,10 +71,12 @@ const handleDelete = (id: string) => {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 2rem;
+  gap: var(--space-md);
+  flex-wrap: wrap;
 }
 
 .view-header h1 {
-  font-size: 2rem;
+  font-size: 1.5rem;
   color: var(--color-gold-primary);
   margin: 0;
   font-family: var(--font-heading);
@@ -76,9 +84,16 @@ const handleDelete = (id: string) => {
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
+@media (min-width: 768px) {
+  .view-header h1 {
+    font-size: 2rem;
+  }
+}
+
 .btn-new,
 .btn-create {
   padding: 0.75rem 1.5rem;
+  min-height: 44px;
   background: linear-gradient(135deg, #2ea043 0%, #248a38 100%);
   color: white;
   text-decoration: none;
@@ -88,6 +103,9 @@ const handleDelete = (id: string) => {
   font-family: var(--font-heading);
   letter-spacing: 0.05em;
   box-shadow: 0 2px 8px rgba(46, 160, 67, 0.3);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .btn-new:hover,
@@ -104,6 +122,7 @@ const handleDelete = (id: string) => {
   border-radius: var(--radius-lg);
   border: 1px solid var(--border-color);
   box-shadow: var(--shadow-md);
+  position: relative;
 }
 
 .empty-state::before {
@@ -129,7 +148,38 @@ const handleDelete = (id: string) => {
 
 .characters-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 576px) {
+  .characters-grid {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.25rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .characters-grid {
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.5rem;
+  }
+}
+
+/* Mobile: Full-width header on small screens */
+@media (max-width: 767px) {
+  .view-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-md);
+  }
+  
+  .view-header h1 {
+    text-align: center;
+  }
+  
+  .btn-new {
+    width: 100%;
+  }
 }
 </style>

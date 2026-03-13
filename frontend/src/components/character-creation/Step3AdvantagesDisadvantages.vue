@@ -221,11 +221,17 @@ const selectionStatus = computed(() => {
 
 .options-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  grid-template-columns: 1fr;
   gap: 0.5rem;
   max-height: 400px;
   overflow-y: auto;
   padding: 0.5rem;
+}
+
+@media (min-width: 576px) {
+  .options-grid {
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  }
 }
 
 .option-card {
@@ -298,5 +304,24 @@ const selectionStatus = computed(() => {
 
 .option-card.has-conflict .has-text-weight-bold {
   color: #ff6b6b;
+}
+
+/* Mobile: Stack columns */
+@media (max-width: 767px) {
+  .columns.is-desktop {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .column {
+    width: 100%;
+    padding: 0;
+    margin-bottom: 1.5rem;
+  }
+  
+  .is-size-5 {
+    font-size: 1.2rem !important;
+    margin-bottom: 1rem !important;
+  }
 }
 </style>

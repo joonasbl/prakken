@@ -335,6 +335,7 @@ header .title .icon {
 
 /* ------------------------------------------
    Base Button Styles
+   Touch-friendly sizing (44px minimum)
    ------------------------------------------ */
 
 button,
@@ -344,11 +345,17 @@ button,
   letter-spacing: 0.05em;
   border-radius: var(--radius-md);
   padding: 0.625rem 1.25rem;
+  min-height: 44px; /* Touch-friendly minimum */
+  min-width: 44px; /* Touch-friendly minimum */
   font-weight: 600;
   cursor: pointer;
   transition: all var(--transition-base);
   position: relative;
   overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
 }
 
 /* Shimmer effect on hover */
@@ -537,6 +544,7 @@ button:disabled,
 
 /* ------------------------------------------
    Form Controls - Input, Select, Textarea
+   Touch-friendly sizing (44px minimum)
    ------------------------------------------ */
 
 input,
@@ -549,6 +557,7 @@ textarea {
   font-family: var(--font-body);
   font-size: var(--font-size-base);
   padding: 0.625rem 0.875rem;
+  min-height: 44px; /* Touch-friendly minimum */
   transition: all var(--transition-base);
 }
 
@@ -563,6 +572,19 @@ textarea:focus {
 
 input::placeholder {
   color: var(--color-text-muted);
+}
+
+/* Mobile: full-width inputs for better touch */
+@media (max-width: 767px) {
+  input[type="text"],
+  input[type="number"],
+  input[type="email"],
+  input[type="password"],
+  select,
+  textarea {
+    width: 100%;
+    font-size: 16px; /* Prevents iOS zoom on focus */
+  }
 }
 
 /* ------------------------------------------
@@ -717,10 +739,32 @@ li {
 }
 
 /* ============================================
-   Responsive Breakpoints
+   Responsive Breakpoints - Mobile First
    ============================================ */
 
-@media (max-width: 768px) {
+/* ------------------------------------------
+   Breakpoint Definitions
+   
+   Mobile First Approach:
+   - Base styles = mobile (0-576px)
+   - Add complexity as screen grows
+   
+   --bp-xs:  576px  (Large phones)
+   --bp-sm:  768px  (Tablets)
+   --bp-md:  1024px (Laptops)
+   --bp-lg:  1200px (Desktops)
+   ------------------------------------------ */
+
+/* ------------------------------------------
+   Extra Small Devices (576px and up)
+   Large phones, small tablets (portrait)
+   ------------------------------------------ */
+
+@media (min-width: 576px) {
+  .container {
+    padding: 0 var(--space-lg);
+  }
+
   h1 {
     font-size: var(--font-size-3xl);
   }
@@ -728,16 +772,209 @@ li {
   h2 {
     font-size: var(--font-size-2xl);
   }
+}
+
+/* ------------------------------------------
+   Small Devices (768px and up)
+   Tablets (landscape), large phones
+   ------------------------------------------ */
+
+@media (min-width: 768px) {
+  .container {
+    max-width: 540px;
+    margin: 0 auto;
+    padding: 0 var(--space-lg);
+  }
+
+  h1 {
+    font-size: var(--font-size-4xl);
+  }
 
   .navbar-item {
-    font-size: var(--font-size-sm);
+    font-size: var(--font-size-base);
   }
 
   .main-content {
-    min-height: calc(100vh - 180px);
+    min-height: calc(100vh - 200px);
+  }
+}
+
+/* ------------------------------------------
+   Medium Devices (1024px and up)
+   Laptops, small desktops
+   ------------------------------------------ */
+
+@media (min-width: 1024px) {
+  .container {
+    max-width: 960px;
+  }
+}
+
+/* ------------------------------------------
+   Large Devices (1200px and up)
+   Desktops, large screens
+   ------------------------------------------ */
+
+@media (min-width: 1200px) {
+  .container {
+    max-width: 1140px;
+  }
+}
+
+/* ------------------------------------------
+   Max Width Constraints (Hide/Modify for Mobile)
+   Elements that should only appear on larger screens
+   ------------------------------------------ */
+
+/* Hide on mobile (0-767px), show on tablet+ */
+.hide-mobile {
+  display: none !important;
+}
+
+@media (min-width: 768px) {
+  .hide-mobile {
+    display: block !important;
+  }
+}
+
+/* Hide on tablet+ (768px+), show on mobile */
+.show-mobile-only {
+  display: block !important;
+}
+
+@media (min-width: 768px) {
+  .show-mobile-only {
+    display: none !important;
+  }
+}
+
+/* ------------------------------------------
+   Mobile Navigation Utilities
+   ------------------------------------------ */
+
+.mobile-nav-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  background: var(--color-bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  color: var(--color-gold-primary);
+  transition: all var(--transition-base);
+}
+
+.mobile-nav-toggle:hover {
+  background: var(--color-bg-hover);
+  border-color: var(--border-gold);
+}
+
+@media (min-width: 768px) {
+  .mobile-nav-toggle {
+    display: none !important;
+  }
+}
+
+/* ------------------------------------------
+   Responsive Typography - Fluid Scaling
+   ------------------------------------------ */
+
+@media (max-width: 767px) {
+  body {
+    font-size: var(--font-size-base);
   }
 
+  h1 {
+    font-size: var(--font-size-2xl);
+  }
+
+  h2 {
+    font-size: var(--font-size-xl);
+  }
+
+  h3 {
+    font-size: var(--font-size-lg);
+  }
+
+  p {
+    font-size: var(--font-size-base);
+  }
+}
+
+/* ------------------------------------------
+   Touch-Friendly Spacing for Mobile
+   ------------------------------------------ */
+
+@media (max-width: 767px) {
+  /* Increase spacing for touch targets */
+  .touch-spacing-sm {
+    gap: var(--space-sm) !important;
+  }
+
+  .touch-spacing-md {
+    gap: var(--space-md) !important;
+  }
+
+  .touch-spacing-lg {
+    gap: var(--space-lg) !important;
+  }
+
+  /* Reduce horizontal padding on containers */
   .container {
     padding: 0 var(--space-md);
+  }
+
+  /* Full-width sections on mobile */
+  .section {
+    margin-left: 0;
+    margin-right: 0;
+    border-radius: 0;
+  }
+}
+
+/* ------------------------------------------
+   Responsive Grid Utilities
+   ------------------------------------------ */
+
+/* Mobile-first grid columns - stack by default */
+.grid-mobile-1 {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-md);
+}
+
+@media (min-width: 576px) {
+  .grid-mobile-2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 768px) {
+  .grid-tablet-2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .grid-tablet-3 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .grid-tablet-4 {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .grid-desktop-3 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .grid-desktop-4 {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .grid-desktop-6 {
+    grid-template-columns: repeat(6, 1fr);
   }
 }

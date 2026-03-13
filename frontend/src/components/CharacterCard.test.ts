@@ -25,7 +25,7 @@ const createTestCharacter = (): Character => ({
   advantages: [],
   disadvantages: [],
   skills: [
-    { id: 'skill-1', name: 'Miekat', baseCode: 'ket', bonus: 1, learned: true },
+    { name: 'Miekat', baseCode: 'ket', bonus: 1, learned: true, backgroundSkill: false },
   ],
   equipment: [],
   subStats: {
@@ -34,8 +34,9 @@ const createTestCharacter = (): Character => ({
     syvaHaava: 6,
     kantokyky: 200,
   },
-  createdAt: new Date().toISOString(),
-  updatedAt: new Date().toISOString(),
+  createdAt: Date.now(),
+  updatedAt: Date.now(),
+  version: '1.0.0',
 })
 
 describe('CharacterCard', () => {

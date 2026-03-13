@@ -130,6 +130,7 @@ const handleDelete = () => {
   justify-content: space-between;
   align-items: flex-start;
   margin-bottom: 1rem;
+  gap: var(--space-md);
 }
 
 .character-name {
@@ -140,22 +141,30 @@ const handleDelete = () => {
   font-family: var(--font-heading);
   letter-spacing: 0.05em;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  word-break: break-word;
 }
 
 .character-date {
   font-size: 0.8rem;
   color: var(--color-text-muted);
+  white-space: nowrap;
 }
 
 .attributes-summary {
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 0.5rem;
   margin-bottom: 1rem;
   padding: 0.75rem;
   background: var(--color-bg-tertiary);
   border-radius: var(--radius-md);
   border: 1px solid var(--border-color);
+}
+
+@media (min-width: 576px) {
+  .attributes-summary {
+    grid-template-columns: repeat(6, 1fr);
+  }
 }
 
 .attr-item {
@@ -209,7 +218,8 @@ const handleDelete = () => {
 .btn-load,
 .btn-delete {
   flex: 1;
-  padding: 0.5rem 0.75rem;
+  padding: 0.75rem 1rem;
+  min-height: 44px;
   border: none;
   border-radius: var(--radius-md);
   font-weight: 600;
@@ -217,6 +227,7 @@ const handleDelete = () => {
   transition: all 0.3s ease;
   font-family: var(--font-heading);
   letter-spacing: 0.05em;
+  font-size: var(--font-size-sm);
 }
 
 .btn-load {
@@ -242,5 +253,43 @@ const handleDelete = () => {
   color: white;
   border-color: var(--color-danger);
   box-shadow: 0 4px 16px rgba(218, 54, 51, 0.4);
+}
+
+/* Mobile optimizations */
+@media (max-width: 767px) {
+  .character-card {
+    padding: 1rem;
+  }
+  
+  .card-header {
+    flex-direction: column;
+    gap: var(--space-xs);
+  }
+  
+  .character-name {
+    font-size: 1.2rem;
+  }
+  
+  .character-date {
+    font-size: 0.75rem;
+  }
+  
+  .attr-label {
+    font-size: 0.55rem;
+  }
+  
+  .attr-value {
+    font-size: 1rem;
+  }
+  
+  .detail-row {
+    font-size: 0.85rem;
+  }
+  
+  .btn-load,
+  .btn-delete {
+    padding: 0.625rem 0.75rem;
+    font-size: var(--font-size-base);
+  }
 }
 </style>

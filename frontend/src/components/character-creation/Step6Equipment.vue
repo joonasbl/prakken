@@ -56,13 +56,22 @@ const totalCost = computed(() =>
 
 .equipment-summary {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  gap: var(--space-sm);
   margin-bottom: 1.5rem;
   padding: 1rem;
   background: var(--color-bg-tertiary);
   border-radius: var(--radius-md);
   border: 1px solid var(--border-color);
-  font-size: 1rem;
+  font-size: 0.95rem;
+}
+
+@media (min-width: 576px) {
+  .equipment-summary {
+    flex-direction: row;
+    justify-content: space-between;
+    font-size: 1rem;
+  }
 }
 
 .equipment-summary strong {
@@ -72,8 +81,15 @@ const totalCost = computed(() =>
 
 .equipment-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 1rem;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+}
+
+@media (min-width: 576px) {
+  .equipment-grid {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1rem;
+  }
 }
 
 .equipment-card {
@@ -84,6 +100,8 @@ const totalCost = computed(() =>
   transition: all 0.3s ease;
   background: var(--gradient-card);
   box-shadow: var(--shadow-sm);
+  position: relative;
+  min-height: 44px;
 }
 
 .equipment-card::before {
@@ -114,6 +132,8 @@ const totalCost = computed(() =>
   justify-content: space-between;
   align-items: center;
   margin-bottom: 0.5rem;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
 }
 
 .equipment-name {
@@ -121,27 +141,43 @@ const totalCost = computed(() =>
   color: var(--color-gold-primary);
   font-family: var(--font-heading);
   letter-spacing: 0.05em;
+  font-size: 0.95rem;
+}
+
+@media (min-width: 768px) {
+  .equipment-name {
+    font-size: 1rem;
+  }
 }
 
 .equipment-category {
-  font-size: 0.75rem;
-  padding: 0.2rem 0.5rem;
+  font-size: 0.7rem;
+  padding: 0.25rem 0.5rem;
   background: var(--color-bg-tertiary);
   border-radius: var(--radius-sm);
   color: var(--color-text-muted);
   border: 1px solid var(--border-color);
+  white-space: nowrap;
 }
 
 .equipment-description {
   font-size: 0.85rem;
   color: var(--color-text-secondary);
   margin-bottom: 0.75rem;
+  line-height: 1.5;
 }
 
 .equipment-stats {
   display: flex;
   justify-content: space-between;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   color: var(--color-success);
+  gap: var(--space-md);
+}
+
+@media (min-width: 768px) {
+  .equipment-stats {
+    font-size: 0.8rem;
+  }
 }
 </style>

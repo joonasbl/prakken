@@ -493,13 +493,83 @@ const handleSave = () => {
 /* ============================================
    Responsive
    ============================================ */
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .attributes-grid {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
   }
 
   .character-name {
     font-size: 1.5rem;
+  }
+  
+  .columns.is-multiline {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+  }
+  
+  .column.is-3,
+  .column.is-4 {
+    padding: 0;
+  }
+  
+  .summary-header-card .card-content {
+    padding: 1rem;
+  }
+  
+  .attributes-panel .card-content {
+    padding: 1rem;
+  }
+  
+  .section-header {
+    gap: 0.5rem;
+  }
+  
+  .section-header span {
+    font-size: 1rem;
+  }
+  
+  .attr-label {
+    font-size: 0.65rem;
+  }
+  
+  .attr-value {
+    font-size: 1.25rem;
+  }
+  
+  .background-name {
+    font-size: 1.1rem;
+  }
+  
+  .background-description {
+    font-size: 0.9rem;
+  }
+  
+  .is-size-5 {
+    font-size: 1rem !important;
+  }
+  
+  .box {
+    padding: 0.75rem !important;
+  }
+  
+  .box .is-size-4 {
+    font-size: 1.25rem !important;
+  }
+  
+  .button.is-large {
+    min-height: 44px;
+    width: 100%;
+  }
+}
+
+@media (min-width: 768px) {
+  .attributes-grid {
+    grid-template-columns: repeat(6, 1fr);
+  }
+  
+  .columns.is-multiline {
+    grid-template-columns: repeat(4, 1fr);
   }
 }
 </style>

@@ -82,20 +82,27 @@ const updateAttribute = (name: string, delta: number) => {
 
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1rem;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
   margin-bottom: 1.5rem;
+}
+
+@media (min-width: 576px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 .stat-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.75rem 1rem;
+  padding: 1rem;
   background: var(--color-bg-tertiary);
   border-radius: var(--radius-md);
   border: 1px solid var(--border-color);
   transition: all 0.3s ease;
+  gap: var(--space-md);
 }
 
 .stat-row:hover {
@@ -108,6 +115,7 @@ const updateAttribute = (name: string, delta: number) => {
   color: var(--color-gold-primary);
   font-family: var(--font-heading);
   letter-spacing: 0.05em;
+  font-size: var(--font-size-base);
 }
 
 .stat-controls {
@@ -117,8 +125,8 @@ const updateAttribute = (name: string, delta: number) => {
 }
 
 .stat-btn {
-  width: 36px;
-  height: 36px;
+  width: 44px;
+  height: 44px;
   border: none;
   border-radius: var(--radius-md);
   background: linear-gradient(135deg, #4a90d9 0%, #357abd 100%);
@@ -133,6 +141,7 @@ const updateAttribute = (name: string, delta: number) => {
   align-items: center;
   justify-content: center;
   padding: 0;
+  flex-shrink: 0;
 }
 
 .stat-btn:hover {
@@ -142,9 +151,9 @@ const updateAttribute = (name: string, delta: number) => {
 }
 
 .stat-value {
-  font-size: 1.2rem;
+  font-size: 1.25rem;
   font-weight: 700;
-  min-width: 2rem;
+  min-width: 2.5rem;
   text-align: center;
   color: var(--color-magic-blue);
   text-shadow: 0 0 8px rgba(74, 144, 217, 0.4);
@@ -152,14 +161,30 @@ const updateAttribute = (name: string, delta: number) => {
 
 .stats-summary {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
+  gap: var(--space-md);
   padding-top: 1rem;
   border-top: 1px solid var(--border-color);
 }
 
+@media (min-width: 576px) {
+  .stats-summary {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
+
+.stats-summary span {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  color: var(--color-text-primary);
+  font-family: var(--font-heading);
+}
+
 .roll-button {
-  padding: 0.5rem 1rem;
+  padding: 0.75rem 1.5rem;
+  min-height: 44px;
   border: none;
   border-radius: var(--radius-md);
   background: linear-gradient(135deg, #2ea043 0%, #248a38 100%);
@@ -170,6 +195,9 @@ const updateAttribute = (name: string, delta: number) => {
   letter-spacing: 0.05em;
   transition: all 0.3s ease;
   box-shadow: 0 2px 8px rgba(46, 160, 67, 0.3);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .roll-button:hover {

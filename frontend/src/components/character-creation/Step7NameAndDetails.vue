@@ -59,18 +59,32 @@ const updateName = (event: Event) => {
   margin-bottom: 0.5rem;
   font-family: var(--font-heading);
   letter-spacing: 0.05em;
+  font-size: 0.95rem;
+}
+
+@media (min-width: 768px) {
+  .form-group label {
+    font-size: 1rem;
+  }
 }
 
 .name-input {
   width: 100%;
   padding: 0.75rem 1rem;
-  font-size: 1.2rem;
+  min-height: 44px;
+  font-size: 1.1rem;
   border: 2px solid var(--border-color);
   border-radius: var(--radius-md);
   background: var(--color-bg-tertiary);
   color: var(--color-text-primary);
   font-family: var(--font-body);
   transition: all 0.3s ease;
+}
+
+@media (min-width: 768px) {
+  .name-input {
+    font-size: 1.2rem;
+  }
 }
 
 .name-input:focus {
@@ -84,17 +98,30 @@ const updateName = (event: Event) => {
 }
 
 .details-section h3 {
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   margin-bottom: 1rem;
   color: var(--color-gold-primary);
   font-family: var(--font-heading);
   letter-spacing: 0.05em;
 }
 
+@media (min-width: 768px) {
+  .details-section h3 {
+    font-size: 1.2rem;
+  }
+}
+
 .info-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+}
+
+@media (min-width: 576px) {
+  .info-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 1rem;
+  }
 }
 
 .info-card {
@@ -104,6 +131,10 @@ const updateName = (event: Event) => {
   border: 1px solid var(--border-color);
   text-align: center;
   transition: all 0.3s ease;
+  min-height: 44px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .info-card:hover {
@@ -113,19 +144,31 @@ const updateName = (event: Event) => {
 
 .info-label {
   display: block;
-  font-size: 0.85rem;
+  font-size: 0.75rem;
   color: #b8c5d6;
   margin-bottom: 0.5rem;
   font-family: var(--font-heading);
   letter-spacing: 0.05em;
 }
 
+@media (min-width: 768px) {
+  .info-label {
+    font-size: 0.85rem;
+  }
+}
+
 .info-value {
   display: block;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   font-weight: 600;
   color: var(--color-magic-blue);
   text-shadow: 0 0 8px rgba(74, 144, 217, 0.4);
+}
+
+@media (min-width: 768px) {
+  .info-value {
+    font-size: 1.2rem;
+  }
 }
 
 .name-input::placeholder {

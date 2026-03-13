@@ -61,7 +61,46 @@ const selectBackground = (id: string) => {
 
 .subtitle {
   color: var(--color-text-secondary);
-  font-size: 1.1rem;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+@media (min-width: 768px) {
+  .subtitle {
+    font-size: 1.1rem;
+  }
+}
+
+.columns.is-multiline {
+  display: grid !important;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  flex-wrap: unset;
+  margin: 0;
+}
+
+@media (min-width: 576px) {
+  .columns.is-multiline {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 768px) {
+  .columns.is-multiline {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .columns.is-multiline {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.column.is-4 {
+  padding: 0;
+  flex: unset !important;
+  width: unset !important;
 }
 
 .background-card {
@@ -74,6 +113,7 @@ const selectBackground = (id: string) => {
   box-shadow: var(--shadow-md);
   position: relative;
   overflow: hidden;
+  min-height: 44px;
 }
 
 .background-card::before {
@@ -104,19 +144,25 @@ const selectBackground = (id: string) => {
   font-family: var(--font-heading);
   letter-spacing: 0.05em;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-  font-size: 1.3rem;
+  font-size: 1.1rem;
   margin-bottom: 0.5rem !important;
+}
+
+@media (min-width: 768px) {
+  .background-card .title {
+    font-size: 1.3rem;
+  }
 }
 
 .background-card .content {
   color: #b8c5d6;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   line-height: 1.5;
 }
 
 .background-card .content p {
   color: #c5d4e8 !important;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   line-height: 1.6;
 }
 
@@ -124,6 +170,7 @@ const selectBackground = (id: string) => {
   color: var(--color-gold-primary);
   font-family: var(--font-heading);
   letter-spacing: 0.05em;
+  font-size: 0.8rem;
 }
 
 /* Override Bulma tag styles for dark theme */
@@ -132,7 +179,11 @@ const selectBackground = (id: string) => {
   color: #c5d4e8 !important;
   border: 1px solid var(--border-color) !important;
   font-weight: 600;
-  font-size: 0.75rem;
+  font-size: 0.7rem;
+  min-height: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .background-card .tag.is-info {

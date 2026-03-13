@@ -46,13 +46,14 @@ describe('Character Creation Store', () => {
       id: 'rohkea',
       name: 'Rohkea',
       description: 'Brave character',
+      cost: 1,
     }
-    
+
     expect(store.selectedAdvantages).toHaveLength(0)
-    
+
     store.toggleAdvantage(advantage)
     expect(store.selectedAdvantages).toHaveLength(1)
-    
+
     store.toggleAdvantage(advantage)
     expect(store.selectedAdvantages).toHaveLength(0)
   })
@@ -63,24 +64,25 @@ describe('Character Creation Store', () => {
       id: 'peluri',
       name: 'Peluri',
       description: 'A gambler',
+      benefit: 1,
     }
-    
+
     store.toggleDisadvantage(disadvantage)
     expect(store.selectedDisadvantages).toHaveLength(1)
-    
+
     store.toggleDisadvantage(disadvantage)
     expect(store.selectedDisadvantages).toHaveLength(0)
   })
 
   it('validates advantage/disadvantage balance', () => {
     const store = useCharacterCreationStore()
-    
+
     expect(store.isAdvAdvantageBalanced).toBe(true)
-    
-    store.toggleAdvantage({ id: 'adv1', name: 'Advantage 1', description: 'Test' })
+
+    store.toggleAdvantage({ id: 'adv1', name: 'Advantage 1', description: 'Test', cost: 1 })
     expect(store.isAdvAdvantageBalanced).toBe(false)
-    
-    store.toggleDisadvantage({ id: 'dis1', name: 'Disadvantage 1', description: 'Test' })
+
+    store.toggleDisadvantage({ id: 'dis1', name: 'Disadvantage 1', description: 'Test', benefit: 1 })
     expect(store.isAdvAdvantageBalanced).toBe(true)
   })
 
@@ -116,13 +118,13 @@ describe('Character Creation Store', () => {
 
   it('resets to initial state', () => {
     const store = useCharacterCreationStore()
-    
+
     store.setName('Test')
     store.nextStep()
-    store.toggleAdvantage({ id: 'adv1', name: 'Adv', description: 'Test' })
-    
+    store.toggleAdvantage({ id: 'adv1', name: 'Adv', description: 'Test', cost: 1 })
+
     store.resetWizard()
-    
+
     expect(store.draft.name).toBe('')
     expect(store.currentStep).toBe(1)
     expect(store.selectedAdvantages).toHaveLength(0)

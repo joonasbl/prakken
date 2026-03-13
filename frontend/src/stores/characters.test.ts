@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest'
+import { describe, it, expect, beforeEach } from 'vitest'
 import { setActivePinia, createPinia } from 'pinia'
 import { useCharactersStore } from '@/stores/characters'
 import type { Character } from '@/types/character'
@@ -58,8 +58,9 @@ describe('Characters Store', () => {
       syvaHaava: 6,
       kantokyky: 200,
     },
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
+    createdAt: Date.now(),
+    updatedAt: Date.now(),
+    version: '1.0.0',
   })
 
   it('starts with empty character list', () => {
@@ -129,23 +130,23 @@ describe('Characters Store', () => {
 
   it('sorts characters by updated date', () => {
     const store = useCharactersStore()
-    
+
     const char1: Character = {
       ...createTestCharacter(),
       id: 'char-1',
       name: 'First',
-      updatedAt: '2024-01-01T00:00:00Z',
+      updatedAt: Date.now() - 86400000,
     }
     const char2: Character = {
       ...createTestCharacter(),
       id: 'char-2',
       name: 'Second',
-      updatedAt: '2024-01-02T00:00:00Z',
+      updatedAt: Date.now(),
     }
-    
+
     store.saveCharacter(char2)
     store.saveCharacter(char1)
-    
+
     expect(store.charactersSorted[0].name).toBe('Second')
     expect(store.charactersSorted[1].name).toBe('First')
   })

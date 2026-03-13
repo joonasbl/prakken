@@ -38,8 +38,9 @@ const createTestCharacter = (id: string, name: string): Character => ({
     syvaHaava: 5,
     kantokyky: 200,
   } as SubStats,
-  createdAt: new Date().toISOString(),
-  updatedAt: new Date().toISOString(),
+  createdAt: Date.now(),
+  updatedAt: Date.now(),
+  version: '1.0.0',
 })
 
 describe('Storage Utils', () => {

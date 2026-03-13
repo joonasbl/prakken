@@ -1,25 +1,72 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
+import { ref } from 'vue'
+
+const isMobileMenuOpen = ref(false)
+
+const toggleMobileMenu = () => {
+  isMobileMenuOpen.value = !isMobileMenuOpen.value
+}
+
+const closeMobileMenu = () => {
+  isMobileMenuOpen.value = false
+}
 </script>
 
 <template>
   <header>
-    <div class="container has-text-centered py-4">
-      <h1 class="title is-1">
-        <span class="icon animate-float"><i class="fas fa-bolt"></i></span>
-        <span class="text-gradient">PRAKKEN</span>
-        <span class="icon animate-float"><i class="fas fa-bolt"></i></span>
-      </h1>
+    <div class="header-content">
+      <!-- Logo and Hamburger on same row -->
+      <div class="container header-row">
+        <h1 class="title is-1">
+          <span class="icon animate-float"><i class="fas fa-bolt"></i></span>
+          <span class="text-gradient">PRAKKEN</span>
+          <span class="icon animate-float"><i class="fas fa-bolt"></i></span>
+        </h1>
+        
+        <!-- Mobile Nav Toggle (visible only on mobile) -->
+        <button 
+          type="button" 
+          class="mobile-nav-toggle show-mobile-only" 
+          @click="toggleMobileMenu"
+          :aria-expanded="isMobileMenuOpen"
+          aria-label="Toggle navigation"
+        >
+          <span class="icon">
+            <i :class="isMobileMenuOpen ? 'fas fa-times' : 'fas fa-bars'"></i>
+          </span>
+        </button>
+      </div>
     </div>
-    <nav class="navbar">
+
+    <!-- Desktop Nav (hidden on mobile) -->
+    <nav class="navbar hide-mobile">
       <div class="container">
         <div class="navbar-menu is-active">
           <div class="navbar-end has-text-centered">
-            <RouterLink to="/characters" class="navbar-item">
+            <RouterLink to="/characters" class="navbar-item" @click="closeMobileMenu">
               <span class="icon"><i class="fas fa-users"></i></span>
               <span>Hahmot</span>
             </RouterLink>
-            <RouterLink to="/create-character" class="navbar-item">
+            <RouterLink to="/create-character" class="navbar-item" @click="closeMobileMenu">
+              <span class="icon"><i class="fas fa-user-plus"></i></span>
+              <span>Luo uusi</span>
+            </RouterLink>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Mobile Nav Menu -->
+    <nav class="navbar mobile-navbar" :class="{ 'is-active': isMobileMenuOpen }">
+      <div class="container">
+        <div class="navbar-menu">
+          <div class="navbar-end has-text-centered">
+            <RouterLink to="/characters" class="navbar-item" @click="closeMobileMenu">
+              <span class="icon"><i class="fas fa-users"></i></span>
+              <span>Hahmot</span>
+            </RouterLink>
+            <RouterLink to="/create-character" class="navbar-item" @click="closeMobileMenu">
               <span class="icon"><i class="fas fa-user-plus"></i></span>
               <span>Luo uusi</span>
             </RouterLink>
@@ -39,5 +86,80 @@ import { RouterView } from 'vue-router'
 
 .main-content {
   min-height: calc(100vh - 200px);
+}
+
+/* Header Layout */
+.header-content {
+  background: var(--color-bg-secondary);
+  border-bottom: 2px solid var(--border-gold);
+}
+
+.header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-md) var(--space-lg);
+  gap: var(--space-md);
+}
+
+.header-row h1 {
+  margin: 0;
+  flex: 1;
+  text-align: center;
+}
+
+/* Mobile Navigation Styles */
+.mobile-navbar {
+  display: none;
+  background: var(--color-bg-secondary) !important;
+  border-bottom: 2px solid var(--border-gold);
+  max-height: 0;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.mobile-navbar.is-active {
+  display: block;
+  max-height: 300px;
+}
+
+.mobile-navbar .navbar-item {
+  padding: 1rem;
+  border-top: 1px solid var(--border-color);
+}
+
+/* Mobile optimizations */
+@media (max-width: 767px) {
+  .header-row {
+    padding: var(--space-sm) var(--space-md);
+  }
+  
+  .header-row h1 {
+    font-size: var(--font-size-xl);
+    text-align: left;
+  }
+  
+  .header-row h1 .icon {
+    font-size: 1.2rem;
+  }
+  
+  .mobile-nav-toggle {
+    flex-shrink: 0;
+  }
+  
+  .main-content {
+    min-height: calc(100vh - 140px);
+  }
+}
+
+/* Desktop - center the logo */
+@media (min-width: 768px) {
+  .header-row {
+    padding: var(--space-lg) var(--space-xl);
+  }
+  
+  .header-row h1 {
+    text-align: center;
+  }
 }
 </style>

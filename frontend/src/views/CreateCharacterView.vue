@@ -154,16 +154,23 @@ const cancelWizard = () => {
 .wizard-container {
   max-width: 900px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 1rem;
+}
+
+@media (min-width: 768px) {
+  .wizard-container {
+    padding: 2rem;
+  }
 }
 
 .steps-container {
   position: relative;
+  margin-bottom: 1.5rem;
 }
 
 .step-indicator {
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   background: var(--color-bg-tertiary);
   border: 2px solid var(--border-color);
@@ -172,6 +179,13 @@ const cancelWizard = () => {
   justify-content: center;
   margin: 0 auto;
   transition: all 0.3s ease;
+}
+
+@media (min-width: 768px) {
+  .step-indicator {
+    width: 40px;
+    height: 40px;
+  }
 }
 
 .step-indicator.is-active {
@@ -191,6 +205,7 @@ const cancelWizard = () => {
   font-weight: 600;
   font-family: var(--font-heading);
   letter-spacing: 0.05em;
+  font-size: 0.85rem;
 }
 
 .step-card {
@@ -199,6 +214,13 @@ const cancelWizard = () => {
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-md);
+  padding: 1rem;
+}
+
+@media (min-width: 768px) {
+  .step-card {
+    padding: 1.5rem;
+  }
 }
 
 .step-card::before {
@@ -210,5 +232,70 @@ const cancelWizard = () => {
   height: 2px;
   background: var(--gradient-border);
   opacity: 0.5;
+}
+
+/* Mobile: Stack step indicators */
+@media (max-width: 767px) {
+  .steps-container .columns {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+  }
+  
+  .steps-container .column {
+    flex: 0 0 auto;
+    padding: 0 0.25rem;
+  }
+  
+  .step-indicator {
+    width: 32px;
+    height: 32px;
+  }
+  
+  .step-number {
+    font-size: 0.75rem;
+  }
+}
+
+/* Navigation buttons */
+.is-flex.is-justify-content-space-between {
+  gap: var(--space-md);
+}
+
+.is-flex.is-justify-content-space-between .button {
+  min-height: 44px;
+  padding: 0.75rem 1rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+@media (max-width: 767px) {
+  .is-flex.is-justify-content-space-between {
+    flex-direction: column;
+  }
+  
+  .is-flex.is-justify-content-space-between .button {
+    width: 100%;
+  }
+}
+
+/* Title styling */
+.title.is-2 {
+  font-size: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .title.is-2 {
+    font-size: 2rem;
+  }
+}
+
+/* Cancel button */
+.button.is-danger.is-outlined.is-small {
+  min-height: 44px;
+  min-width: 44px;
 }
 </style>
