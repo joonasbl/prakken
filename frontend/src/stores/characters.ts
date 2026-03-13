@@ -46,7 +46,13 @@ export const useCharactersStore = defineStore('characters', {
         createdAt: now,
         updatedAt: now,
         version: CURRENT_VERSION,
-        subStats: draft.subStats!,
+        subStats: draft.subStats ?? {
+          veripisteet: 10,
+          vauriobonus: 0,
+          syvaHaava: 5,
+          kantokyky: 200,
+        },
+        learnedSkills: draft.learnedSkills || [],
       }
 
       this.characters.push(character)

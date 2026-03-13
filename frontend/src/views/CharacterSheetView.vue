@@ -111,19 +111,19 @@ onMounted(() => {
         <div v-show="expandedSections.substats" class="substats-grid">
           <div class="substat-card">
             <span class="substat-name">Veripisteet</span>
-            <span class="substat-value">{{ character.subStats.veripisteet }}</span>
+            <span class="substat-value">{{ character.subStats?.veripisteet || 0 }}</span>
           </div>
           <div class="substat-card">
             <span class="substat-name">Vauriobonus</span>
-            <span class="substat-value">{{ character.subStats.vauriobonus }}</span>
+            <span class="substat-value">{{ character.subStats?.vauriobonus || 0 }}</span>
           </div>
           <div class="substat-card">
             <span class="substat-name">Syvä haava</span>
-            <span class="substat-value">{{ character.subStats.syvaHaava }}</span>
+            <span class="substat-value">{{ character.subStats?.syvaHaava || 0 }}</span>
           </div>
           <div class="substat-card">
             <span class="substat-name">Kantokyky</span>
-            <span class="substat-value">{{ character.subStats.kantokyky }}</span>
+            <span class="substat-value">{{ character.subStats?.kantokyky || 0 }}</span>
           </div>
         </div>
       </div>

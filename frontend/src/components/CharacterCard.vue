@@ -75,11 +75,11 @@ const handleDelete = () => {
       </div>
       <div class="detail-row">
         <span>Veripisteet:</span>
-        <strong>{{ character.subStats.veripisteet }}</strong>
+        <strong>{{ character.subStats?.veripisteet || 0 }}</strong>
       </div>
       <div class="detail-row">
         <span>Taitoja:</span>
-        <strong>{{ character.learnedSkills.length }}</strong>
+        <strong>{{ character.learnedSkills?.length || 0 }}</strong>
       </div>
     </div>
 
