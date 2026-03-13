@@ -1,11 +1,13 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useCharacterCreationStore } from '@/stores/characterCreation'
 import { useSkillsStore } from '@/stores/skills'
-import { calculateSkillsWithLevels } from '@/utils/skills'
+import { calculateSkillsWithLevels, calculateUnlearnedSkills } from '@/utils/skills'
 
 const wizardStore = useCharacterCreationStore()
 const skillsStore = useSkillsStore()
+
+const showUnlearnedSkills = ref(false)
 
 const skillsWithLevels = computed(() => {
   return calculateSkillsWithLevels(
@@ -13,6 +15,14 @@ const skillsWithLevels = computed(() => {
     skillsStore.skillList,
     wizardStore.draft.attributes,
     wizardStore.draft.background
+  )
+})
+
+const unlearnedSkills = computed(() => {
+  return calculateUnlearnedSkills(
+    wizardStore.draft.learnedSkills || [],
+    skillsStore.skillList || [],
+    wizardStore.draft.attributes || []
   )
 })
 
@@ -129,6 +139,26 @@ const totalEquipmentWeight = computed(() =>
             <div class="box p-3">
               <div class="is-size-7 has-text-grey">{{ skill.name }}</div>
               <div class="is-size-5 has-text-weight-bold has-text-success">{{ skill.level }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-4" v-if="unlearnedSkills && unlearnedSkills.length > 0">
+      <div class="card-content">
+        <div class="is-size-5 has-text-weight-bold mb-3" style="font-family: 'MedievalSharp', cursive; display: flex; justify-content: space-between; align-items: center; cursor: pointer;"
+          @click="showUnlearnedSkills = !showUnlearnedSkills">
+          <span>Oppimattomat taidot ({{ unlearnedSkills.length }})</span>
+          <span class="icon">
+            <i :class="showUnlearnedSkills ? 'fas fa-chevron-down' : 'fas fa-chevron-right'"></i>
+          </span>
+        </div>
+        <div v-show="showUnlearnedSkills" class="columns is-multiline">
+          <div class="column is-4" v-for="skill in unlearnedSkills" :key="skill.name">
+            <div class="box p-3 unlearned">
+              <div class="is-size-7 has-text-grey">{{ skill.name }}</div>
+              <div class="is-size-5 has-text-weight-bold has-text-grey">{{ skill.level }}</div>
             </div>
           </div>
         </div>
@@ -384,6 +414,16 @@ const totalEquipmentWeight = computed(() =>
   background: var(--color-bg-tertiary);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
+}
+
+.summary-step .box.unlearned {
+  opacity: 0.6;
+  background: var(--color-bg-secondary);
+}
+
+.summary-step .box.unlearned .has-text-weight-bold {
+  color: var(--color-text-muted) !important;
+  text-shadow: none;
 }
 
 .summary-step .box .is-size-4 {
