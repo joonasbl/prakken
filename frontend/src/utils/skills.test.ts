@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { calculateSkillsWithLevels, isSkillLearned, getLearnedSkill } from '@/utils/skills'
+import { calculateSkillsWithLevels, isSkillLearned, getLearnedSkill, calculateUnlearnedSkills } from '@/utils/skills'
 import type { LearnedSkill, Skill } from '@/types/skills'
 import type { Attr } from '@/types/attributes'
 import type { Background } from '@/types/character'
@@ -194,6 +194,95 @@ describe('Skills Utility', () => {
       const result = getLearnedSkill(learnedSkills, 'Miekat')
 
       expect(result).toBeUndefined()
+    })
+  })
+
+  describe('calculateUnlearnedSkills', () => {
+    it('returns all skills that are not learned', () => {
+      const learnedSkills: LearnedSkill[] = [
+        { name: 'Miekat', bonus: 0 },
+      ]
+      const attributes = createAttributes()
+
+      const result = calculateUnlearnedSkills(learnedSkills, mockSkills, attributes)
+
+      expect(result).toHaveLength(3)
+      expect(result.map((s) => s.name)).toEqual(['Kilvet', 'Esiintyminen', 'Erätaidot'])
+    })
+
+    it('calculates base levels from attributes', () => {
+      const learnedSkills: LearnedSkill[] = []
+      const attributes = createAttributes({ Voima: 14, Karisma: 8 })
+
+      const result = calculateUnlearnedSkills(learnedSkills, mockSkills, attributes)
+
+      const kilvet = result.find((s) => s.name === 'Kilvet')
+      const esiintyminen = result.find((s) => s.name === 'Esiintyminen')
+
+      expect(kilvet?.level).toBe(7) // ceil(14/2)
+      expect(kilvet?.baseLevel).toBe(7)
+      expect(esiintyminen?.level).toBe(4) // ceil(8/2)
+      expect(esiintyminen?.baseLevel).toBe(4)
+    })
+
+    it('uses default level 6 for skills without attribute', () => {
+      const learnedSkills: LearnedSkill[] = []
+      const attributes = createAttributes()
+
+      const result = calculateUnlearnedSkills(learnedSkills, mockSkills, attributes)
+
+      const erataidot = result.find((s) => s.name === 'Erätaidot')
+
+      expect(erataidot?.level).toBe(6)
+      expect(erataidot?.baseLevel).toBe(6)
+      expect(erataidot?.baseLabel).toBe(null)
+    })
+
+    it('marks all skills as unlearned', () => {
+      const learnedSkills: LearnedSkill[] = [
+        { name: 'Miekat', bonus: 0 },
+      ]
+      const attributes = createAttributes()
+
+      const result = calculateUnlearnedSkills(learnedSkills, mockSkills, attributes)
+
+      result.forEach((skill) => {
+        expect(skill.learned).toBe(false)
+        expect(skill.backgroundSkill).toBe(false)
+        expect(skill.bonus).toBe(0)
+      })
+    })
+
+    it('returns empty array when all skills are learned', () => {
+      const learnedSkills: LearnedSkill[] = [
+        { name: 'Miekat', bonus: 0 },
+        { name: 'Kilvet', bonus: 0 },
+        { name: 'Esiintyminen', bonus: 0 },
+        { name: 'Erätaidot', bonus: 0 },
+      ]
+      const attributes = createAttributes()
+
+      const result = calculateUnlearnedSkills(learnedSkills, mockSkills, attributes)
+
+      expect(result).toHaveLength(0)
+    })
+
+    it('returns all skills when no skills are learned', () => {
+      const learnedSkills: LearnedSkill[] = []
+      const attributes = createAttributes()
+
+      const result = calculateUnlearnedSkills(learnedSkills, mockSkills, attributes)
+
+      expect(result).toHaveLength(4)
+    })
+
+    it('handles null/undefined inputs gracefully', () => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      expect(calculateUnlearnedSkills(null as any, mockSkills, [])).toHaveLength(0)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      expect(calculateUnlearnedSkills([], null as any, [])).toHaveLength(0)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      expect(calculateUnlearnedSkills([], mockSkills, null as any)).toHaveLength(0)
     })
   })
 })
