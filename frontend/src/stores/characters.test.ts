@@ -50,7 +50,7 @@ describe('Characters Store', () => {
     ],
     advantages: [],
     disadvantages: [],
-    skills: [],
+    learnedSkills: [],
     equipment: [],
     subStats: {
       veripisteet: 11,

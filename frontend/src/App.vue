@@ -133,20 +133,43 @@ const closeMobileMenu = () => {
   .header-row {
     padding: var(--space-sm) var(--space-md);
   }
-  
+
   .header-row h1 {
     font-size: var(--font-size-xl);
     text-align: left;
   }
-  
+
   .header-row h1 .icon {
     font-size: 1.2rem;
   }
-  
+
   .mobile-nav-toggle {
     flex-shrink: 0;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
   }
-  
+
+  .mobile-nav-toggle .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+  }
+
+  .mobile-nav-toggle i {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    margin: 0;
+    padding: 0;
+  }
+
   .main-content {
     min-height: calc(100vh - 140px);
   }

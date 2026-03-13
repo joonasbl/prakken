@@ -79,7 +79,7 @@ const handleDelete = () => {
       </div>
       <div class="detail-row">
         <span>Taitoja:</span>
-        <strong>{{ character.skills.filter((s) => s.bonus > 0).length }}</strong>
+        <strong>{{ character.learnedSkills.length }}</strong>
       </div>
     </div>
 
