@@ -1,0 +1,72 @@
+name: Deploy to VPS
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        working-directory: ./frontend
+        run: npm ci
+
+      - name: Build
+        working-directory: ./frontend
+        run: npm run build
+
+      - name: Build Docker image
+        working-directory: ./frontend
+        run: docker build -t prakken-frontend:latest -f Dockerfile.prod .
+
+      - name: Save image to tar
+        run: docker save -o prakken-frontend.tar prakken-frontend:latest
+
+      - name: Copy image to VPS
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          source: prakken-frontend.tar
+          target: ~/
+
+      - name: Deploy on VPS
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          script: |
+            echo "Loading image..."
+            podman load -i ~/prakken-frontend.tar
+
+            echo "Stopping existing container..."
+            podman rm -f prakken-frontend 2>/dev/null || true
+
+            echo "Starting new container..."
+            podman run -d --name prakken-frontend \
+              -p 80:80 -p 443:443 \
+              -v /home/opc/.acme.sh/prakken.dedyn.io_ecc/fullchain.cer:/etc/ssl/certs/fullchain.cer:ro \
+              -v /home/opc/.acme.sh/prakken.dedyn.io_ecc/prakken.dedyn.io.key:/etc/ssl/private/prakken.key:ro \
+              prakken-frontend:latest
+
+            echo "Cleaning up tar file..."
+            rm ~/prakken-frontend.tar
+
+            echo "Container status:"
+            podman ps --filter name=prakken-frontend
+
+      - name: Cleanup local artifacts
+        run: rm -f prakken-frontend.tar
