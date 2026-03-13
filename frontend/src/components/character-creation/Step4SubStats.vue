@@ -73,7 +73,7 @@ const substatModifiers = computed(() => wizardStore.substatModifiers)
     <div v-if="!hasSubStats" class="has-text-centered py-6">
       <button type="button" class="button is-info is-medium is-rounded" @click="calculateDerivedStats">
         <span class="icon"><i class="fas fa-calculator"></i></span>
-        <span>Laske johdannaiset</span>
+        <span>Laske aliominaisuudet</span>
       </button>
     </div>
 

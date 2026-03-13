@@ -21,7 +21,7 @@ const stepTitles: Record<number, string> = {
   1: 'Heitä ominaisuudet',
   2: 'Valitse tausta',
   3: 'Edut ja haitat',
-  4: 'Johdannaiset',
+  4: 'Aliominaisuudet',
   5: 'Taidot',
   6: 'Varusteet',
   7: 'Nimi ja tiedot',
