@@ -30,26 +30,22 @@ The primary goal is to make attribute management fast, clear, and visually organ
 ### 4. Core Features (Current & Planned)
 
 **Current**
+- [x] Full multi-step character creator (wizard) with 8 stages
+- [x] Persist stats and characters locally (localStorage)
+- [x] Support multiple characters and quick switching
+- [x] Add derived stats and validation (veripisteet, vauriobonus, syvä haava, kantokyky)
+- [x] Introduce routing-based views (Characters, Create Character, Character Sheet)
 - Display a list of base attributes with default numeric values.
 - Allow inline editing of each attribute via numeric input.
 - Centralize attribute state in a dedicated store for predictable updates.
 - Display numerical skill levels derived from attributes, with a point-buy system and caps.
 
 **Planned / Future**
-- Full multi-step character creator (wizard) with 8 stages in order:
-  1. Roll stats
-  2. Choose background
-  3. Advantages and disadvantages
-  4. Sub-stats
-  5. Skills
-  6. Equipment
-  7. Name and additional details
-  8. Summary and save
-- Persist stats and characters locally (e.g., browser storage) so they survive reloads.
-- Support multiple characters and quick switching between them.
-- Add derived stats and validation (e.g., min/max values, total points).
-- Introduce routing-based views (e.g., `About`, `Settings`, `Character list`, `Create character`).
-
+- Active Character View (Play Mode) with HP, XP, gold tracking
+- Equipment weight and encumbrance system
+- Export/Import character data (JSON/PDF)
+- Character portraits and customization
+- Combat tracker integration
 ### 5. UX & Interaction Design
 
 - **Single main screen** focused on the stat list.
@@ -259,11 +255,11 @@ Some advantages and disadvantages have special effects beyond their basic descri
 - ✅ **Multiple character support** - List view with save/load/delete
 
 #### Phase 2: Enhanced Features (Next)
-- [ ] **Mobile responsiveness**
-  - [ ] Mobile-first stylesheet overhaul
-  - [ ] Touch-friendly controls and gestures
-  - [ ] Collapsible sections for small screens
-  - [ ] Mobile navigation menu
+- [x] **Mobile responsiveness**
+  - [x] Mobile-first stylesheet overhaul
+  - [x] Touch-friendly controls and gestures
+  - [x] Collapsible sections for small screens
+  - [x] Mobile navigation menu
 - [ ] **Active Character View** (Play Mode)
   - [ ] Health tracker (current/max HP) with quick adjust buttons
   - [ ] Experience points tracker
@@ -357,7 +353,157 @@ Prakken/
 1. **Offline-first**: App works fully without backend
 2. **Progressive enhancement**: Basic features work everywhere, advanced features require backend
 3. **Dark theme by default**: Fantasy aesthetic with excellent contrast
-4. **Mobile-responsive**: Works on phones, tablets, and desktop
+4. **Mobile-responsive**: Works on phones, tablets, and desktop ✅
 5. **Finnish language first**: UI in Finnish, with i18n support for future languages
 6. **Accessibility**: WCAG 2.1 AA compliance for contrast and keyboard navigation
 
+
+### 14. Active Character View (Play Mode) – Implementation Plan
+
+#### Overview
+A dedicated view for active gameplay, optimized for quick reference and real-time tracking during game sessions.
+
+---
+
+#### Data Model Changes
+
+**Add to `Character` type** (`src/types/character.ts`):
+
+```typescript
+export type Character = {
+  // ... existing fields ...
+  
+  // Play Mode fields
+  currentHp: number                    // Current hit points
+  experience: number                   // Experience points
+  gold: number                         // Gold pieces
+  woundStatus: 'none' | 'minor' | 'severe'  // Wound state
+  equippedItems: string[]              // Array of equipment IDs
+  notes: string                        // In-game notes
+}
+```
+
+**Initial values for new characters:**
+- `currentHp`: equals `subStats.veripisteet`
+- `experience`: 0
+- `gold`: 0
+- `woundStatus`: 'none'
+- `equippedItems`: []
+- `notes`: ''
+
+---
+
+#### Store Changes
+
+**Extend `characters.ts` store** with play mode actions:
+
+```typescript
+actions: {
+  // ... existing actions ...
+  
+  updatePlayState(id: string, playState: Partial<PlayState>): boolean
+  adjustHp(id: string, delta: number): boolean
+  adjustExperience(id: string, delta: number): boolean
+  adjustGold(id: string, delta: number): boolean
+  toggleEquipment(id: string, equipmentId: string): boolean
+  restAndHeal(id: string): boolean
+}
+```
+
+---
+
+#### New Components
+
+**`src/views/PlayView.vue`** – Main play mode view
+
+Features:
+- Large, touch-friendly HP controls with visual bar
+- Quick +/- buttons for XP and gold
+- Wound status toggle buttons
+- Collapsible equipped items list
+- Expandable notes textarea
+- Rest/heal action buttons
+
+**Layout (mobile-first):**
+```
+┌─────────────────────────────────┐
+│ ← Back    CHARACTER NAME    ⚙️  │
+├─────────────────────────────────┤
+│  ❤️ HP: [−] 12/14 [+]          │
+│     ████████████░░  (bar)      │
+├─────────────────────────────────┤
+│  ⚔️ Vauriobonus: +1             │
+│  🩸 Syvä haava: 7               │
+├─────────────────────────────────┤
+│  ✨ XP: [−] 45 [+]             │
+│  💰 Gold: [−] 120 [+]          │
+├─────────────────────────────────┤
+│  🎒 Equipped (3) [▼]           │
+│    • Longsword                 │
+│    • Shield                    │
+│    • Armor                     │
+├─────────────────────────────────┤
+│  📝 Notes [✏️]                 │
+│    [text area...]              │
+├─────────────────────────────────┤
+│  [REST] [HEAL +5] [HEAL +10]   │
+└─────────────────────────────────┘
+```
+
+---
+
+#### Route Changes
+
+**Add to `src/router/index.ts`:**
+
+```typescript
+{
+  path: '/play/:id',
+  name: 'PlayView',
+  component: PlayView,
+}
+```
+
+**Add navigation:**
+- "Play" button on CharacterListView (each character card)
+- "Play" button on CharacterSheetView
+- "Back to Sheet" link on PlayView
+
+---
+
+#### Implementation Tasks
+
+**Phase 2.1: Data Layer**
+- [ ] Update `Character` type with play state fields
+- [ ] Add play state actions to `characters.ts` store
+- [ ] Update storage to persist play state fields
+
+**Phase 2.2: Play View Component**
+- [ ] Create `PlayView.vue` with HP tracker
+- [ ] Add XP and gold trackers
+- [ ] Add wound status toggle
+- [ ] Add equipped items list
+- [ ] Add notes section
+- [ ] Add rest/heal buttons
+
+**Phase 2.3: Navigation**
+- [ ] Add route for `/play/:id`
+- [ ] Add "Play" button to CharacterListView
+- [ ] Add "Play" button to CharacterSheetView
+- [ ] Add "Back" navigation in PlayView
+
+**Phase 2.4: Polish**
+- [ ] HP visual bar (color-coded: green→yellow→red)
+- [ ] Wound status visual indicators
+- [ ] Confirmation dialogs for rest/heal
+- [ ] Mobile-responsive layout testing
+
+---
+
+#### Future Enhancements (Post-Phase 2)
+
+- Equipment weight calculation and encumbrance
+- Combat tracker integration
+- Spell/magic slot tracking
+- Character portrait display
+- Multiple play states per character (different campaigns)
