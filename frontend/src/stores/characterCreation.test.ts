@@ -259,8 +259,8 @@ describe('Character Creation Store', () => {
       store.setBackground(background)
       store.setAttributeChoice('Voima', 1)
 
-      // Access effective attributes
-      store.effectiveAttributes
+      // Access effective attributes (should not mutate base)
+      void store.effectiveAttributes
 
       // Base attributes should remain unchanged
       expect(store.draft.attributes.find((a) => a.name === 'Voima')?.value).toBe(10)

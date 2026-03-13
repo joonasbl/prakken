@@ -6,10 +6,10 @@ import type { Background } from '@/types/character'
 
 describe('Skills Utility', () => {
   const mockSkills: Skill[] = [
-    { name: 'Miekat', baseCode: 'ket', baseLabel: 'Ketteryys', level: 0, learned: false, backgroundSkill: false },
-    { name: 'Kilvet', baseCode: 'voi', baseLabel: 'Voima', level: 0, learned: false, backgroundSkill: false },
-    { name: 'Esiintyminen', baseCode: 'kar', baseLabel: 'Karisma', level: 0, learned: false, backgroundSkill: false },
-    { name: 'Erätaidot', baseCode: 'ei', baseLabel: null, level: 0, learned: false, backgroundSkill: false },
+    { name: 'Miekat', baseCode: 'ket', bonus: 0, learned: false, backgroundSkill: false },
+    { name: 'Kilvet', baseCode: 'voi', bonus: 0, learned: false, backgroundSkill: false },
+    { name: 'Esiintyminen', baseCode: 'kar', bonus: 0, learned: false, backgroundSkill: false },
+    { name: 'Erätaidot', baseCode: 'ei', bonus: 0, learned: false, backgroundSkill: false },
   ]
 
   const createAttributes = (overrides: Record<string, number> = {}): Attr[] => [

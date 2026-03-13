@@ -267,7 +267,7 @@ export const useCharacterCreationStore = defineStore('characterCreation', {
       if (background) {
         for (const [attrName, bonus] of Object.entries(background.statBonuses)) {
           const attr = baseAttrs.find((a) => a.name === attrName)
-          if (attr) {
+          if (attr && bonus) {
             attr.value += bonus
           }
         }
@@ -276,7 +276,7 @@ export const useCharacterCreationStore = defineStore('characterCreation', {
       // Apply Lahjakas bonuses
       for (const [attrName, bonus] of Object.entries(attributeChoices)) {
         const attr = baseAttrs.find((a) => a.name === attrName)
-        if (attr && bonus > 0) {
+        if (attr && bonus && bonus > 0) {
           attr.value += bonus
         }
       }
