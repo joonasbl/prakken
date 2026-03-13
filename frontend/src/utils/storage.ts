@@ -17,6 +17,23 @@ export const loadStorage = (): StorageData => {
       return { version: STORAGE_VERSION, characters: [], activeCharacterId: null }
     }
     const parsed = JSON.parse(data) as StorageData
+    
+    // Migrate old 'skills' field to 'learnedSkills' for backwards compatibility
+    /* eslint-disable @typescript-eslint/no-explicit-any */
+    if (parsed.characters && Array.isArray(parsed.characters)) {
+      for (const char of parsed.characters) {
+        const anyChar = char as any
+        if (anyChar.skills && !anyChar.learnedSkills) {
+          // Convert old Skill[] format to LearnedSkill[] format
+          anyChar.learnedSkills = anyChar.skills
+            .filter((s: any) => s.learned)
+            .map((s: any) => ({ name: s.name, bonus: s.bonus || 0 }))
+          delete anyChar.skills
+        }
+      }
+    }
+    /* eslint-enable @typescript-eslint/no-explicit-any */
+    
     return parsed
   } catch (error) {
     console.error('Failed to load from localStorage:', error)
