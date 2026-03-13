@@ -9,6 +9,7 @@ const props = defineProps<{
 const emit = defineEmits<{
   'update:modelValue': [value: boolean]
   close: []
+  cancel: []
 }>()
 
 const wizardStore = useCharacterCreationStore()
@@ -41,8 +42,13 @@ const decrementChoice = (attrName: string) => {
 }
 
 const handleClose = () => {
+  const wasIncomplete = pendingChoices.value > 0
   isOpen.value = false
-  emit('close')
+  if (wasIncomplete) {
+    emit('cancel')
+  } else {
+    emit('close')
+  }
 }
 
 const isComplete = computed(() => pendingChoices.value === 0)
@@ -130,6 +136,7 @@ const isComplete = computed(() => pendingChoices.value === 0)
   align-items: center;
   justify-content: center;
   z-index: 1000;
+  padding: var(--space-md);
 }
 
 .modal-content {
@@ -137,9 +144,13 @@ const isComplete = computed(() => pendingChoices.value === 0)
   border-radius: var(--radius-lg);
   padding: 1.5rem;
   max-width: 500px;
-  width: 90%;
+  width: 100%;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
   box-shadow: var(--shadow-lg), 0 0 30px rgba(212, 175, 55, 0.2);
   border: 1px solid var(--border-gold);
+  position: relative;
 }
 
 .modal-content::before {
@@ -156,26 +167,44 @@ const isComplete = computed(() => pendingChoices.value === 0)
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
+  flex-shrink: 0;
 }
 
 .modal-header h2 {
-  font-size: 1.25rem;
+  font-size: 1.1rem;
   color: var(--color-gold-primary);
   margin: 0;
   font-family: var(--font-heading);
   letter-spacing: 0.05em;
 }
 
+@media (min-width: 768px) {
+  .modal-header h2 {
+    font-size: 1.25rem;
+  }
+}
+
 .close-btn {
   background: none;
   border: none;
-  font-size: 2rem;
+  font-size: 1.75rem;
   color: var(--color-text-muted);
   cursor: pointer;
   line-height: 1;
   padding: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   transition: color 0.3s ease;
+}
+
+@media (min-width: 768px) {
+  .close-btn {
+    font-size: 2rem;
+  }
 }
 
 .close-btn:hover {
@@ -183,30 +212,59 @@ const isComplete = computed(() => pendingChoices.value === 0)
 }
 
 .modal-body {
-  margin-bottom: 1.5rem;
+  flex: 1;
+  overflow-y: auto;
+  margin-bottom: 1rem;
+  padding-right: 0.5rem;
+}
+
+@media (min-width: 768px) {
+  .modal-body {
+    margin-bottom: 1.5rem;
+  }
 }
 
 .instruction {
   color: var(--color-text-secondary);
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
   text-align: center;
+  font-size: 0.9rem;
+}
+
+@media (min-width: 768px) {
+  .instruction {
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+  }
 }
 
 .attribute-selections {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 0.5rem;
+}
+
+@media (min-width: 768px) {
+  .attribute-selections {
+    gap: 0.75rem;
+  }
 }
 
 .attribute-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.75rem 1rem;
+  padding: 0.625rem 0.75rem;
   background: var(--color-bg-tertiary);
   border-radius: var(--radius-md);
   border: 1px solid var(--border-color);
   transition: all 0.3s ease;
+}
+
+@media (min-width: 768px) {
+  .attribute-row {
+    padding: 0.75rem 1rem;
+  }
 }
 
 .attribute-row:hover {
@@ -219,6 +277,13 @@ const isComplete = computed(() => pendingChoices.value === 0)
   color: var(--color-gold-primary);
   font-family: var(--font-heading);
   letter-spacing: 0.05em;
+  font-size: 0.9rem;
+}
+
+@media (min-width: 768px) {
+  .attr-name {
+    font-size: 1rem;
+  }
 }
 
 .attr-controls {
@@ -228,8 +293,9 @@ const isComplete = computed(() => pendingChoices.value === 0)
 }
 
 .attr-btn {
-  width: 32px;
-  height: 32px;
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
   border: none;
   border-radius: var(--radius-md);
   background: linear-gradient(135deg, #4a90d9 0%, #357abd 100%);
@@ -239,6 +305,9 @@ const isComplete = computed(() => pendingChoices.value === 0)
   font-size: 1.2rem;
   transition: all 0.3s ease;
   box-shadow: 0 2px 8px rgba(74, 144, 217, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .attr-btn:disabled {
@@ -262,8 +331,14 @@ const isComplete = computed(() => pendingChoices.value === 0)
 }
 
 .selection-summary {
-  margin-top: 1.5rem;
+  margin-top: 1rem;
   text-align: center;
+}
+
+@media (min-width: 768px) {
+  .selection-summary {
+    margin-top: 1.5rem;
+  }
 }
 
 .selection-summary .complete {
@@ -280,10 +355,20 @@ const isComplete = computed(() => pendingChoices.value === 0)
 .modal-footer {
   display: flex;
   justify-content: center;
+  flex-shrink: 0;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-color);
+}
+
+@media (min-width: 768px) {
+  .modal-footer {
+    padding-top: 1.5rem;
+  }
 }
 
 .done-btn {
   padding: 0.75rem 2rem;
+  min-height: 44px;
   background: linear-gradient(135deg, #2ea043 0%, #248a38 100%);
   color: white;
   border: none;

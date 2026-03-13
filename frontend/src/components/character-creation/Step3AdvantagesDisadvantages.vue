@@ -23,6 +23,13 @@ watch(hasLahjakas, (newValue) => {
   }
 })
 
+const handleModalCancel = () => {
+  const lahjakasAdvantage = wizardStore.availableAdvantages.find((a) => a.id === 'lahjakas')
+  if (lahjakasAdvantage && hasAdvantage('lahjakas')) {
+    wizardStore.toggleAdvantage(lahjakasAdvantage)
+  }
+}
+
 const canSelectMoreAdvantages = computed(() =>
   wizardStore.selectedAdvantages.length < MAX_SELECTIONS
 )
@@ -154,7 +161,7 @@ const selectionStatus = computed(() => {
       </div>
     </div>
 
-    <AttributeChoiceModal v-model="showModal" @close="showModal = false" />
+    <AttributeChoiceModal v-model="showModal" @close="showModal = false" @cancel="handleModalCancel" />
   </div>
 </template>
 
