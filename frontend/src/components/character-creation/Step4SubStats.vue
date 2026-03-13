@@ -149,9 +149,11 @@ const substatModifiers = computed(() => wizardStore.substatModifiers)
 }
 
 .columns.is-multiline {
-  display: grid;
+  display: grid !important;
   grid-template-columns: repeat(2, 1fr);
   gap: 1rem;
+  flex-wrap: unset;
+  margin: 0;
 }
 
 @media (min-width: 576px) {
@@ -162,6 +164,8 @@ const substatModifiers = computed(() => wizardStore.substatModifiers)
 
 .column.is-3 {
   padding: 0;
+  flex: unset !important;
+  width: unset !important;
 }
 
 .card {
