@@ -75,9 +75,9 @@ const saveCharacter = () => {
     ...wizardStore.draft,
     attributes: wizardStore.effectiveAttributes,
   }
-  const character = charactersStore.saveCharacter(draftWithEffectiveAttrs)
+  charactersStore.saveCharacter(draftWithEffectiveAttrs)
   wizardStore.resetWizard()
-  router.push(`/character/${character.id}`)
+  router.push('/characters')
 }
 
 const cancelWizard = () => {
@@ -142,8 +142,8 @@ const cancelWizard = () => {
         :disabled="!canProceed"
         @click="handleNext"
       >
+        <span class="icon"><i :class="currentStep === 8 ? 'fas fa-save' : 'fas fa-arrow-right'"></i></span>
         <span>{{ currentStep === 8 ? 'Valmis' : 'Seuraava' }}</span>
-        <span class="icon"><i class="fas fa-arrow-right"></i></span>
       </button>
     </div>
   </div>
