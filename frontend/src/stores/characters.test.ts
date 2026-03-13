@@ -130,22 +130,24 @@ describe('Characters Store', () => {
 
   it('sorts characters by updated date', () => {
     const store = useCharactersStore()
+    const baseTime = Date.now()
 
     const char1: Character = {
       ...createTestCharacter(),
       id: 'char-1',
       name: 'First',
-      updatedAt: Date.now() - 86400000,
+      updatedAt: baseTime - 1000,
     }
     const char2: Character = {
       ...createTestCharacter(),
       id: 'char-2',
       name: 'Second',
-      updatedAt: Date.now(),
+      updatedAt: baseTime + 1000,
     }
 
-    store.saveCharacter(char2)
-    store.saveCharacter(char1)
+    // Directly add to state to preserve timestamps
+    store.characters.push(char1)
+    store.characters.push(char2)
 
     expect(store.charactersSorted[0].name).toBe('Second')
     expect(store.charactersSorted[1].name).toBe('First')
