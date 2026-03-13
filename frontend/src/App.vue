@@ -92,7 +92,6 @@ const closeMobileMenu = () => {
 .header-content {
   background: var(--color-bg-secondary);
   border-bottom: 2px solid var(--border-gold);
-  padding-top: var(--space-xs);
 }
 
 .header-row {
@@ -107,6 +106,12 @@ const closeMobileMenu = () => {
   margin: 0;
   flex: 1;
   text-align: center;
+  line-height: 1.4;
+}
+
+.header-row h1 .icon {
+  display: inline-block;
+  vertical-align: middle;
 }
 
 /* Mobile Navigation Styles */
