@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import type { Attr } from '@/types/attributes'
-import type { Skill } from '@/types/skills'
+import type { LearnedSkill } from '@/types/skills'
 import type {
   Background,
   Advantage,
@@ -200,7 +200,7 @@ export const useCharacterCreationStore = defineStore('characterCreation', {
       draft: {
         name: '',
         attributes: JSON.parse(JSON.stringify(defaultAttributes)) as Attr[],
-        skills: [] as Skill[],
+        learnedSkills: [] as LearnedSkill[],
         background: null,
         advantages: [],
         disadvantages: [],
@@ -312,7 +312,7 @@ export const useCharacterCreationStore = defineStore('characterCreation', {
       this.draft = {
         name: '',
         attributes: JSON.parse(JSON.stringify(defaultAttributes)) as Attr[],
-        skills: [] as Skill[],
+        learnedSkills: [] as LearnedSkill[],
         background: null,
         advantages: [],
         disadvantages: [],
@@ -366,8 +366,8 @@ export const useCharacterCreationStore = defineStore('characterCreation', {
     setSubStats(subStats: SubStats) {
       this.draft.subStats = subStats
     },
-    setSkills(skills: Skill[]) {
-      this.draft.skills = skills
+    setLearnedSkills(learnedSkills: LearnedSkill[]) {
+      this.draft.learnedSkills = learnedSkills
     },
     toggleEquipment(equipment: Equipment) {
       const index = this.draft.equipment.findIndex((e) => e.id === equipment.id)

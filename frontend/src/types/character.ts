@@ -1,5 +1,5 @@
 import type { Attr } from './attributes'
-import type { Skill } from './skills'
+import type { LearnedSkill } from './skills'
 
 export type Background = {
   id: string
@@ -56,7 +56,7 @@ export type Character = {
   id: string
   name: string
   attributes: Attr[]
-  skills: Skill[]
+  learnedSkills: LearnedSkill[]  // Only learned skills (stored)
   background: Background | null
   advantages: Advantage[]
   disadvantages: Disadvantage[]
@@ -70,7 +70,7 @@ export type Character = {
 export type CharacterDraft = {
   name: string
   attributes: Attr[]
-  skills: Skill[]
+  learnedSkills: LearnedSkill[]  // Only learned skills (stored)
   background: Background | null
   advantages: Advantage[]
   disadvantages: Disadvantage[]

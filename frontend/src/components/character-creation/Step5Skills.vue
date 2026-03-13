@@ -2,7 +2,7 @@
 import { computed, onMounted } from 'vue'
 import { useCharacterCreationStore } from '@/stores/characterCreation'
 import { useSkillsStore } from '@/stores/skills'
-import type { Skill, SkillBaseCode } from '@/types/skills'
+import type { Skill, SkillBaseCode, LearnedSkill } from '@/types/skills'
 
 const wizardStore = useCharacterCreationStore()
 const skillsStore = useSkillsStore()
@@ -10,23 +10,19 @@ const skillsStore = useSkillsStore()
 const SKILL_LEARN_COST = 2
 
 onMounted(() => {
-  if (wizardStore.draft.skills.length === 0) {
+  // Initialize learned skills from background
+  if (wizardStore.draft.learnedSkills.length === 0) {
     const background = wizardStore.draft.background
-    const clonedSkills: Skill[] = skillsStore.skillList.map((skill) => {
-      const newSkill: Skill = { ...skill }
-      // Background skills are automatically learned (no bonus, marked as background skill)
-      if (background?.skillBonuses[skill.name] !== undefined) {
-        newSkill.learned = true
-        newSkill.bonus = 0
-        newSkill.backgroundSkill = true
-      } else {
-        newSkill.learned = false
-        newSkill.bonus = 0
-        newSkill.backgroundSkill = false
+    const learnedSkills: LearnedSkill[] = []
+    
+    // Add background skills (automatically learned, no bonus)
+    if (background?.skillBonuses) {
+      for (const skillName of Object.keys(background.skillBonuses)) {
+        learnedSkills.push({ name: skillName, bonus: 0 })
       }
-      return newSkill
-    })
-    wizardStore.setSkills(clonedSkills)
+    }
+    
+    wizardStore.setLearnedSkills(learnedSkills)
   }
 })
 
@@ -40,25 +36,32 @@ const baseCodeToAttributeName: Record<SkillBaseCode, string | null> = {
   erikois: null,
 }
 
-const mappedSkills = computed(() =>
-  wizardStore.draft.skills.map((skill) => {
-    const attributeName = baseCodeToAttributeName[skill.baseCode]
-    const attribute =
-      attributeName != null
-        ? wizardStore.draft.attributes.find((attr) => attr.name === attributeName)
-        : undefined
+// Get full skill definitions with calculated levels
+const skillsWithLevels = computed(() => {
+  return wizardStore.draft.learnedSkills
+    .map((learnedSkill) => {
+      const skillDef = skillsStore.skillList.find((s) => s.name === learnedSkill.name)
+      if (!skillDef) return null
+      
+      const attributeName = baseCodeToAttributeName[skillDef.baseCode]
+      const attribute =
+        attributeName != null
+          ? wizardStore.draft.attributes.find((attr) => attr.name === attributeName)
+          : undefined
 
-    const baseLevel = attribute ? Math.ceil(attribute.value / 2) : 6
-    const level = skill.learned ? baseLevel + skill.bonus : 0
+      const baseLevel = attribute ? Math.ceil(attribute.value / 2) : 6
+      const level = baseLevel + learnedSkill.bonus
 
-    return {
-      ...skill,
-      baseLabel: attributeName,
-      baseLevel,
-      level,
-    }
-  }),
-)
+      return {
+        ...skillDef,
+        bonus: learnedSkill.bonus,
+        level,
+        baseLabel: attributeName,
+        baseLevel,
+      }
+    })
+    .filter((s) => s !== null)
+})
 
 const calculateSkillRaiseCost = (baseLevel: number, currentBonus: number): number => {
   const currentLevel = baseLevel + currentBonus
@@ -67,24 +70,26 @@ const calculateSkillRaiseCost = (baseLevel: number, currentBonus: number): numbe
 
 const totalSpentPoints = computed(() => {
   let total = 0
-  for (const skill of wizardStore.draft.skills) {
-    if (!skill.learned) continue
-
-    const attributeName = baseCodeToAttributeName[skill.baseCode]
+  const background = wizardStore.draft.background
+  
+  for (const learnedSkill of wizardStore.draft.learnedSkills) {
+    const skillDef = skillsStore.skillList.find((s) => s.name === learnedSkill.name)
+    if (!skillDef) continue
+    
+    const attributeName = baseCodeToAttributeName[skillDef.baseCode]
     const attribute =
       attributeName != null
         ? wizardStore.draft.attributes.find((attr) => attr.name === attributeName)
         : undefined
     const baseLevel = attribute ? Math.ceil(attribute.value / 2) : 6
 
-    // Background skills are free (learning cost waived)
     // Non-background skills cost 2 points to learn
-    if (!skill.backgroundSkill) {
+    if (background?.skillBonuses[learnedSkill.name] === undefined) {
       total += SKILL_LEARN_COST
     }
 
     // Add raise costs for each bonus level
-    for (let i = 0; i < skill.bonus; i++) {
+    for (let i = 0; i < learnedSkill.bonus; i++) {
       total += calculateSkillRaiseCost(baseLevel, i)
     }
   }
@@ -94,52 +99,49 @@ const totalSpentPoints = computed(() => {
 const skillPointLimit = computed(() => wizardStore.skillPointLimit)
 const remainingPoints = computed(() => skillPointLimit.value - totalSpentPoints.value)
 
-const learnedSkillsCount = computed(() =>
-  wizardStore.draft.skills.filter((s) => s.learned).length
-)
+const learnedSkillsCount = computed(() => wizardStore.draft.learnedSkills.length)
+
+const isSkillLearned = (skillName: string): boolean => {
+  return wizardStore.draft.learnedSkills.some((s) => s.name === skillName)
+}
+
+const getLearnedSkill = (skillName: string): LearnedSkill | undefined => {
+  return wizardStore.draft.learnedSkills.find((s) => s.name === skillName)
+}
 
 const canLearnSkill = (skill: Skill): boolean => {
-  if (skill.learned) return false
+  if (isSkillLearned(skill.name)) return false
   return remainingPoints.value >= SKILL_LEARN_COST
 }
 
-const canRaiseSkill = (skill: Skill, baseLevel: number): boolean => {
-  if (!skill.learned) return false
-  const currentLevel = baseLevel + skill.bonus
+const canRaiseSkill = (learnedSkill: LearnedSkill, baseLevel: number): boolean => {
+  const currentLevel = baseLevel + learnedSkill.bonus
   if (currentLevel >= 15) return false
-  const cost = calculateSkillRaiseCost(baseLevel, skill.bonus)
+  const cost = calculateSkillRaiseCost(baseLevel, learnedSkill.bonus)
   return remainingPoints.value >= cost
 }
 
 const handleLearn = (skill: Skill) => {
   if (!canLearnSkill(skill)) return
-  const skillRef = wizardStore.draft.skills.find((s) => s.name === skill.name)
-  if (skillRef) {
-    skillRef.learned = true
-  }
+  wizardStore.draft.learnedSkills.push({ name: skill.name, bonus: 0 })
 }
 
-const handleIncrease = (skill: Skill, baseLevel: number) => {
-  if (!canRaiseSkill(skill, baseLevel)) return
-  const skillRef = wizardStore.draft.skills.find((s) => s.name === skill.name)
-  if (skillRef) {
-    skillRef.bonus += 1
-  }
+const handleIncrease = (learnedSkill: LearnedSkill, baseLevel: number) => {
+  if (!canRaiseSkill(learnedSkill, baseLevel)) return
+  learnedSkill.bonus += 1
 }
 
-const handleDecrease = (skill: Skill) => {
-  if (!skill.learned || skill.bonus <= 0) return
-  const skillRef = wizardStore.draft.skills.find((s) => s.name === skill.name)
-  if (skillRef) {
-    skillRef.bonus -= 1
-  }
+const handleDecrease = (learnedSkill: LearnedSkill) => {
+  if (learnedSkill.bonus <= 0) return
+  learnedSkill.bonus -= 1
 }
 
-const handleUnlearn = (skill: Skill) => {
-  if (skill.bonus > 0) return // Can't unlearn if raised
-  const skillRef = wizardStore.draft.skills.find((s) => s.name === skill.name)
-  if (skillRef) {
-    skillRef.learned = false
+const handleUnlearn = (skillName: string) => {
+  const learnedSkill = getLearnedSkill(skillName)
+  if (!learnedSkill || learnedSkill.bonus > 0) return // Can't unlearn if raised
+  const index = wizardStore.draft.learnedSkills.findIndex((s) => s.name === skillName)
+  if (index >= 0) {
+    wizardStore.draft.learnedSkills.splice(index, 1)
   }
 }
 </script>
@@ -156,18 +158,18 @@ const handleUnlearn = (skill: Skill) => {
     </div>
 
     <div class="skills-grid">
-      <div v-for="skill in mappedSkills" :key="skill.name" class="card skill-row mb-2"
-        :class="{ 'is-learned': skill.learned }">
+      <div v-for="skill in skillsStore.skillList" :key="skill.name" class="card skill-row mb-2"
+        :class="{ 'is-learned': isSkillLearned(skill.name) }">
         <div class="card-content p-3">
           <div class="is-flex is-justify-content-space-between is-align-items-center">
             <div class="skill-label">
               <p class="is-size-7 has-text-weight-bold mb-1">{{ skill.name }}</p>
-              <span v-if="skill.baseLabel" class="tag is-success is-light is-small">
-                {{ skill.baseLabel }}
+              <span v-if="baseCodeToAttributeName[skill.baseCode]" class="tag is-success is-light is-small">
+                {{ baseCodeToAttributeName[skill.baseCode] }}
               </span>
             </div>
 
-            <div v-if="!skill.learned" class="skill-learn-control">
+            <div v-if="!isSkillLearned(skill.name)" class="skill-learn-control">
               <button type="button" class="button is-success is-small is-rounded" :disabled="!canLearnSkill(skill)"
                 @click="handleLearn(skill)">
                 Opettele ({{ SKILL_LEARN_COST }}p)
@@ -175,18 +177,19 @@ const handleUnlearn = (skill: Skill) => {
             </div>
 
             <div v-else class="skill-controls is-flex is-align-items-center gap-2">
-              <button type="button" class="button is-danger is-small is-rounded" :disabled="skill.bonus <= 0"
-                @click="handleDecrease(skill)">
+              <button type="button" class="button is-danger is-small is-rounded" :disabled="getLearnedSkill(skill.name)!.bonus <= 0"
+                @click="handleDecrease(getLearnedSkill(skill.name)!)">
                 <span class="icon is-small"><i class="fas fa-minus"></i></span>
               </button>
-              <span class="skill-level is-size-5 has-text-weight-bold">{{ skill.level }}</span>
+              <span class="skill-level is-size-5 has-text-weight-bold">{{ skillsWithLevels.find(s => s?.name === skill.name)?.level }}</span>
               <button type="button" class="button is-info is-small is-rounded"
-                :disabled="!canRaiseSkill(skill, skill.baseLevel)" @click="handleIncrease(skill, skill.baseLevel)">
+                :disabled="!canRaiseSkill(getLearnedSkill(skill.name)!, skillsWithLevels.find(s => s?.name === skill.name)?.baseLevel || 6)" 
+                @click="handleIncrease(getLearnedSkill(skill.name)!, skillsWithLevels.find(s => s?.name === skill.name)?.baseLevel || 6)">
                 <span class="icon is-small"><i class="fas fa-plus"></i></span>
               </button>
-              <button type="button" class="button is-light is-small is-rounded" :disabled="skill.bonus > 0"
-                :title="skill.bonus > 0 ? 'Ei voi poistaa kun taito on korotettu' : 'Poista opittu taito'"
-                @click="handleUnlearn(skill)">
+              <button type="button" class="button is-light is-small is-rounded" :disabled="getLearnedSkill(skill.name)!.bonus > 0"
+                :title="getLearnedSkill(skill.name)!.bonus > 0 ? 'Ei voi poistaa kun taito on korotettu' : 'Poista opittu taito'"
+                @click="handleUnlearn(skill.name)">
                 <span class="icon is-small"><i class="fas fa-times"></i></span>
               </button>
             </div>

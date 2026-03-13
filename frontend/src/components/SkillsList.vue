@@ -2,40 +2,27 @@
 import { computed } from 'vue'
 import { useSkillsStore } from '@/stores/skills'
 import { useStatsStore } from '@/stores/stats'
-import type { SkillBaseCode } from '@/types/skills'
+import { calculateSkillsWithLevels } from '@/utils/skills'
 
 const skillsStore = useSkillsStore()
 const statsStore = useStatsStore()
 
-const baseCodeToAttributeName: Record<SkillBaseCode, string | null> = {
-  voi: 'Voima',
-  val: 'Valppaus',
-  kar: 'Karisma',
-  ket: 'Ketteryys',
-  sis: 'Sisukkuus',
-  ei: null,
-  erikois: null,
-}
+// For the simple stats view, we treat all skills as "learned" with their current bonus
+// This is a legacy view - new characters use the character creation wizard
+const mockLearnedSkills = computed(() => {
+  return skillsStore.skillList
+    .filter((skill) => skill.bonus > 0)
+    .map((skill) => ({ name: skill.name, bonus: skill.bonus }))
+})
 
-const mappedSkills = computed(() =>
-  skillsStore.skillList.map((skill) => {
-    const attributeName = baseCodeToAttributeName[skill.baseCode]
-    const attribute =
-      attributeName != null
-        ? statsStore.attList.find((attr) => attr.name === attributeName)
-        : undefined
-
-    const baseLevel = attribute ? Math.ceil(attribute.value / 2) : 6
-    const level = baseLevel + skill.bonus
-
-    return {
-      ...skill,
-      baseLabel: attributeName,
-      baseLevel,
-      level,
-    }
-  }),
-)
+const skillsWithLevels = computed(() => {
+  return calculateSkillsWithLevels(
+    mockLearnedSkills.value,
+    skillsStore.skillList,
+    statsStore.attList,
+    null // No background in simple stats view
+  )
+})
 
 const calculateSkillCost = (baseLevel: number, bonus: number): number => {
   let cost = 0
@@ -47,15 +34,8 @@ const calculateSkillCost = (baseLevel: number, bonus: number): number => {
 }
 
 const totalSpentPoints = computed(() =>
-  skillsStore.skillList.reduce((sum, skill) => {
-    const attributeName = baseCodeToAttributeName[skill.baseCode]
-    const attribute =
-      attributeName != null
-        ? statsStore.attList.find((attr) => attr.name === attributeName)
-        : undefined
-
-    const baseLevel = attribute ? Math.ceil(attribute.value / 2) : 6
-    return sum + calculateSkillCost(baseLevel, skill.bonus)
+  skillsWithLevels.value.reduce((sum, skill) => {
+    return sum + calculateSkillCost(skill.baseLevel, skill.bonus)
   }, 0),
 )
 
@@ -86,7 +66,7 @@ const handleDecrease = (skillName: string) => {
     </div>
     <div class="skills-grid">
       <div
-        v-for="skill in mappedSkills"
+        v-for="skill in skillsWithLevels"
         :key="skill.name"
         class="skills-row"
       >

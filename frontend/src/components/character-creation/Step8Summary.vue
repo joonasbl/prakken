@@ -1,40 +1,24 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useCharacterCreationStore } from '@/stores/characterCreation'
-import type { SkillBaseCode } from '@/types/skills'
+import { useSkillsStore } from '@/stores/skills'
+import { calculateSkillsWithLevels } from '@/utils/skills'
 
 const emit = defineEmits<{
   save: []
 }>()
 
 const wizardStore = useCharacterCreationStore()
+const skillsStore = useSkillsStore()
 
-const baseCodeToAttributeName: Record<SkillBaseCode, string | null> = {
-  voi: 'Voima',
-  val: 'Valppaus',
-  kar: 'Karisma',
-  ket: 'Ketteryys',
-  sis: 'Sisukkuus',
-  ei: null,
-  erikois: null,
-}
-
-const skillsWithLevels = computed(() =>
-  wizardStore.draft.skills
-    .filter((skill) => skill.learned)
-    .map((skill) => {
-      const attributeName = baseCodeToAttributeName[skill.baseCode]
-      const attribute =
-        attributeName != null
-          ? wizardStore.draft.attributes.find((attr) => attr.name === attributeName)
-          : undefined
-
-      const baseLevel = attribute ? Math.ceil(attribute.value / 2) : 6
-      const level = baseLevel + skill.bonus
-
-      return { ...skill, level, baseLabel: attributeName }
-    }),
-)
+const skillsWithLevels = computed(() => {
+  return calculateSkillsWithLevels(
+    wizardStore.draft.learnedSkills,
+    skillsStore.skillList,
+    wizardStore.draft.attributes,
+    wizardStore.draft.background
+  )
+})
 
 const totalEquipmentWeight = computed(() =>
   wizardStore.draft.equipment.reduce((sum, e) => sum + e.weight, 0)

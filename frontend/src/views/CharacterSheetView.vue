@@ -2,11 +2,13 @@
 import { computed, onMounted, ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useCharactersStore } from '@/stores/characters'
-import type { SkillBaseCode } from '@/types/skills'
+import { useSkillsStore } from '@/stores/skills'
+import { calculateSkillsWithLevels } from '@/utils/skills'
 
 const router = useRouter()
 const route = useRoute()
 const charactersStore = useCharactersStore()
+const skillsStore = useSkillsStore()
 
 // Collapsible sections state
 const expandedSections = ref<Record<string, boolean>>({
@@ -28,32 +30,15 @@ const character = computed(() => {
   return charactersStore.getCharacterById(id)
 })
 
-const baseCodeToAttributeName: Record<SkillBaseCode, string | null> = {
-  voi: 'Voima',
-  val: 'Valppaus',
-  kar: 'Karisma',
-  ket: 'Ketteryys',
-  sis: 'Sisukkuus',
-  ei: null,
-  erikois: null,
-}
-
-const skillsWithLevels = computed(() =>
-  character.value?.skills
-    .filter((skill) => skill.bonus > 0)
-    .map((skill) => {
-      const attributeName = baseCodeToAttributeName[skill.baseCode]
-      const attribute =
-        attributeName != null && character.value
-          ? character.value.attributes.find((attr) => attr.name === attributeName)
-          : undefined
-
-      const baseLevel = attribute ? Math.ceil(attribute.value / 2) : 6
-      const level = baseLevel + skill.bonus
-
-      return { ...skill, level, baseLabel: attributeName }
-    }) || []
-)
+const skillsWithLevels = computed(() => {
+  if (!character.value) return []
+  return calculateSkillsWithLevels(
+    character.value.learnedSkills,
+    skillsStore.skillList,
+    character.value.attributes,
+    character.value.background
+  )
+})
 
 const getAttribute = (name: string) => {
   return character.value?.attributes.find((a) => a.name === name)?.value || 10
