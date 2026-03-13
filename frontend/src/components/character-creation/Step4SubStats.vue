@@ -67,7 +67,7 @@ const substatModifiers = computed(() => wizardStore.substatModifiers)
 <template>
   <div class="sub-stats">
     <p class="subtitle is-6 mb-5 has-text-grey">
-      Johdannaiset arvot lasketaan ominaisuuksista. Nämä kuvaavat hahmosi peruskykyjä.
+      Aliominaisuudet lasketaan ominaisuuksista. Nämä kuvaavat hahmosi peruskykyjä.
     </p>
 
     <div v-if="!hasSubStats" class="has-text-centered py-6">

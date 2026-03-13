@@ -118,7 +118,7 @@ onMounted(() => {
       <!-- Substats Section -->
       <div class="section substats-section">
         <button class="section-header" @click="toggleSection('substats')">
-          <h2>Johdannaiset</h2>
+          <h2>Aliominaisuudet</h2>
           <span class="section-toggle">
             <i :class="expandedSections.substats ? 'fas fa-chevron-down' : 'fas fa-chevron-right'"></i>
           </span>
@@ -198,11 +198,7 @@ onMounted(() => {
           </span>
         </button>
         <div v-show="expandedSections.skills" class="skills-grid">
-          <div
-            v-for="skill in skillsWithLevels"
-            :key="skill.name"
-            class="skill-item"
-          >
+          <div v-for="skill in skillsWithLevels" :key="skill.name" class="skill-item">
             <div class="skill-name">
               {{ skill.name }}
               <span v-if="skill.baseLabel" class="skill-base">({{ skill.baseLabel }})</span>
@@ -596,23 +592,23 @@ onMounted(() => {
   .attr-name {
     font-size: 0.65rem;
   }
-  
+
   .attr-value {
     font-size: 1.25rem;
   }
-  
+
   .substat-name {
     font-size: 0.65rem;
   }
-  
+
   .substat-value {
     font-size: 1rem;
   }
-  
+
   .skill-name {
     font-size: 0.8rem;
   }
-  
+
   .skill-level {
     font-size: 1rem;
   }
