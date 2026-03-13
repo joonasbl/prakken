@@ -66,3 +66,41 @@ export function isSkillLearned(learnedSkills: LearnedSkill[], skillName: string)
 export function getLearnedSkill(learnedSkills: LearnedSkill[], skillName: string): LearnedSkill | undefined {
   return learnedSkills.find((s) => s.name === skillName)
 }
+
+/**
+ * Calculate unlearned skills with base levels
+ * @param learnedSkills - Array of learned skill references
+ * @param allSkills - Master skill list from skills store
+ * @param attributes - Character attributes
+ */
+export function calculateUnlearnedSkills(
+  learnedSkills: LearnedSkill[],
+  allSkills: Skill[],
+  attributes: Attr[]
+): SkillWithLevel[] {
+  if (!learnedSkills || !allSkills || !attributes) return []
+
+  const learnedNames = new Set(learnedSkills.map((s) => s.name))
+
+  return allSkills
+    .filter((skill) => !learnedNames.has(skill.name))
+    .map((skill) => {
+      const attributeName = baseCodeToAttributeName[skill.baseCode]
+      const attribute =
+        attributeName != null
+          ? attributes.find((attr) => attr.name === attributeName)
+          : undefined
+
+      const baseLevel = attribute ? Math.ceil(attribute.value / 2) : 6
+
+      return {
+        ...skill,
+        bonus: 0,
+        level: baseLevel,
+        baseLabel: attributeName,
+        baseLevel,
+        learned: false,
+        backgroundSkill: false,
+      }
+    })
+}
