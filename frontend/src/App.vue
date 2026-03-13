@@ -92,6 +92,7 @@ const closeMobileMenu = () => {
 .header-content {
   background: var(--color-bg-secondary);
   border-bottom: 2px solid var(--border-gold);
+  padding-top: var(--space-xs);
 }
 
 .header-row {
