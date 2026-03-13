@@ -258,6 +258,31 @@ export const useCharacterCreationStore = defineStore('characterCreation', {
       }
       return bonus
     },
+    effectiveAttributes: (state): Attr[] => {
+      const baseAttrs = state.draft.attributes.map((attr) => ({ ...attr }))
+      const background = state.draft.background
+      const attributeChoices = state.attributeChoices
+
+      // Apply background bonuses
+      if (background) {
+        for (const [attrName, bonus] of Object.entries(background.statBonuses)) {
+          const attr = baseAttrs.find((a) => a.name === attrName)
+          if (attr) {
+            attr.value += bonus
+          }
+        }
+      }
+
+      // Apply Lahjakas bonuses
+      for (const [attrName, bonus] of Object.entries(attributeChoices)) {
+        const attr = baseAttrs.find((a) => a.name === attrName)
+        if (attr && bonus > 0) {
+          attr.value += bonus
+        }
+      }
+
+      return baseAttrs
+    },
     pendingAttributeChoices: (state): number => {
       const lahjakas = state.draft.advantages.find((a) => a.id === 'lahjakas')
       if (!lahjakas || !lahjakas.effect || lahjakas.effect.type !== 'attributeChoice') {

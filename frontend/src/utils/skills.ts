@@ -16,7 +16,7 @@ const baseCodeToAttributeName: Record<string, string | null> = {
  * Calculate full skill data from learned skills
  * @param learnedSkills - Array of learned skill references
  * @param allSkills - Master skill list from skills store
- * @param attributes - Character attributes
+ * @param attributes - Character attributes (should be effective attributes with bonuses)
  * @param background - Character background (for background skill detection)
  */
 export function calculateSkillsWithLevels(

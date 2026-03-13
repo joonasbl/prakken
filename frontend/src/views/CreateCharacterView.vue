@@ -69,7 +69,12 @@ const handlePrevious = () => {
 }
 
 const saveCharacter = () => {
-  const character = charactersStore.saveCharacter(wizardStore.draft)
+  // Create a copy of the draft with effective attributes
+  const draftWithEffectiveAttrs = {
+    ...wizardStore.draft,
+    attributes: wizardStore.effectiveAttributes,
+  }
+  const character = charactersStore.saveCharacter(draftWithEffectiveAttrs)
   wizardStore.resetWizard()
   router.push(`/character/${character.id}`)
 }

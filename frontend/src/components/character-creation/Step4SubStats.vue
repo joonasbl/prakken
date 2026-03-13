@@ -7,7 +7,7 @@ import ModifierBadge from './ModifierBadge.vue'
 const wizardStore = useCharacterCreationStore()
 
 const calculateDerivedStats = () => {
-  const attrs = wizardStore.draft.attributes
+  const attrs = wizardStore.effectiveAttributes
   const getAttr = (name: string) => attrs.find((a) => a.name === name)?.value || 10
 
   const voima = getAttr('Voima')

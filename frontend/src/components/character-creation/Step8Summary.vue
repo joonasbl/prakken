@@ -50,7 +50,7 @@ const handleSave = () => {
           <span>Ominaisuudet</span>
         </div>
         <div class="attributes-grid">
-          <div class="attr-card" v-for="attr in wizardStore.draft.attributes" :key="attr.name">
+          <div class="attr-card" v-for="attr in wizardStore.effectiveAttributes" :key="attr.name">
             <div class="attr-label">{{ attr.name }}</div>
             <div class="attr-value">{{ attr.value }}</div>
           </div>

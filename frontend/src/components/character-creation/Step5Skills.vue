@@ -42,11 +42,11 @@ const skillsWithLevels = computed(() => {
     .map((learnedSkill) => {
       const skillDef = skillsStore.skillList.find((s) => s.name === learnedSkill.name)
       if (!skillDef) return null
-      
+
       const attributeName = baseCodeToAttributeName[skillDef.baseCode]
       const attribute =
         attributeName != null
-          ? wizardStore.draft.attributes.find((attr) => attr.name === attributeName)
+          ? wizardStore.effectiveAttributes.find((attr) => attr.name === attributeName)
           : undefined
 
       const baseLevel = attribute ? Math.ceil(attribute.value / 2) : 6
