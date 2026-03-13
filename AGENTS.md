@@ -1,5 +1,23 @@
 # AGENTS.md - Prakken Project Guide
 
+## Important: Commit Policy
+
+**Do NOT commit changes unless explicitly asked by the user.**
+
+When making code changes:
+1. Make the requested changes to files
+2. Run verification commands (type-check, lint, build, tests)
+3. Report results to the user
+4. **Wait for explicit request** to commit (e.g., "commit the changes", "create a commit")
+
+This allows the user to:
+- Review changes before they are committed
+- Request modifications before committing
+- Batch multiple changes into a single commit
+- Maintain control over commit history
+
+Exception: User explicitly requests a commit in their instruction.
+
 ## Project Overview
 
 **Prakken** is a fantasy character management system for tabletop RPGs, built with Vue 3 and Go.
