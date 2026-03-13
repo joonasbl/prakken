@@ -3,7 +3,7 @@ import { computed, onMounted, ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useCharactersStore } from '@/stores/characters'
 import { useSkillsStore } from '@/stores/skills'
-import { calculateSkillsWithLevels } from '@/utils/skills'
+import { calculateSkillsWithLevels, calculateUnlearnedSkills } from '@/utils/skills'
 
 const router = useRouter()
 const route = useRoute()
@@ -18,6 +18,7 @@ const expandedSections = ref<Record<string, boolean>>({
   advantages: true,
   disadvantages: true,
   skills: true,
+  unlearnedSkills: false,
   equipment: true,
 })
 
@@ -37,6 +38,15 @@ const skillsWithLevels = computed(() => {
     skillsStore.skillList,
     character.value.attributes,
     character.value.background
+  )
+})
+
+const unlearnedSkills = computed(() => {
+  if (!character.value) return []
+  return calculateUnlearnedSkills(
+    character.value.learnedSkills,
+    skillsStore.skillList,
+    character.value.attributes
   )
 })
 
@@ -184,6 +194,25 @@ onMounted(() => {
         </button>
         <div v-show="expandedSections.skills" class="skills-grid">
           <div v-for="skill in skillsWithLevels" :key="skill.name" class="skill-item">
+            <div class="skill-name">
+              {{ skill.name }}
+              <span v-if="skill.baseLabel" class="skill-base">({{ skill.baseLabel }})</span>
+            </div>
+            <span class="skill-level">{{ skill.level }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Unlearned Skills Section -->
+      <div class="section unlearned-skills-section" v-if="unlearnedSkills.length > 0">
+        <button class="section-header" @click="toggleSection('unlearnedSkills')">
+          <h2>Oppimattomat taidot</h2>
+          <span class="section-toggle">
+            <i :class="expandedSections.unlearnedSkills ? 'fas fa-chevron-down' : 'fas fa-chevron-right'"></i>
+          </span>
+        </button>
+        <div v-show="expandedSections.unlearnedSkills" class="skills-grid">
+          <div v-for="skill in unlearnedSkills" :key="skill.name" class="skill-item unlearned">
             <div class="skill-name">
               {{ skill.name }}
               <span v-if="skill.baseLabel" class="skill-base">({{ skill.baseLabel }})</span>
@@ -545,6 +574,23 @@ onMounted(() => {
   text-shadow: 0 0 8px rgba(46, 160, 67, 0.4);
   min-width: 28px;
   text-align: right;
+}
+
+.skill-item.unlearned {
+  opacity: 0.6;
+  background: var(--color-bg-secondary);
+}
+
+.skill-item.unlearned .skill-level {
+  color: var(--color-text-muted);
+  text-shadow: none;
+}
+
+.skill-item.unlearned:hover {
+  opacity: 0.8;
+  border-color: var(--border-color);
+  box-shadow: none;
+  transform: none;
 }
 
 .equipment-list li {
