@@ -4,10 +4,6 @@ import { useCharacterCreationStore } from '@/stores/characterCreation'
 import { useSkillsStore } from '@/stores/skills'
 import { calculateSkillsWithLevels } from '@/utils/skills'
 
-const emit = defineEmits<{
-  save: []
-}>()
-
 const wizardStore = useCharacterCreationStore()
 const skillsStore = useSkillsStore()
 
@@ -23,10 +19,6 @@ const skillsWithLevels = computed(() => {
 const totalEquipmentWeight = computed(() =>
   wizardStore.draft.equipment.reduce((sum, e) => sum + e.weight, 0)
 )
-
-const handleSave = () => {
-  emit('save')
-}
 </script>
 
 <template>
@@ -155,11 +147,8 @@ const handleSave = () => {
       </div>
     </div>
 
-    <div class="has-text-centered mt-6">
-      <button type="button" class="button is-success is-large is-rounded" @click="handleSave">
-        <span class="icon"><i class="fas fa-save"></i></span>
-        <span>Tallenna hahmo</span>
-      </button>
+    <div class="notification is-info mt-6 has-text-centered">
+      <p class="is-size-6">Paina <strong>Valmis</strong>-painiketta tallentaaksesi hahmon.</p>
     </div>
   </div>
 </template>

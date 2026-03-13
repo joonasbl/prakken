@@ -58,7 +58,8 @@ const handleNext = () => {
   if (currentStep.value < 8) {
     wizardStore.nextStep()
   } else {
-    finishCharacterCreation()
+    // On step 8, "Valmis" saves the character
+    saveCharacter()
   }
 }
 
@@ -77,11 +78,6 @@ const saveCharacter = () => {
   const character = charactersStore.saveCharacter(draftWithEffectiveAttrs)
   wizardStore.resetWizard()
   router.push(`/character/${character.id}`)
-}
-
-const finishCharacterCreation = () => {
-  router.push('/')
-  wizardStore.resetWizard()
 }
 
 const cancelWizard = () => {
@@ -125,7 +121,7 @@ const cancelWizard = () => {
           <Step5Skills v-else-if="currentStep === 5" />
           <Step6Equipment v-else-if="currentStep === 6" />
           <Step7NameAndDetails v-else-if="currentStep === 7" />
-          <Step8Summary v-else-if="currentStep === 8" @save="saveCharacter" />
+          <Step8Summary v-else-if="currentStep === 8" />
         </div>
       </div>
     </div>
