@@ -1,0 +1,21 @@
+services:
+  # Vue Frontend with nginx + SSL
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+    container_name: prakken-frontend
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      # Mount SSL certificates from acme.sh
+      - /home/opc/.acme.sh/prakken.dedyn.io_ecc/fullchain.cer:/etc/ssl/certs/fullchain.cer:ro
+      - /home/opc/.acme.sh/prakken.dedyn.io_ecc/prakken.dedyn.io.key:/etc/ssl/private/prakken.key:ro
+    restart: unless-stopped
+    networks:
+      - prakken-network
+
+networks:
+  prakken-network:
+    driver: bridge
