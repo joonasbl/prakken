@@ -146,10 +146,6 @@ const totalEquipmentWeight = computed(() =>
         </ul>
       </div>
     </div>
-
-    <div class="notification is-info mt-6 has-text-centered">
-      <p class="is-size-6">Paina <strong>Valmis</strong>-painiketta tallentaaksesi hahmon.</p>
-    </div>
   </div>
 </template>
 
