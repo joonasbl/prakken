@@ -106,12 +106,21 @@ const closeMobileMenu = () => {
   margin: 0;
   flex: 1;
   text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
   line-height: 1.4;
 }
 
 .header-row h1 .icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.header-row h1 .text-gradient {
   display: inline-block;
-  vertical-align: middle;
 }
 
 /* Mobile Navigation Styles */
