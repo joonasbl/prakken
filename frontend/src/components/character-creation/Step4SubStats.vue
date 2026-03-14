@@ -175,6 +175,24 @@ const substatModifiers = computed(() => wizardStore.substatModifiers)
   box-shadow: var(--shadow-md);
   transition: all 0.3s ease;
   min-height: 44px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.card .card-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+}
+
+@media (min-width: 768px) {
+  .card .card-content {
+    padding: 1.25rem;
+  }
 }
 
 .card:hover {
@@ -229,6 +247,10 @@ const substatModifiers = computed(() => wizardStore.substatModifiers)
 
   .card {
     min-height: auto;
+    padding: 0.75rem;
+  }
+
+  .card .card-content {
     padding: 0.75rem;
   }
 
