@@ -14,14 +14,14 @@ onMounted(() => {
   if (wizardStore.draft.learnedSkills.length === 0) {
     const background = wizardStore.draft.background
     const learnedSkills: LearnedSkill[] = []
-    
+
     // Add background skills (automatically learned, no bonus)
     if (background?.skillBonuses) {
       for (const skillName of Object.keys(background.skillBonuses)) {
         learnedSkills.push({ name: skillName, bonus: 0 })
       }
     }
-    
+
     wizardStore.setLearnedSkills(learnedSkills)
   }
 })
@@ -71,11 +71,11 @@ const calculateSkillRaiseCost = (baseLevel: number, currentBonus: number): numbe
 const totalSpentPoints = computed(() => {
   let total = 0
   const background = wizardStore.draft.background
-  
+
   for (const learnedSkill of wizardStore.draft.learnedSkills) {
     const skillDef = skillsStore.skillList.find((s) => s.name === learnedSkill.name)
     if (!skillDef) continue
-    
+
     const attributeName = baseCodeToAttributeName[skillDef.baseCode]
     const attribute =
       attributeName != null
@@ -182,17 +182,20 @@ const handleUnlearn = (skillName: string) => {
             </div>
 
             <div v-else class="skill-controls is-flex is-align-items-center gap-2">
-              <button type="button" class="button is-danger is-small is-rounded" :disabled="getLearnedSkill(skill.name)!.bonus <= 0"
+              <button type="button" class="button is-danger is-small is-rounded"
+                :disabled="getLearnedSkill(skill.name)!.bonus <= 0"
                 @click="handleDecrease(getLearnedSkill(skill.name)!)">
                 <span class="icon is-small"><i class="fas fa-minus"></i></span>
               </button>
-              <span class="skill-level is-size-5 has-text-weight-bold">{{ skillsWithLevels.find(s => s?.name === skill.name)?.level }}</span>
+              <span class="skill-level is-size-5 has-text-weight-bold">{{skillsWithLevels.find(s => s?.name ===
+                skill.name)?.level}}</span>
               <button type="button" class="button is-info is-small is-rounded"
-                :disabled="!canRaiseSkill(getLearnedSkill(skill.name)!, skillsWithLevels.find(s => s?.name === skill.name)?.baseLevel || 6)" 
+                :disabled="!canRaiseSkill(getLearnedSkill(skill.name)!, skillsWithLevels.find(s => s?.name === skill.name)?.baseLevel || 6)"
                 @click="handleIncrease(getLearnedSkill(skill.name)!, skillsWithLevels.find(s => s?.name === skill.name)?.baseLevel || 6)">
                 <span class="icon is-small"><i class="fas fa-plus"></i></span>
               </button>
-              <button type="button" class="button is-light is-small is-rounded" :disabled="getLearnedSkill(skill.name)!.bonus > 0"
+              <button type="button" class="button is-light is-small is-rounded"
+                :disabled="getLearnedSkill(skill.name)!.bonus > 0"
                 :title="getLearnedSkill(skill.name)!.bonus > 0 ? 'Ei voi poistaa kun taito on korotettu' : 'Poista opittu taito'"
                 @click="handleUnlearn(skill.name)">
                 <span class="icon is-small"><i class="fas fa-times"></i></span>
