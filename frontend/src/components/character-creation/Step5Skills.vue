@@ -121,6 +121,17 @@ const canRaiseSkill = (learnedSkill: LearnedSkill, baseLevel: number): boolean =
   return remainingPoints.value >= cost
 }
 
+const isBgSkill = (skill: string): boolean => {
+  const background = wizardStore.draft.background
+  if (background?.skillBonuses) {
+    for (const skillName of Object.keys(background.skillBonuses)) {
+      if (skillName == skill) {
+        return true
+      }
+    }
+  } return false
+}
+
 const handleLearn = (skill: Skill) => {
   if (!canLearnSkill(skill)) return
   wizardStore.draft.learnedSkills.push({ name: skill.name, bonus: 0 })
@@ -138,7 +149,7 @@ const handleDecrease = (learnedSkill: LearnedSkill) => {
 
 const handleUnlearn = (skillName: string) => {
   const learnedSkill = getLearnedSkill(skillName)
-  if (!learnedSkill || learnedSkill.bonus > 0) return // Can't unlearn if raised
+  if (!learnedSkill || learnedSkill.bonus > 0 || isBgSkill(learnedSkill.name)) return // Can't unlearn if raised
   const index = wizardStore.draft.learnedSkills.findIndex((s) => s.name === skillName)
   if (index >= 0) {
     wizardStore.draft.learnedSkills.splice(index, 1)
@@ -195,7 +206,7 @@ const handleUnlearn = (skillName: string) => {
                 <span class="icon is-small"><i class="fas fa-plus"></i></span>
               </button>
               <button type="button" class="button is-light is-small is-rounded"
-                :disabled="getLearnedSkill(skill.name)!.bonus > 0"
+                :disabled="getLearnedSkill(skill.name)!.bonus > 0 || isBgSkill(skill.name)"
                 :title="getLearnedSkill(skill.name)!.bonus > 0 ? 'Ei voi poistaa kun taito on korotettu' : 'Poista opittu taito'"
                 @click="handleUnlearn(skill.name)">
                 <span class="icon is-small"><i class="fas fa-times"></i></span>
