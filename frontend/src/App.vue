@@ -120,11 +120,11 @@ const closeMobileMenu = () => {
 }
 
 .header-row h1 .icon:first-child {
-  margin-right: var(--space-xs);
+  margin-right: 0.75rem;
 }
 
 .header-row h1 .icon:last-child {
-  margin-left: var(--space-xs);
+  margin-left: 0.75rem;
 }
 
 .header-row h1 .text-gradient {
