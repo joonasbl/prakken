@@ -6,12 +6,13 @@ set -e
 # Builds Docker image locally, transfers to VPS, and deploys with Podman
 # =============================================================================
 
-# Configuration
-VPS_USER="opc"
-VPS_HOST="prakken.dedyn.io"
-IMAGE_NAME="prakken-frontend"
-IMAGE_TAG="latest"
-CONTAINER_NAME="prakken-frontend"
+# Configuration - Can be overridden via environment variables
+# Usage: VPS_USER=myuser VPS_HOST=myhost.com ./deploy.sh
+VPS_USER="${VPS_USER:-opc}"
+VPS_HOST="${VPS_HOST:-prakken.dedyn.io}"
+IMAGE_NAME="${IMAGE_NAME:-prakken-frontend}"
+IMAGE_TAG="${IMAGE_TAG:-latest}"
+CONTAINER_NAME="${CONTAINER_NAME:-prakken-frontend}"
 TEMP_TAR="${IMAGE_NAME}.tar"
 
 # Colors for output

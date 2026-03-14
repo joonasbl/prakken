@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import { useCharacterCreationStore } from '@/stores/characterCreation'
 
 const wizardStore = useCharacterCreationStore()
@@ -7,14 +8,34 @@ const updateName = (event: Event) => {
   const target = event.target as HTMLInputElement
   wizardStore.setName(target.value)
 }
+
+const nameLength = computed(() => wizardStore.draft.name.length)
+const isNameTooLong = computed(() => nameLength.value > 50)
+const isNameEmpty = computed(() => wizardStore.draft.name.trim().length === 0)
 </script>
 
 <template>
   <div class="name-step">
     <div class="form-group">
       <label for="character-name">Hahmon nimi</label>
-      <input id="character-name" type="text" class="name-input" placeholder="Syötä hahmon nimi..."
-        :value="wizardStore.draft.name" @input="updateName" autofocus />
+      <input 
+        id="character-name" 
+        type="text" 
+        class="name-input" 
+        :class="{ 'is-error': isNameTooLong, 'is-warning': isNameEmpty }"
+        placeholder="Syötä hahmon nimi..."
+        :value="wizardStore.draft.name" 
+        @input="updateName" 
+        autofocus 
+        maxlength="50"
+        aria-describedby="name-help"
+        :aria-invalid="isNameTooLong ? 'true' : 'false'"
+      />
+      <div id="name-help" class="field-help">
+        <span v-if="isNameTooLong" class="error-text">Nimi on liian pitkä (max 50 merkkiä)</span>
+        <span v-else-if="isNameEmpty" class="warning-text">Hahmon nimi on pakollinen</span>
+        <span v-else class="char-count">{{ nameLength }}/50</span>
+      </div>
     </div>
 
     <div class="details-section">
@@ -173,5 +194,38 @@ const updateName = (event: Event) => {
 
 .name-input::placeholder {
   color: #8a9bb0;
+}
+
+/* Form validation styles */
+.field-help {
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+  min-height: 1.25rem;
+}
+
+.char-count {
+  color: var(--color-text-muted);
+  font-family: var(--font-heading);
+  letter-spacing: 0.03em;
+}
+
+.error-text {
+  color: var(--color-danger);
+  font-weight: 600;
+}
+
+.warning-text {
+  color: var(--color-warning);
+  font-weight: 600;
+}
+
+.name-input.is-error {
+  border-color: var(--color-danger);
+  box-shadow: 0 0 0 3px rgba(218, 54, 51, 0.15);
+}
+
+.name-input.is-warning {
+  border-color: var(--color-warning);
+  box-shadow: 0 0 0 3px rgba(210, 153, 34, 0.15);
 }
 </style>

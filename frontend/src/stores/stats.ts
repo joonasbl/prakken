@@ -21,7 +21,6 @@ export const useStatsStore = defineStore('attributes', {
           elem.value = val
         }
       })
-      console.log(this.attList)
     },
   },
 })

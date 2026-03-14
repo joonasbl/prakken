@@ -66,8 +66,8 @@ onMounted(() => {
 <template>
   <div v-if="character" class="character-sheet">
     <div class="sheet-header">
-      <button type="button" class="btn-back" @click="handleBack">
-        <span class="icon"><i class="fas fa-arrow-left"></i></span>
+      <button type="button" class="btn-back" @click="handleBack" aria-label="Palaa hahmolistaan">
+        <span class="icon" aria-hidden="true"><i class="fas fa-arrow-left"></i></span>
         <span class="hide-mobile">Takaisin</span>
       </button>
       <h1>{{ character.name }}</h1>
@@ -76,13 +76,13 @@ onMounted(() => {
     <div class="sheet-content">
       <!-- Attributes Section -->
       <div class="section attributes-section">
-        <button class="section-header" @click="toggleSection('attributes')">
+        <button class="section-header" @click="toggleSection('attributes')" :aria-expanded="expandedSections.attributes" aria-controls="attributes-content">
           <h2>Ominaisuudet</h2>
-          <span class="section-toggle">
+          <span class="section-toggle" aria-hidden="true">
             <i :class="expandedSections.attributes ? 'fas fa-chevron-down' : 'fas fa-chevron-right'"></i>
           </span>
         </button>
-        <div v-show="expandedSections.attributes" class="attributes-grid">
+        <div v-show="expandedSections.attributes" id="attributes-content" class="attributes-grid">
           <div class="attr-card">
             <span class="attr-name">Voima</span>
             <span class="attr-value">{{ getAttribute('Voima') }}</span>
@@ -112,13 +112,13 @@ onMounted(() => {
 
       <!-- Substats Section -->
       <div class="section substats-section">
-        <button class="section-header" @click="toggleSection('substats')">
+        <button class="section-header" @click="toggleSection('substats')" :aria-expanded="expandedSections.substats" aria-controls="substats-content">
           <h2>Aliominaisuudet</h2>
-          <span class="section-toggle">
+          <span class="section-toggle" aria-hidden="true">
             <i :class="expandedSections.substats ? 'fas fa-chevron-down' : 'fas fa-chevron-right'"></i>
           </span>
         </button>
-        <div v-show="expandedSections.substats" class="substats-grid">
+        <div v-show="expandedSections.substats" id="substats-content" class="substats-grid">
           <div class="substat-card">
             <span class="substat-name">Veripisteet</span>
             <span class="substat-value">{{ character.subStats?.veripisteet || 0 }}</span>
@@ -140,13 +140,13 @@ onMounted(() => {
 
       <!-- Background Section -->
       <div class="section background-section" v-if="character.background">
-        <button class="section-header" @click="toggleSection('background')">
+        <button class="section-header" @click="toggleSection('background')" :aria-expanded="expandedSections.background" aria-controls="background-content">
           <h2>Tausta</h2>
-          <span class="section-toggle">
+          <span class="section-toggle" aria-hidden="true">
             <i :class="expandedSections.background ? 'fas fa-chevron-down' : 'fas fa-chevron-right'"></i>
           </span>
         </button>
-        <div v-show="expandedSections.background" class="background-content">
+        <div v-show="expandedSections.background" id="background-content" class="background-content">
           <p class="background-name">{{ character.background.name }}</p>
           <p class="background-desc">{{ character.background.description }}</p>
         </div>
@@ -154,13 +154,13 @@ onMounted(() => {
 
       <!-- Advantages Section -->
       <div class="section advantages-section" v-if="character.advantages.length > 0">
-        <button class="section-header" @click="toggleSection('advantages')">
+        <button class="section-header" @click="toggleSection('advantages')" :aria-expanded="expandedSections.advantages" aria-controls="advantages-content">
           <h2>Edut</h2>
-          <span class="section-toggle">
+          <span class="section-toggle" aria-hidden="true">
             <i :class="expandedSections.advantages ? 'fas fa-chevron-down' : 'fas fa-chevron-right'"></i>
           </span>
         </button>
-        <div v-show="expandedSections.advantages" class="trait-list">
+        <div v-show="expandedSections.advantages" id="advantages-content" class="trait-list">
           <li v-for="adv in character.advantages" :key="adv.id">
             <strong>{{ adv.name }}</strong>
             <span>{{ adv.description }}</span>
@@ -170,13 +170,13 @@ onMounted(() => {
 
       <!-- Disadvantages Section -->
       <div class="section disadvantages-section" v-if="character.disadvantages.length > 0">
-        <button class="section-header" @click="toggleSection('disadvantages')">
+        <button class="section-header" @click="toggleSection('disadvantages')" :aria-expanded="expandedSections.disadvantages" aria-controls="disadvantages-content">
           <h2>Haitat</h2>
-          <span class="section-toggle">
+          <span class="section-toggle" aria-hidden="true">
             <i :class="expandedSections.disadvantages ? 'fas fa-chevron-down' : 'fas fa-chevron-right'"></i>
           </span>
         </button>
-        <div v-show="expandedSections.disadvantages" class="trait-list">
+        <div v-show="expandedSections.disadvantages" id="disadvantages-content" class="trait-list">
           <li v-for="dis in character.disadvantages" :key="dis.id">
             <strong>{{ dis.name }}</strong>
             <span>{{ dis.description }}</span>
@@ -186,13 +186,13 @@ onMounted(() => {
 
       <!-- Skills Section -->
       <div class="section skills-section" v-if="skillsWithLevels.length > 0">
-        <button class="section-header" @click="toggleSection('skills')">
+        <button class="section-header" @click="toggleSection('skills')" :aria-expanded="expandedSections.skills" aria-controls="skills-content">
           <h2>Taidot</h2>
-          <span class="section-toggle">
+          <span class="section-toggle" aria-hidden="true">
             <i :class="expandedSections.skills ? 'fas fa-chevron-down' : 'fas fa-chevron-right'"></i>
           </span>
         </button>
-        <div v-show="expandedSections.skills" class="skills-grid">
+        <div v-show="expandedSections.skills" id="skills-content" class="skills-grid">
           <div v-for="skill in skillsWithLevels" :key="skill.name" class="skill-item">
             <div class="skill-name">
               {{ skill.name }}
@@ -205,13 +205,13 @@ onMounted(() => {
 
       <!-- Unlearned Skills Section -->
       <div class="section unlearned-skills-section" v-if="unlearnedSkills.length > 0">
-        <button class="section-header" @click="toggleSection('unlearnedSkills')">
+        <button class="section-header" @click="toggleSection('unlearnedSkills')" :aria-expanded="expandedSections.unlearnedSkills" aria-controls="unlearned-skills-content">
           <h2>Oppimattomat taidot</h2>
-          <span class="section-toggle">
+          <span class="section-toggle" aria-hidden="true">
             <i :class="expandedSections.unlearnedSkills ? 'fas fa-chevron-down' : 'fas fa-chevron-right'"></i>
           </span>
         </button>
-        <div v-show="expandedSections.unlearnedSkills" class="skills-grid">
+        <div v-show="expandedSections.unlearnedSkills" id="unlearned-skills-content" class="skills-grid">
           <div v-for="skill in unlearnedSkills" :key="skill.name" class="skill-item unlearned">
             <div class="skill-name">
               {{ skill.name }}
@@ -224,13 +224,13 @@ onMounted(() => {
 
       <!-- Equipment Section -->
       <div class="section equipment-section" v-if="character.equipment.length > 0">
-        <button class="section-header" @click="toggleSection('equipment')">
+        <button class="section-header" @click="toggleSection('equipment')" :aria-expanded="expandedSections.equipment" aria-controls="equipment-content">
           <h2>Varusteet</h2>
-          <span class="section-toggle">
+          <span class="section-toggle" aria-hidden="true">
             <i :class="expandedSections.equipment ? 'fas fa-chevron-down' : 'fas fa-chevron-right'"></i>
           </span>
         </button>
-        <div v-show="expandedSections.equipment" class="equipment-list">
+        <div v-show="expandedSections.equipment" id="equipment-content" class="equipment-list">
           <li v-for="item in character.equipment" :key="item.id">
             {{ item.name }}
           </li>
@@ -621,27 +621,148 @@ onMounted(() => {
 /* Mobile optimizations */
 @media (max-width: 767px) {
   .attr-name {
-    font-size: 0.65rem;
+    font-size: 0.6rem;
   }
 
   .attr-value {
-    font-size: 1.25rem;
+    font-size: 1.15rem;
   }
 
   .substat-name {
-    font-size: 0.65rem;
+    font-size: 0.6rem;
   }
 
   .substat-value {
-    font-size: 1rem;
+    font-size: 0.95rem;
   }
 
   .skill-name {
-    font-size: 0.8rem;
+    font-size: 0.75rem;
   }
 
   .skill-level {
     font-size: 1rem;
+  }
+
+  .skill-base {
+    font-size: 0.7rem;
+  }
+
+  .section-header {
+    padding: 0.75rem 1rem;
+  }
+
+  .section-header h2 {
+    font-size: 1.05rem;
+  }
+
+  .attributes-grid {
+    gap: 0.5rem;
+    padding: 0 1rem 1rem;
+  }
+
+  .attr-card {
+    padding: 0.75rem 0.5rem;
+  }
+
+  .substats-grid {
+    gap: 0.5rem;
+    padding: 0 1rem 1rem;
+  }
+
+  .substat-card {
+    padding: 0.75rem 0.5rem;
+  }
+
+  .skills-grid {
+    gap: 0.5rem;
+    padding: 0 1rem 1rem;
+  }
+
+  .skill-item {
+    padding: 0.625rem;
+  }
+
+  .trait-list,
+  .equipment-list {
+    padding: 0 1rem 1rem;
+  }
+
+  .trait-list li,
+  .equipment-list li {
+    padding: 0.625rem 0;
+  }
+
+  .background-content {
+    padding: 0 1rem 1rem;
+  }
+
+  .background-name {
+    font-size: 1rem;
+  }
+
+  .background-desc {
+    font-size: 0.85rem;
+  }
+
+  .sheet-header h1 {
+    font-size: 1.25rem;
+  }
+
+  .btn-back {
+    padding: 0.5rem 0.75rem;
+    min-height: 40px;
+  }
+
+  .character-sheet {
+    padding: 0.75rem;
+  }
+}
+
+/* Extra small screens */
+@media (max-width: 374px) {
+  .attr-name {
+    font-size: 0.55rem;
+  }
+
+  .attr-value {
+    font-size: 1.05rem;
+  }
+
+  .substat-name {
+    font-size: 0.55rem;
+  }
+
+  .substat-value {
+    font-size: 0.9rem;
+  }
+
+  .skill-name {
+    font-size: 0.7rem;
+  }
+
+  .skill-level {
+    font-size: 0.95rem;
+  }
+
+  .section-header h2 {
+    font-size: 1rem;
+  }
+
+  .attr-card {
+    padding: 0.625rem 0.4rem;
+  }
+
+  .skill-item {
+    padding: 0.5rem;
+  }
+
+  .sheet-header h1 {
+    font-size: 1.15rem;
+  }
+
+  .character-sheet {
+    padding: 0.5rem;
   }
 }
 </style>
