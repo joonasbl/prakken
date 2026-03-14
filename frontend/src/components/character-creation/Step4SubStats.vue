@@ -6,7 +6,7 @@ import ModifierBadge from './ModifierBadge.vue'
 
 const wizardStore = useCharacterCreationStore()
 
-const calculateDerivedStats = () => {
+const calculateDerivedStats = computed(() => {
   const attrs = wizardStore.effectiveAttributes
   const getAttr = (name: string) => attrs.find((a) => a.name === name)?.value || 10
 
@@ -57,9 +57,9 @@ const calculateDerivedStats = () => {
   }
 
   wizardStore.setSubStats(subStats)
-}
 
-const hasSubStats = computed(() => wizardStore.draft.subStats !== null)
+  return subStats // ✅ Return the calculated sub-stats
+})
 
 const substatModifiers = computed(() => wizardStore.substatModifiers)
 </script>
@@ -70,20 +70,13 @@ const substatModifiers = computed(() => wizardStore.substatModifiers)
       Aliominaisuudet lasketaan ominaisuuksista. Nämä kuvaavat hahmosi peruskykyjä.
     </p>
 
-    <div v-if="!hasSubStats" class="has-text-centered py-6">
-      <button type="button" class="button is-info is-medium is-rounded" @click="calculateDerivedStats">
-        <span class="icon"><i class="fas fa-calculator"></i></span>
-        <span>Laske aliominaisuudet</span>
-      </button>
-    </div>
-
-    <div v-else class="columns is-multiline">
+    <div class="columns is-multiline">
       <div class="column is-3">
         <div class="card has-text-centered">
           <div class="card-content">
             <p class="is-size-7 has-text-grey mb-2">Veripisteet</p>
             <div class="is-flex is-justify-content-center is-align-items-center gap-2 mb-2">
-              <p class="is-size-2 has-text-weight-bold has-text-info">{{ wizardStore.draft.subStats?.veripisteet }}</p>
+              <p class="is-size-2 has-text-weight-bold has-text-info">{{ calculateDerivedStats?.veripisteet }}</p>
               <ModifierBadge v-if="substatModifiers.veripisteet !== 0" :modifier="substatModifiers.veripisteet"
                 source="etu/haitta" />
             </div>
@@ -95,7 +88,7 @@ const substatModifiers = computed(() => wizardStore.substatModifiers)
         <div class="card has-text-centered">
           <div class="card-content">
             <p class="is-size-7 has-text-grey mb-2">Vauriobonus</p>
-            <p class="is-size-2 has-text-weight-bold has-text-info mb-2">{{ wizardStore.draft.subStats?.vauriobonus }}
+            <p class="is-size-2 has-text-weight-bold has-text-info mb-2">{{ calculateDerivedStats?.vauriobonus }}
             </p>
             <p class="is-size-7 has-text-grey">Voima</p>
           </div>
@@ -106,7 +99,7 @@ const substatModifiers = computed(() => wizardStore.substatModifiers)
           <div class="card-content">
             <p class="is-size-7 has-text-grey mb-2">Syvä haava</p>
             <div class="is-flex is-justify-content-center is-align-items-center gap-2 mb-2">
-              <p class="is-size-2 has-text-weight-bold has-text-info">{{ wizardStore.draft.subStats?.syvaHaava }}</p>
+              <p class="is-size-2 has-text-weight-bold has-text-info">{{ calculateDerivedStats?.syvaHaava }}</p>
               <ModifierBadge v-if="substatModifiers.syvaHaava !== 0" :modifier="substatModifiers.syvaHaava"
                 source="etu/haitta" />
             </div>
@@ -118,7 +111,7 @@ const substatModifiers = computed(() => wizardStore.substatModifiers)
         <div class="card has-text-centered">
           <div class="card-content">
             <p class="is-size-7 has-text-grey mb-2">Kantokyky</p>
-            <p class="is-size-2 has-text-weight-bold has-text-info mb-2">{{ wizardStore.draft.subStats?.kantokyky }}</p>
+            <p class="is-size-2 has-text-weight-bold has-text-info mb-2">{{ calculateDerivedStats?.kantokyky }}</p>
             <p class="is-size-7 has-text-grey">Voima × 20</p>
           </div>
         </div>
