@@ -1,12 +1,26 @@
-name: Deploy to VPS
+name: Build, Release & Deploy
 
 on:
-  release:
-    types: [published]
+  push:
+    tags:
+      - 'v*'
 
 jobs:
+  create-release:
+    runs-on: ubuntu-latest
+    outputs:
+      upload_url: ${{ steps.create_release.outputs.upload_url }}
+    steps:
+      - name: Create Release
+        id: create_release
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
+          draft: false
+
   build-and-deploy:
     runs-on: ubuntu-latest
+    needs: create-release
 
     steps:
       - uses: actions/checkout@v6

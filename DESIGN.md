@@ -351,8 +351,12 @@ Prakken/
 #### Deployment & CI/CD
 - **GitHub Actions workflows** configured for:
   - Frontend CI (lint, test, build) on push to `main`
-  - Auto-deploy to VPS on release publish (tagged releases)
-- **Release workflow**: Create a git tag (e.g., `v1.0.0`) and publish release on GitHub to trigger automatic deployment
+  - Auto-deploy to VPS on tag push (triggers on any new tag)
+- **Release workflow**: 
+  - Push a git tag (e.g., `git tag v1.0.0 && git push origin v1.0.0`)
+  - GitHub Action automatically creates a release with auto-generated release notes
+  - Deployment to VPS triggers immediately after release creation
+- **Release notes**: Auto-generated from commit messages since last release
 - **VPS**: Podman containers with SSL via acme.sh
 
 ### 13. Design Principles
