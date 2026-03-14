@@ -36,10 +36,27 @@ const updateAttribute = (name: string, delta: number) => {
     wizardStore.setAttribute(name, newValue)
   }
 }
+
+// Check if stats have been rolled (any attribute differs from default 10)
+const hasRolled = computed(() =>
+  wizardStore.draft.attributes.some((attr) => attr.value !== 10)
+)
+
+// Dynamic button text
+const rollButtonText = computed(() =>
+  hasRolled.value ? 'Heitä uudelleen' : 'Heitä ominaisuudet'
+)
 </script>
 
 <template>
   <div class="roll-stats">
+    <!-- Roll button at top -->
+    <div class="roll-action">
+      <button type="button" class="roll-button" @click="rollStats">
+        {{ rollButtonText }}
+      </button>
+    </div>
+
     <p class="description">
       Heitä ominaisuusluvut tai määritä ne manuaalisisesti. Arvot välillä 3-18.
     </p>
@@ -61,9 +78,6 @@ const updateAttribute = (name: string, delta: number) => {
 
     <div class="stats-summary">
       <span>Yhteensä: {{ totalPoints }}</span>
-      <button type="button" class="roll-button" @click="rollStats">
-        Heitä uudelleen
-      </button>
     </div>
   </div>
 </template>
@@ -73,6 +87,41 @@ const updateAttribute = (name: string, delta: number) => {
 
 .roll-stats {
   padding: 1rem 0;
+}
+
+/* Roll action button at top */
+.roll-action {
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.roll-button {
+  padding: 0.75rem 1.5rem;
+  min-height: 44px;
+  border: none;
+  border-radius: var(--radius-md);
+  background: var(--color-bg-tertiary);
+  color: var(--color-text-primary);
+  border: 1px solid var(--border-color);
+  cursor: pointer;
+  font-weight: 600;
+  font-family: var(--font-heading);
+  letter-spacing: 0.05em;
+  transition: all 0.3s ease;
+  box-shadow: var(--shadow-sm);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.roll-button:hover {
+  background: var(--color-bg-hover);
+  border-color: var(--border-gold);
+  color: var(--color-gold-primary);
+  box-shadow: var(--shadow-md), 0 0 10px rgba(212, 175, 55, 0.2);
+  transform: translateY(-1px);
 }
 
 .description {
@@ -180,29 +229,5 @@ const updateAttribute = (name: string, delta: number) => {
   font-weight: 600;
   color: var(--color-text-primary);
   font-family: var(--font-heading);
-}
-
-.roll-button {
-  padding: 0.75rem 1.5rem;
-  min-height: 44px;
-  border: none;
-  border-radius: var(--radius-md);
-  background: linear-gradient(135deg, #2ea043 0%, #248a38 100%);
-  color: white;
-  cursor: pointer;
-  font-weight: 600;
-  font-family: var(--font-heading);
-  letter-spacing: 0.05em;
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 8px rgba(46, 160, 67, 0.3);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.roll-button:hover {
-  background: linear-gradient(135deg, #3eb053 0%, #2e9a48 100%);
-  box-shadow: 0 4px 16px rgba(46, 160, 67, 0.5);
-  transform: translateY(-1px);
 }
 </style>
