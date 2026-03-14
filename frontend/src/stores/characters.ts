@@ -71,6 +71,10 @@ export const useCharactersStore = defineStore('characters', {
       this.persist()
       return true
     },
+    renameCharacter(id: string, newName: string): boolean {
+      if (!newName.trim()) return false
+      return this.updateCharacter(id, { name: newName.trim() })
+    },
     deleteCharacter(id: string): boolean {
       const index = this.characters.findIndex((c) => c.id === id)
       if (index === -1) return false

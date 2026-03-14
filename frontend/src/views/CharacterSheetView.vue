@@ -58,6 +58,46 @@ const handleBack = () => {
   router.push('/characters')
 }
 
+// Rename functionality
+const isEditingName = ref(false)
+const editedName = ref('')
+const nameInputRef = ref<HTMLInputElement | null>(null)
+
+const startEditingName = () => {
+  if (character.value) {
+    editedName.value = character.value.name
+    isEditingName.value = true
+    // Focus input on next tick
+    setTimeout(() => {
+      nameInputRef.value?.focus()
+      nameInputRef.value?.select()
+    }, 0)
+  }
+}
+
+const cancelEditingName = () => {
+  isEditingName.value = false
+  editedName.value = ''
+}
+
+const saveEditingName = () => {
+  if (character.value && editedName.value.trim()) {
+    const success = charactersStore.renameCharacter(character.value.id, editedName.value)
+    if (success) {
+      isEditingName.value = false
+      editedName.value = ''
+    }
+  }
+}
+
+const handleNameKeydown = (event: KeyboardEvent) => {
+  if (event.key === 'Enter') {
+    saveEditingName()
+  } else if (event.key === 'Escape') {
+    cancelEditingName()
+  }
+}
+
 onMounted(() => {
   charactersStore.loadFromStorage()
 })
@@ -70,7 +110,41 @@ onMounted(() => {
         <span class="icon" aria-hidden="true"><i class="fas fa-arrow-left"></i></span>
         <span class="hide-mobile">Takaisin</span>
       </button>
-      <h1>{{ character.name }}</h1>
+      
+      <div class="character-name-container">
+        <template v-if="!isEditingName">
+          <h1>{{ character.name }}</h1>
+          <button 
+            type="button" 
+            class="edit-name-btn" 
+            @click="startEditingName"
+            aria-label="Muuta nimeä"
+            title="Muuta nimeä"
+          >
+            <span class="icon" aria-hidden="true"><i class="fas fa-pen"></i></span>
+          </button>
+        </template>
+        <template v-else>
+          <input
+            ref="nameInputRef"
+            type="text"
+            class="name-input"
+            v-model="editedName"
+            @keydown="handleNameKeydown"
+            @blur="saveEditingName"
+            maxlength="50"
+            aria-label="Hahmon nimi"
+          />
+          <div class="edit-actions">
+            <button type="button" class="edit-action-btn save" @click="saveEditingName" aria-label="Tallenna">
+              <span class="icon" aria-hidden="true"><i class="fas fa-check"></i></span>
+            </button>
+            <button type="button" class="edit-action-btn cancel" @click="cancelEditingName" aria-label="Peruuta">
+              <span class="icon" aria-hidden="true"><i class="fas fa-times"></i></span>
+            </button>
+          </div>
+        </template>
+      </div>
     </div>
 
     <div class="sheet-content">
@@ -267,7 +341,15 @@ onMounted(() => {
   margin-bottom: 2rem;
 }
 
-.sheet-header h1 {
+.character-name-container {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.character-name-container h1 {
   font-size: 1.5rem;
   color: var(--color-gold-primary);
   margin: 0;
@@ -278,8 +360,75 @@ onMounted(() => {
   word-break: break-word;
 }
 
+.edit-name-btn {
+  background: transparent;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  color: var(--color-text-muted);
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  min-width: 36px;
+  min-height: 36px;
+  flex-shrink: 0;
+}
+
+.edit-name-btn:hover {
+  background: var(--color-bg-hover);
+  border-color: var(--color-gold-primary);
+  color: var(--color-gold-primary);
+}
+
+.name-input {
+  flex: 1;
+  min-width: 0;
+  padding: 0.5rem 0.75rem;
+  min-height: 44px;
+  font-size: 1.25rem;
+  font-family: var(--font-heading);
+  background: var(--color-bg-tertiary);
+  border: 2px solid var(--color-magic-blue);
+  border-radius: var(--radius-md);
+  color: var(--color-text-primary);
+}
+
+.edit-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.edit-action-btn {
+  background: var(--color-bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  min-width: 36px;
+  min-height: 36px;
+}
+
+.edit-action-btn.save:hover {
+  background: var(--color-success);
+  border-color: var(--color-success);
+  color: white;
+}
+
+.edit-action-btn.cancel:hover {
+  background: var(--color-danger);
+  border-color: var(--color-danger);
+  color: white;
+}
+
 @media (min-width: 768px) {
-  .sheet-header h1 {
+  .character-name-container h1 {
     font-size: 2rem;
   }
 }

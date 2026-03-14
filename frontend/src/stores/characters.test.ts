@@ -161,11 +161,79 @@ describe('Characters Store', () => {
       characters: [character],
       activeCharacterId: null,
     }))
-    
+
     const store = useCharactersStore()
     store.loadFromStorage()
-    
+
     expect(store.characters).toHaveLength(1)
     expect(store.characters[0].name).toBe('Test Character')
+  })
+
+  it('renames a character', () => {
+    const store = useCharactersStore()
+    const character = createTestCharacter()
+    const saved = store.saveCharacter(character)
+
+    // Add small delay to ensure different timestamp
+    const beforeTime = saved.updatedAt
+    setTimeout(() => {}, 1)
+    
+    const success = store.renameCharacter(saved.id, 'New Character Name')
+
+    expect(success).toBe(true)
+    expect(store.characters[0].name).toBe('New Character Name')
+    expect(store.characters[0].updatedAt).toBeGreaterThanOrEqual(beforeTime)
+  })
+
+  it('trims whitespace when renaming', () => {
+    const store = useCharactersStore()
+    const character = createTestCharacter()
+    const saved = store.saveCharacter(character)
+
+    store.renameCharacter(saved.id, '  Trimmed Name  ')
+
+    expect(store.characters[0].name).toBe('Trimmed Name')
+  })
+
+  it('returns false when renaming with empty name', () => {
+    const store = useCharactersStore()
+    const character = createTestCharacter()
+    const saved = store.saveCharacter(character)
+
+    const success = store.renameCharacter(saved.id, '')
+
+    expect(success).toBe(false)
+    expect(store.characters[0].name).toBe('Test Character')
+  })
+
+  it('returns false when renaming with whitespace only', () => {
+    const store = useCharactersStore()
+    const character = createTestCharacter()
+    const saved = store.saveCharacter(character)
+
+    const success = store.renameCharacter(saved.id, '   ')
+
+    expect(success).toBe(false)
+    expect(store.characters[0].name).toBe('Test Character')
+  })
+
+  it('returns false when renaming non-existent character', () => {
+    const store = useCharactersStore()
+
+    const success = store.renameCharacter('non-existent', 'New Name')
+
+    expect(success).toBe(false)
+  })
+
+  it('persists renamed character to localStorage', () => {
+    const store = useCharactersStore()
+    const character = createTestCharacter()
+    const saved = store.saveCharacter(character)
+
+    store.renameCharacter(saved.id, 'Persisted Name')
+
+    const stored = localStorage.getItem('prakken_characters')
+    const parsed = JSON.parse(stored!)
+    expect(parsed.characters[0].name).toBe('Persisted Name')
   })
 })
