@@ -13,6 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       upload_url: ${{ steps.create_release.outputs.upload_url }}
+      release_id: ${{ steps.create_release.outputs.id }}
     steps:
       - name: Create Release
         id: create_release
@@ -21,10 +22,11 @@ jobs:
           generate_release_notes: true
           draft: false
 
-  build-and-deploy:
+  build-frontend:
     runs-on: ubuntu-latest
     needs: create-release
-
+    outputs:
+      artifact_name: ${{ steps.save-artifact.outputs.artifact_name }}
     steps:
       - uses: actions/checkout@v6
 
@@ -45,10 +47,37 @@ jobs:
 
       - name: Build Docker image
         working-directory: ./frontend
-        run: docker build -t prakken-frontend:latest -f Dockerfile.prod .
+        run: docker build -t prakken-frontend:${{ github.ref_name }} -f Dockerfile.prod .
 
       - name: Save image to tar
-        run: docker save -o prakken-frontend.tar prakken-frontend:latest
+        id: save-artifact
+        run: |
+          docker save -o prakken-frontend-${{ github.ref_name }}.tar prakken-frontend:${{ github.ref_name }}
+          echo "artifact_name=prakken-frontend-${{ github.ref_name }}.tar" >> $GITHUB_OUTPUT
+
+      - name: Upload to Release
+        uses: softprops/action-gh-release@v2.5.0
+        with:
+          files: prakken-frontend-${{ github.ref_name }}.tar
+          tag_name: ${{ github.ref_name }}
+
+      - name: Upload artifact for deploy job
+        uses: actions/upload-artifact@v4
+        with:
+          name: docker-image
+          path: prakken-frontend-${{ github.ref_name }}.tar
+          retention-days: 1
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: [create-release, build-frontend]
+    if: always() && needs.build-frontend.result == 'success'
+
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: docker-image
 
       - name: Setup SSH key
         run: |
@@ -61,7 +90,7 @@ jobs:
 
       - name: Copy image to VPS
         run: |
-          scp -i ~/.ssh/id_ed25519 -o StrictHostKeyChecking=no prakken-frontend.tar ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/tmp/
+          scp -i ~/.ssh/id_ed25519 -o StrictHostKeyChecking=no prakken-frontend-${{ github.ref_name }}.tar ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/tmp/
 
       - name: Deploy on VPS
         uses: appleboy/ssh-action@v1.0.3
@@ -71,7 +100,7 @@ jobs:
           key: ${{ secrets.VPS_SSH_KEY }}
           script: |
             echo "Loading image..."
-            podman load -i /tmp/prakken-frontend.tar
+            podman load -i /tmp/prakken-frontend-${{ github.ref_name }}.tar
 
             echo "Stopping existing container..."
             podman rm -f prakken-frontend 2>/dev/null || true
@@ -81,13 +110,13 @@ jobs:
               -p 80:80 -p 443:443 \
               -v /home/opc/.acme.sh/prakken.dedyn.io_ecc/fullchain.cer:/etc/ssl/certs/fullchain.cer:ro \
               -v /home/opc/.acme.sh/prakken.dedyn.io_ecc/prakken.dedyn.io.key:/etc/ssl/private/prakken.key:ro \
-              prakken-frontend:latest
+              prakken-frontend:${{ github.ref_name }}
 
             echo "Cleaning up tar file..."
-            rm /tmp/prakken-frontend.tar
+            rm /tmp/prakken-frontend-${{ github.ref_name }}.tar
 
             echo "Container status:"
             podman ps --filter name=prakken-frontend
 
       - name: Cleanup local artifacts
-        run: rm -f prakken-frontend.tar
+        run: rm -f prakken-frontend-${{ github.ref_name }}.tar
