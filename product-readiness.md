@@ -221,10 +221,10 @@
 
 ### Deployment
 
-- [ ] Update version in package.json to 1.0.0
-- [ ] Create git tag for release
-- [ ] Run deploy.sh successfully
-- [ ] Verify HTTPS working on production
+- [x] Update version in package.json to 1.0.0
+- [x] Create git tag for release
+- [x] Run deploy.sh successfully
+- [x] Verify HTTPS working on production
 - [ ] Test production deployment thoroughly
 - [ ] Monitor error logs post-deployment
 
