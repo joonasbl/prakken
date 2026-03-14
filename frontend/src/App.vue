@@ -119,6 +119,14 @@ const closeMobileMenu = () => {
   justify-content: center;
 }
 
+.header-row h1 .icon:first-child {
+  margin-right: var(--space-xs);
+}
+
+.header-row h1 .icon:last-child {
+  margin-left: var(--space-xs);
+}
+
 .header-row h1 .text-gradient {
   display: inline-block;
 }
