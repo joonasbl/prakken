@@ -293,9 +293,9 @@ const isComplete = computed(() => pendingChoices.value === 0)
 }
 
 .attr-btn {
-  width: 36px;
-  height: 36px;
-  min-width: 36px;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
   border: none;
   border-radius: var(--radius-md);
   background: linear-gradient(135deg, #4a90d9 0%, #357abd 100%);
@@ -308,6 +308,14 @@ const isComplete = computed(() => pendingChoices.value === 0)
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+@media (min-width: 768px) {
+  .attr-btn {
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+  }
 }
 
 .attr-btn:disabled {
@@ -411,5 +419,99 @@ const isComplete = computed(() => pendingChoices.value === 0)
 .modal-enter-from .modal-content,
 .modal-leave-to .modal-content {
   transform: scale(0.9);
+}
+
+/* Mobile optimizations */
+@media (max-width: 767px) {
+  .modal-overlay {
+    padding: var(--space-sm);
+    align-items: flex-end;
+  }
+
+  .modal-content {
+    max-height: 85vh;
+    padding: 1rem;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  }
+
+  .modal-header {
+    margin-bottom: 0.75rem;
+  }
+
+  .modal-header h2 {
+    font-size: 1rem;
+  }
+
+  .close-btn {
+    width: 36px;
+    height: 36px;
+    font-size: 1.5rem;
+  }
+
+  .instruction {
+    font-size: 0.85rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .attribute-selections {
+    gap: 0.4rem;
+  }
+
+  .attribute-row {
+    padding: 0.5rem 0.625rem;
+  }
+
+  .attr-name {
+    font-size: 0.85rem;
+  }
+
+  .attr-value {
+    font-size: 1rem;
+    min-width: 1.75rem;
+  }
+
+  .selection-summary {
+    margin-top: 0.75rem;
+  }
+
+  .selection-summary span {
+    font-size: 0.9rem;
+  }
+
+  .modal-footer {
+    padding-top: 0.75rem;
+  }
+
+  .done-btn {
+    padding: 0.625rem 1.5rem;
+    width: 100%;
+  }
+}
+
+/* Extra small screens */
+@media (max-width: 374px) {
+  .modal-content {
+    padding: 0.75rem;
+  }
+
+  .attribute-row {
+    padding: 0.4rem 0.5rem;
+  }
+
+  .attr-name {
+    font-size: 0.8rem;
+  }
+
+  .attr-btn {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    font-size: 1.1rem;
+  }
+
+  .attr-value {
+    font-size: 0.95rem;
+    min-width: 1.5rem;
+  }
 }
 </style>

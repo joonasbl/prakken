@@ -505,70 +505,140 @@ const totalEquipmentWeight = computed(() =>
 @media (max-width: 767px) {
   .attributes-grid {
     grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
   }
 
   .character-name {
-    font-size: 1.5rem;
+    font-size: 1.25rem;
   }
-  
+
   .columns.is-multiline {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 0.75rem;
+    gap: 0.5rem;
   }
-  
+
   .column.is-3,
   .column.is-4 {
     padding: 0;
   }
-  
+
   .summary-header-card .card-content {
-    padding: 1rem;
+    padding: 0.75rem;
   }
-  
+
   .attributes-panel .card-content {
-    padding: 1rem;
+    padding: 0.75rem;
   }
-  
+
   .section-header {
     gap: 0.5rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
   }
-  
+
   .section-header span {
-    font-size: 1rem;
+    font-size: 0.95rem;
   }
-  
+
+  .attr-card {
+    padding: 0.75rem 0.5rem;
+  }
+
   .attr-label {
-    font-size: 0.65rem;
+    font-size: 0.6rem;
+    margin-bottom: 0.25rem;
   }
-  
+
   .attr-value {
-    font-size: 1.25rem;
-  }
-  
-  .background-name {
     font-size: 1.1rem;
   }
-  
+
+  .background-name {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+  }
+
   .background-description {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
+    line-height: 1.5;
   }
-  
+
   .is-size-5 {
-    font-size: 1rem !important;
+    font-size: 0.95rem !important;
   }
-  
+
   .box {
-    padding: 0.75rem !important;
+    padding: 0.5rem !important;
   }
-  
+
   .box .is-size-4 {
-    font-size: 1.25rem !important;
+    font-size: 1.1rem !important;
   }
-  
+
+  .box .is-size-7 {
+    font-size: 0.7rem !important;
+  }
+
   .button.is-large {
     min-height: 44px;
     width: 100%;
+  }
+
+  .name-label {
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .name-label span {
+    font-size: 0.9rem;
+  }
+
+  .name-icon {
+    font-size: 1rem;
+  }
+
+  .header-icon {
+    font-size: 1.1rem;
+  }
+}
+
+/* Extra small screens - more aggressive scaling */
+@media (max-width: 374px) {
+  .attributes-grid {
+    gap: 0.25rem;
+  }
+
+  .attr-card {
+    padding: 0.5rem 0.25rem;
+  }
+
+  .attr-label {
+    font-size: 0.55rem;
+  }
+
+  .attr-value {
+    font-size: 1rem;
+  }
+
+  .character-name {
+    font-size: 1.1rem;
+  }
+
+  .columns.is-multiline {
+    gap: 0.25rem;
+  }
+
+  .box {
+    padding: 0.4rem !important;
+  }
+
+  .box .is-size-4 {
+    font-size: 1rem !important;
+  }
+
+  .section-header {
+    padding-bottom: 0.4rem;
   }
 }
 

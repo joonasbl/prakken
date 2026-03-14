@@ -344,5 +344,86 @@ const handleUnlearn = (skillName: string) => {
   display: flex;
   gap: 0.5rem;
   align-items: center;
+  flex-shrink: 0;
+}
+
+/* Mobile optimizations for skill rows */
+@media (max-width: 767px) {
+  .skills-grid {
+    gap: 0.4rem;
+    padding: 0.25rem;
+  }
+
+  .skill-row {
+    min-height: auto;
+  }
+
+  .skill-row .card-content {
+    padding: 0.5rem 0.75rem !important;
+  }
+
+  .skill-label .is-size-7 {
+    font-size: 0.8rem;
+    word-break: break-word;
+  }
+
+  .skill-label .tag {
+    font-size: 0.65rem;
+    min-height: 22px;
+    padding: 0 0.4rem;
+  }
+
+  .skill-controls {
+    gap: 0.25rem;
+  }
+
+  .skill-level {
+    min-width: 1.75rem;
+    font-size: 1rem;
+  }
+
+  .notification {
+    padding: 0.75rem 1rem;
+  }
+
+  .notification .has-text-weight-semibold {
+    font-size: 0.85rem;
+  }
+
+  .notification p {
+    font-size: 0.8rem;
+  }
+
+  .is-size-4 {
+    font-size: 1.25rem !important;
+  }
+}
+
+/* Extra small screens */
+@media (max-width: 374px) {
+  .skills-grid {
+    gap: 0.25rem;
+  }
+
+  .skill-row .card-content {
+    padding: 0.4rem 0.5rem !important;
+  }
+
+  .skill-label .is-size-7 {
+    font-size: 0.75rem;
+  }
+
+  .skill-label .tag {
+    font-size: 0.6rem;
+  }
+
+  .skill-level {
+    min-width: 1.5rem;
+    font-size: 0.95rem;
+  }
+
+  .skill-controls {
+    gap: 0.15rem;
+  }
 }
 </style>

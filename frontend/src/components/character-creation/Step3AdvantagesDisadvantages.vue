@@ -319,16 +319,74 @@ const selectionStatus = computed(() => {
     display: flex;
     flex-direction: column;
   }
-  
+
   .column {
     width: 100%;
     padding: 0;
     margin-bottom: 1.5rem;
   }
-  
+
   .is-size-5 {
     font-size: 1.2rem !important;
     margin-bottom: 1rem !important;
+  }
+
+  .options-grid {
+    gap: 0.4rem;
+    padding: 0.25rem;
+  }
+
+  .option-card {
+    padding: 0.5rem;
+  }
+
+  .option-card .card-content {
+    padding: 0.25rem !important;
+  }
+
+  .option-card .has-text-weight-bold {
+    font-size: 0.85rem;
+    margin-bottom: 0.25rem !important;
+  }
+
+  .option-card .is-size-7 {
+    font-size: 0.75rem;
+    line-height: 1.3;
+  }
+
+  .notification {
+    padding: 0.75rem 1rem;
+  }
+
+  .notification .has-text-weight-semibold {
+    font-size: 0.9rem;
+  }
+
+  .notification p {
+    font-size: 0.85rem;
+  }
+}
+
+/* Extra small screens */
+@media (max-width: 374px) {
+  .options-grid {
+    gap: 0.25rem;
+  }
+
+  .option-card {
+    padding: 0.4rem;
+  }
+
+  .option-card .has-text-weight-bold {
+    font-size: 0.8rem;
+  }
+
+  .option-card .is-size-7 {
+    font-size: 0.7rem;
+  }
+
+  .is-size-5 {
+    font-size: 1.1rem !important;
   }
 }
 </style>

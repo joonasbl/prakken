@@ -235,27 +235,106 @@ const cancelWizard = () => {
   opacity: 0.5;
 }
 
-/* Mobile: Stack step indicators */
+/* Mobile: Evenly distributed step indicators */
 @media (max-width: 767px) {
   .steps-container .columns {
     display: flex;
     flex-wrap: nowrap;
     overflow-x: auto;
-    padding-bottom: 0.5rem;
+    padding: 0.5rem 0 0.75rem 0;
+    -webkit-overflow-scrolling: touch;
+    gap: 0.25rem;
   }
-  
+
   .steps-container .column {
-    flex: 0 0 auto;
-    padding: 0 0.25rem;
+    flex: 1 1 0;
+    display: flex;
+    justify-content: center;
+    padding: 0 0.125rem;
+    min-width: 0;
   }
-  
+
   .step-indicator {
-    width: 32px;
-    height: 32px;
+    width: 28px;
+    height: 28px;
+    flex-shrink: 0;
   }
-  
+
   .step-number {
-    font-size: 0.75rem;
+    font-size: 0.65rem;
+  }
+
+  .step-indicator.is-active {
+    box-shadow: 0 0 8px rgba(212, 175, 55, 0.4);
+  }
+
+  .step-indicator.is-completed {
+    box-shadow: 0 0 6px rgba(46, 160, 67, 0.3);
+  }
+
+  .wizard-container {
+    padding: 0.75rem;
+  }
+
+  .step-card {
+    padding: 0.75rem;
+    min-height: 350px;
+  }
+
+  .title.is-2 {
+    font-size: 1.25rem;
+  }
+
+  .button.is-danger.is-outlined.is-small {
+    min-height: 40px;
+    padding: 0 0.75rem;
+    font-size: 0.85rem;
+  }
+}
+
+/* Extra small screens - tighter distribution */
+@media (max-width: 374px) {
+  .steps-container .columns {
+    gap: 0.125rem;
+    padding: 0.4rem 0 0.6rem 0;
+  }
+
+  .steps-container .column {
+    padding: 0 0.0625rem;
+  }
+
+  .step-indicator {
+    width: 24px;
+    height: 24px;
+  }
+
+  .step-number {
+    font-size: 0.6rem;
+  }
+
+  .step-indicator.is-active {
+    box-shadow: 0 0 6px rgba(212, 175, 55, 0.3);
+  }
+
+  .step-indicator.is-completed {
+    box-shadow: 0 0 4px rgba(46, 160, 67, 0.2);
+  }
+
+  .wizard-container {
+    padding: 0.5rem;
+  }
+
+  .step-card {
+    padding: 0.625rem;
+  }
+
+  .title.is-2 {
+    font-size: 1.15rem;
+  }
+
+  .is-flex.is-justify-content-space-between .button {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.85rem;
   }
 }
 

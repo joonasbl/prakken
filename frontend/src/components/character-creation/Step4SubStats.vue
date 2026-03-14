@@ -215,5 +215,59 @@ const substatModifiers = computed(() => wizardStore.substatModifiers)
   min-height: 44px;
   min-width: 44px;
   padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+}
+
+/* Mobile optimizations */
+@media (max-width: 767px) {
+  .button.is-info {
+    min-height: 44px;
+    width: 100%;
+    padding: 0.625rem 1rem;
+    font-size: 0.95rem;
+  }
+
+  .card {
+    min-height: auto;
+    padding: 0.75rem;
+  }
+
+  .card .is-size-2 {
+    font-size: 1.25rem;
+  }
+
+  .card .is-size-7 {
+    font-size: 0.65rem;
+  }
+
+  .columns.is-multiline {
+    gap: 0.5rem;
+  }
+
+  .subtitle {
+    font-size: 0.85rem;
+    line-height: 1.4;
+  }
+}
+
+/* Extra small screens */
+@media (max-width: 374px) {
+  .button.is-info {
+    min-height: 40px;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.9rem;
+  }
+
+  .card {
+    padding: 0.5rem;
+  }
+
+  .card .is-size-2 {
+    font-size: 1.1rem;
+  }
+
+  .card .is-size-7 {
+    font-size: 0.6rem;
+  }
 }
 </style>

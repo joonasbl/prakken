@@ -258,38 +258,91 @@ const handleDelete = () => {
 /* Mobile optimizations */
 @media (max-width: 767px) {
   .character-card {
-    padding: 1rem;
+    padding: 0.75rem;
   }
-  
+
   .card-header {
     flex-direction: column;
     gap: var(--space-xs);
   }
-  
+
   .character-name {
-    font-size: 1.2rem;
+    font-size: 1.15rem;
+    word-break: break-word;
   }
-  
+
   .character-date {
-    font-size: 0.75rem;
+    font-size: 0.7rem;
   }
-  
+
+  .attributes-summary {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.4rem;
+    padding: 0.5rem;
+  }
+
+  .attr-item {
+    gap: 0.15rem;
+  }
+
   .attr-label {
-    font-size: 0.55rem;
+    font-size: 0.5rem;
   }
-  
+
   .attr-value {
-    font-size: 1rem;
+    font-size: 0.95rem;
   }
-  
+
   .detail-row {
-    font-size: 0.85rem;
+    font-size: 0.8rem;
+    padding: 0.2rem 0;
   }
-  
+
+  .card-actions {
+    gap: 0.4rem;
+  }
+
   .btn-load,
   .btn-delete {
-    padding: 0.625rem 0.75rem;
-    font-size: var(--font-size-base);
+    padding: 0.5rem 0.625rem;
+    font-size: var(--font-size-sm);
+    min-height: 40px;
+  }
+}
+
+/* Extra small screens */
+@media (max-width: 374px) {
+  .character-card {
+    padding: 0.625rem;
+  }
+
+  .character-name {
+    font-size: 1.05rem;
+  }
+
+  .attributes-summary {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.25rem;
+    padding: 0.4rem;
+  }
+
+  .attr-label {
+    font-size: 0.45rem;
+  }
+
+  .attr-value {
+    font-size: 0.9rem;
+  }
+
+  .detail-row {
+    font-size: 0.75rem;
+  }
+
+  .btn-load,
+  .btn-delete {
+    padding: 0.45rem 0.5rem;
+    font-size: 0.75rem;
+    min-height: 38px;
   }
 }
 </style>
