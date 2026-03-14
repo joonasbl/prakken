@@ -117,6 +117,12 @@ const closeMobileMenu = () => {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  color: var(--color-gold-primary);
+}
+
+.header-row h1 .icon i {
+  color: var(--color-gold-primary);
+  filter: drop-shadow(0 0 4px rgba(212, 175, 55, 0.4));
 }
 
 .header-row h1 .icon:first-child {
