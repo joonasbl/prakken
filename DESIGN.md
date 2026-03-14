@@ -348,6 +348,13 @@ Prakken/
 - Offline support: Full functionality without backend
 - Bundle size: Keep under 500KB (gzipped)
 
+#### Deployment & CI/CD
+- **GitHub Actions workflows** configured for:
+  - Frontend CI (lint, test, build) on push to `main`
+  - Auto-deploy to VPS on release publish (tagged releases)
+- **Release workflow**: Create a git tag (e.g., `v1.0.0`) and publish release on GitHub to trigger automatic deployment
+- **VPS**: Podman containers with SSL via acme.sh
+
 ### 13. Design Principles
 
 1. **Offline-first**: App works fully without backend
