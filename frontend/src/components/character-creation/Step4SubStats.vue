@@ -50,10 +50,10 @@ const calculateDerivedStats = () => {
   }
 
   const subStats: SubStats = {
-    veripisteet: calculateVeripisteet(terveys),
+    veripisteet: substatModifiers.value.veripisteet + calculateVeripisteet(terveys),
     vauriobonus: calculateVauriobonus(voima),
-    syvaHaava: calculateSyvaHaava(voima, terveys),
-    kantokyky: voima * 20,
+    syvaHaava: substatModifiers.value.syvaHaava + calculateSyvaHaava(voima, terveys),
+    kantokyky: 100 + voima * 20,
   }
 
   wizardStore.setSubStats(subStats)
