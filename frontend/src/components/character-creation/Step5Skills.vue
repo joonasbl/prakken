@@ -149,11 +149,16 @@ const handleUnlearn = (skillName: string) => {
 <template>
   <div class="skills-step">
     <div class="notification is-info mb-4">
-      <div class="is-flex is-justify-content-space-between">
-        <p class="has-text-weight-semibold">Pisteitä jäljellä: <span class="is-size-4 has-text-info">{{ remainingPoints
-            }}</span></p>
-        <p>Käytetty: <span class="has-text-info">{{ totalSpentPoints }}</span> / {{ skillPointLimit }} ({{
-          learnedSkillsCount }} opittu)</p>
+      <div class="points-display">
+        <div class="points-row">
+          <span class="points-label">Pisteitä jäljellä:</span>
+          <span class="points-value remaining">{{ remainingPoints }}</span>
+        </div>
+        <div class="points-row">
+          <span class="points-label">Käytetty:</span>
+          <span class="points-value spent">{{ totalSpentPoints }} / {{ skillPointLimit }}</span>
+          <span class="points-sep">({{ learnedSkillsCount }} opittu)</span>
+        </div>
       </div>
     </div>
 
@@ -223,29 +228,62 @@ const handleUnlearn = (skillName: string) => {
   box-shadow: var(--shadow-md), 0 0 12px rgba(74, 144, 217, 0.3);
 }
 
-.notification.is-info .has-text-weight-semibold,
-.notification.is-info p {
-  color: var(--color-text-primary);
+/* Points display in notification */
+.points-display {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
-.notification .has-text-weight-semibold {
+.points-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.points-label {
   font-family: var(--font-heading);
   letter-spacing: 0.05em;
+  font-weight: 600;
+  color: var(--color-text-primary);
   font-size: 0.95rem;
 }
 
-.notification p {
+.points-value {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 1.25rem;
+  letter-spacing: 0.03em;
+}
+
+.points-value.remaining {
+  color: var(--color-magic-blue);
+  text-shadow: 0 0 10px rgba(74, 144, 217, 0.4);
+}
+
+.points-value.spent {
+  color: var(--color-success);
+  text-shadow: 0 0 8px rgba(46, 160, 67, 0.4);
+}
+
+.points-sep {
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
   font-family: var(--font-body);
-  font-size: 0.9rem;
 }
 
 @media (min-width: 768px) {
-  .notification .has-text-weight-semibold {
+  .points-label {
     font-size: 1rem;
   }
-  
-  .notification p {
-    font-size: 0.95rem;
+
+  .points-value {
+    font-size: 1.5rem;
+  }
+
+  .points-sep {
+    font-size: 0.9rem;
   }
 }
 
@@ -386,16 +424,16 @@ const handleUnlearn = (skillName: string) => {
     padding: 0.75rem 1rem;
   }
 
-  .notification .has-text-weight-semibold {
+  .points-label {
     font-size: 0.85rem;
   }
 
-  .notification p {
-    font-size: 0.8rem;
+  .points-value {
+    font-size: 1.1rem;
   }
 
-  .is-size-4 {
-    font-size: 1.25rem !important;
+  .points-sep {
+    font-size: 0.8rem;
   }
 }
 
