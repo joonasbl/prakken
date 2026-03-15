@@ -105,7 +105,10 @@ const totalEquipmentWeight = computed(() =>
 
     <div class="card mb-4" v-if="wizardStore.draft.advantages.length > 0">
       <div class="card-content">
-        <div class="is-size-5 has-text-weight-bold mb-3" style="font-family: 'MedievalSharp', cursive;">Edut</div>
+        <div class="section-header">
+          <span class="header-icon"><i class="fas fa-star"></i></span>
+          <span>Edut</span>
+        </div>
         <div class="tags are-medium">
           <span class="tag is-success is-light" v-for="adv in wizardStore.draft.advantages" :key="adv.id">
             {{ adv.name }}
@@ -116,7 +119,10 @@ const totalEquipmentWeight = computed(() =>
 
     <div class="card mb-4" v-if="wizardStore.draft.disadvantages.length > 0">
       <div class="card-content">
-        <div class="is-size-5 has-text-weight-bold mb-3" style="font-family: 'MedievalSharp', cursive;">Haitat</div>
+        <div class="section-header">
+          <span class="header-icon"><i class="fas fa-skull"></i></span>
+          <span>Haitat</span>
+        </div>
         <div class="tags are-medium">
           <span class="tag is-danger is-light" v-for="dis in wizardStore.draft.disadvantages" :key="dis.id">
             {{ dis.name }}
@@ -127,7 +133,9 @@ const totalEquipmentWeight = computed(() =>
 
     <div class="card mb-4" v-if="wizardStore.draft.subStats">
       <div class="card-content">
-        <div class="is-size-5 has-text-weight-bold mb-3" style="font-family: 'MedievalSharp', cursive;">Aliominaisuudet
+        <div class="section-header">
+          <span class="header-icon"><i class="fas fa-heartbeat"></i></span>
+          <span>Aliominaisuudet</span>
         </div>
         <div class="columns is-multiline">
           <div class="column is-3">
@@ -164,8 +172,10 @@ const totalEquipmentWeight = computed(() =>
 
     <div class="card mb-4" v-if="skillsWithLevels.length > 0">
       <div class="card-content">
-        <div class="is-size-5 has-text-weight-bold mb-3" style="font-family: 'MedievalSharp', cursive;">Taidot ({{
-          skillsWithLevels.length }} opittu)</div>
+        <div class="section-header">
+          <span class="header-icon"><i class="fas fa-hands"></i></span>
+          <span>Taidot ({{ skillsWithLevels.length }} opittu)</span>
+        </div>
         <div class="columns is-multiline">
           <div class="column is-4" v-for="skill in skillsWithLevels" :key="skill.name">
             <div class="box p-3">
@@ -179,10 +189,10 @@ const totalEquipmentWeight = computed(() =>
 
     <div class="card mb-4" v-if="unlearnedSkills && unlearnedSkills.length > 0">
       <div class="card-content">
-        <div class="is-size-5 has-text-weight-bold mb-3" style="font-family: 'MedievalSharp', cursive; display: flex; justify-content: space-between; align-items: center; cursor: pointer;"
-          @click="showUnlearnedSkills = !showUnlearnedSkills">
+        <div class="section-header" @click="showUnlearnedSkills = !showUnlearnedSkills" style="cursor: pointer;">
+          <span class="header-icon"><i class="fas fa-book-open"></i></span>
           <span>Oppimattomat taidot ({{ unlearnedSkills.length }})</span>
-          <span class="icon">
+          <span class="section-toggle" aria-hidden="true">
             <i :class="showUnlearnedSkills ? 'fas fa-chevron-down' : 'fas fa-chevron-right'"></i>
           </span>
         </div>
@@ -199,8 +209,10 @@ const totalEquipmentWeight = computed(() =>
 
     <div class="card mb-4" v-if="wizardStore.draft.equipment.length > 0">
       <div class="card-content">
-        <div class="is-size-5 has-text-weight-bold mb-3" style="font-family: 'MedievalSharp', cursive;">Varusteet ({{
-          wizardStore.draft.equipment.length }} kpl, {{ totalEquipmentWeight }} kg)</div>
+        <div class="section-header">
+          <span class="header-icon"><i class="fas fa-backpack"></i></span>
+          <span>Varusteet ({{ wizardStore.draft.equipment.length }} kpl, {{ totalEquipmentWeight }} kg)</span>
+        </div>
         <ul class="content">
           <li v-for="item in wizardStore.draft.equipment" :key="item.id">
             {{ item.name }}
