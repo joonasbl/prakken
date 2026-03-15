@@ -2,12 +2,18 @@
 import { computed, ref } from 'vue'
 import { useCharacterCreationStore } from '@/stores/characterCreation'
 import { armor as armorDatabase } from '@/data/armor'
-import type { Equipment, EquipmentCategory, HitLocation } from '@/types/equipment'
+import { weapons as weaponDatabase } from '@/data/weapons'
+import type { Equipment, HitLocation } from '@/types/equipment'
+import type { Weapon } from '@/types/weapon'
 
 const wizardStore = useCharacterCreationStore()
 
+// Type for combined items
+type Item = Equipment | Weapon
+
 // Filter state
-const activeFilter = ref<EquipmentCategory | 'all'>('all')
+type FilterCategory = 'armor' | 'weapon' | 'gear' | 'all'
+const activeFilter = ref<FilterCategory>('all')
 
 // Hit location display names and icons
 const hitLocationInfo: Record<HitLocation, { name: string; icon: string }> = {
@@ -23,14 +29,27 @@ const hitLocationInfo: Record<HitLocation, { name: string; icon: string }> = {
 // Computed: Current equipped items
 const equippedItems = computed(() => wizardStore.draft.equippedItems)
 
-// Computed: Get equipped equipment objects
-const equippedEquipment = computed(() => {
+// Computed: Get equipped armor objects (for armor point calculation)
+const equippedArmor = computed<Equipment[]>(() => {
   return equippedItems.value
     .map((id) => armorDatabase.find((item) => item.id === id))
     .filter((item): item is Equipment => item !== undefined)
 })
 
-// Computed: Total weight
+// Computed: Get equipped equipment objects (armor + weapons for weight)
+const equippedEquipment = computed<(Equipment | Weapon)[]>(() => {
+  const armorItems = equippedItems.value
+    .map((id) => armorDatabase.find((item) => item.id === id))
+    .filter((item): item is Equipment => item !== undefined)
+
+  const weaponItems = equippedItems.value
+    .map((id) => weaponDatabase.find((item) => item.id === id))
+    .filter((item): item is Weapon => item !== undefined)
+
+  return [...armorItems, ...weaponItems]
+})
+
+// Computed: Total weight (armor + weapons)
 const totalWeight = computed(() => {
   return equippedEquipment.value.reduce((sum, item) => sum + item.weight, 0)
 })
@@ -68,7 +87,7 @@ const armorPointsByLocation = computed(() => {
   }
 
   for (const location of locations) {
-    const locationArmor = equippedEquipment.value.filter(
+    const locationArmor = equippedArmor.value.filter(
       (item) => item.hitLocations?.includes(location) && item.armorPoints
     )
 
@@ -119,21 +138,29 @@ const averageArmorPoints = computed(() => {
   return Math.round(sum / values.length)
 })
 
-// Computed: Filtered equipment list
-const filteredEquipment = computed(() => {
+// Computed: Filtered equipment list (armor + weapons)
+const filteredEquipment = computed<Item[]>(() => {
   if (activeFilter.value === 'all') {
-    return armorDatabase
+    return [...armorDatabase, ...weaponDatabase]
+  }
+  if (activeFilter.value === 'weapon') {
+    return weaponDatabase
   }
   return armorDatabase.filter((item) => item.category === activeFilter.value)
 })
+
+// Type guard for weapons
+const isWeapon = (item: Item): item is Weapon => {
+  return item.category === 'weapon'
+}
 
 // Check if item is equipped
 const isEquipped = (itemId: string) => {
   return equippedItems.value.includes(itemId)
 }
 
-// Toggle equipment
-const toggleEquipment = (item: Equipment) => {
+// Toggle equipment (works for both armor and weapons)
+const toggleEquipment = (item: Item) => {
   if (isEquipped(item.id)) {
     // Unequip
     wizardStore.toggleArmorEquipment(item.id)
@@ -143,19 +170,19 @@ const toggleEquipment = (item: Equipment) => {
   }
 }
 
-// Get items equipped to a specific location
+// Get items equipped to a specific location (armor only)
 const getItemsAtLocation = (location: HitLocation) => {
-  return equippedEquipment.value.filter(
+  return equippedArmor.value.filter(
     (item) => item.hitLocations?.includes(location)
   )
 }
 
 // Filter tabs
-const filterTabs: { id: EquipmentCategory | 'all'; label: string; icon: string }[] = [
+const filterTabs: { id: FilterCategory; label: string; icon: string }[] = [
   { id: 'all', label: 'Kaikki', icon: 'fa-layer-group' },
-  { id: 'armor', label: 'Panssarit', icon: 'fa-shield' },
-  { id: 'weapon', label: 'Aseet', icon: 'fa-sword' },
-  { id: 'gear', label: 'Varusteet', icon: 'fa-backpack' },
+  { id: 'armor', label: 'Panssarit', icon: 'fa-shield-halved' },
+  { id: 'weapon', label: 'Aseet', icon: 'fa-khanda' },
+  { id: 'gear', label: 'Varusteet', icon: 'fa-suitcase' },
 ]
 </script>
 
@@ -255,7 +282,7 @@ const filterTabs: { id: EquipmentCategory | 'all'; label: string; icon: string }
         :class="{
           selected: isEquipped(item.id),
           'is-armor': item.category === 'armor',
-          'is-weapon': item.category === 'weapon',
+          'is-weapon': isWeapon(item),
           'is-gear': item.category === 'gear',
         }"
         @click="toggleEquipment(item)"
@@ -263,17 +290,17 @@ const filterTabs: { id: EquipmentCategory | 'all'; label: string; icon: string }
         <div class="card-header">
           <div class="item-info">
             <span class="item-name">{{ item.name }}</span>
-            <span v-if="item.category" class="item-category">{{ item.category }}</span>
+            <span class="item-category">{{ item.category }}</span>
           </div>
-          <div v-if="item.armorType" class="armor-type-indicator" :class="item.armorType">
+          <div v-if="'armorType' in item && item.armorType" class="armor-type-indicator" :class="item.armorType">
             {{ item.armorType === 'hard' ? 'Kova' : 'Pehmeä' }}
           </div>
         </div>
 
-        <p v-if="item.description" class="item-description">{{ item.description }}</p>
+        <p v-if="'description' in item && item.description" class="item-description">{{ item.description }}</p>
 
         <!-- Hit locations for armor -->
-        <div v-if="item.hitLocations && item.hitLocations.length > 0" class="hit-locations-preview">
+        <div v-if="'hitLocations' in item && item.hitLocations && item.hitLocations.length > 0" class="hit-locations-preview">
           <span class="locations-label">Suojaa:</span>
           <div class="locations-list">
             <span
@@ -287,9 +314,29 @@ const filterTabs: { id: EquipmentCategory | 'all'; label: string; icon: string }
           </div>
         </div>
 
+        <!-- Weapon stats -->
+        <div v-if="isWeapon(item)" class="weapon-stats">
+          <div class="weapon-stat-row">
+            <span class="stat-label">Vaurio:</span>
+            <span class="stat-value">{{ item.modes[0].damage }}{{ item.damageBonus ? '+' : '' }}</span>
+          </div>
+          <div class="weapon-stat-row">
+            <span class="stat-label">Pituus:</span>
+            <span class="stat-value">{{ item.length }}</span>
+          </div>
+          <div v-if="item.range" class="weapon-stat-row">
+            <span class="stat-label">Kantama:</span>
+            <span class="stat-value">{{ item.range }}m</span>
+          </div>
+          <div class="weapon-stat-row">
+            <span class="stat-label">Kädet:</span>
+            <span class="stat-value">{{ item.modes.length > 1 ? '1/2' : (item.modes[0].hands === 2 ? '2' : '1') }}</span>
+          </div>
+        </div>
+
         <!-- Stats row -->
         <div class="item-stats">
-          <div v-if="item.armorPoints" class="stat-item armor-stat">
+          <div v-if="'armorPoints' in item && item.armorPoints" class="stat-item armor-stat">
             <span class="stat-icon"><i class="fas fa-shield-halved"></i></span>
             <span class="stat-value">{{ item.armorPoints }} AP</span>
           </div>
@@ -803,6 +850,33 @@ const filterTabs: { id: EquipmentCategory | 'all'; label: string; icon: string }
 .location-badge i {
   font-size: 0.6rem;
   color: var(--color-magic-blue);
+}
+
+/* Weapon stats */
+.weapon-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 0.5rem;
+  background: var(--color-bg-secondary);
+  border-radius: var(--radius-sm);
+  margin: 0.5rem 0;
+}
+
+.weapon-stat-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.7rem;
+}
+
+.stat-label {
+  color: var(--color-text-muted);
+  font-weight: 600;
+}
+
+.stat-value {
+  color: var(--color-text-primary);
+  font-weight: 600;
 }
 
 /* Item stats */

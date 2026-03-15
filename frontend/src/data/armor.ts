@@ -1,169 +1,283 @@
 /**
- * Medieval Finnish armor database
+ * Medieval Finnish armor database (Praedor RPG)
  * 
  * Armor types:
- * - soft: Gambeson, padded armor, chainmail (can be layered, 50% value when under)
- * - hard: Plate armor, helmets (only one layer allowed, full value)
+ * - soft: Huopa, Nahka, Gambeson, Ketju (chainmail)
+ * - hard: Levy (plate), Teräs (steel), Avokypärä, Täyskypärä
  * 
  * Weight is in naulaa (1 naula = 100g)
- * Armor Points (AP) typically range from 1-7
+ * Currency: kpr (kupariraha), hr (hopearaha = 10 kpr), kr (kultaraha = 100 kpr)
+ * 
+ * Source: docs/varusteet.md
  */
 
 import type { Equipment } from '@/types/equipment'
 
 export const armor: Equipment[] = [
-  // ===== HEAD =====
+  // ===== HEAD (Kypärät) =====
   {
-    id: 'gambeson_head',
-    name: 'Gambeson (pää)',
+    id: 'huopahuppu',
+    name: 'Huopahuppu',
+    category: 'armor',
+    hitLocations: ['head'],
+    armorPoints: 1,
+    armorType: 'soft',
+    weight: 10,
+    cost: 5,  // 5 kpr
+    description: 'Yksinkertainen huopahuppu.',
+  },
+  {
+    id: 'nahkahuppu',
+    name: 'Nahkahuppu',
     category: 'armor',
     hitLocations: ['head'],
     armorPoints: 2,
     armorType: 'soft',
-    weight: 5,
-    cost: 15,
-    description: 'Pehmeä toppauspanssari päähän.',
+    weight: 10,
+    cost: 10,  // 1 hr
+    description: 'Nahkainen suojahuppu.',
   },
   {
-    id: 'helm',
-    name: 'Kypärä',
+    id: 'nahkakypara',
+    name: 'Nahkakypärä',
     category: 'armor',
     hitLocations: ['head'],
-    armorPoints: 5,
-    armorType: 'hard',
-    weight: 12,
-    cost: 40,
-    description: 'Kova kypärä, tarjoaa hyvän suojan.',
-  },
-  {
-    id: 'great_helm',
-    name: 'Suurkypärä',
-    category: 'armor',
-    hitLocations: ['head'],
-    armorPoints: 7,
-    armorType: 'hard',
-    weight: 18,
-    cost: 80,
-    description: 'Raskas suurkypärä erinomaisella suojalla.',
-  },
-
-  // ===== CHEST + STOMACH =====
-  {
-    id: 'gambeson_torso',
-    name: 'Gambeson (vartalo)',
-    category: 'armor',
-    hitLocations: ['chest', 'stomach'],
-    armorPoints: 2,
+    armorPoints: 3,
     armorType: 'soft',
-    weight: 15,
-    cost: 25,
-    description: 'Pehmeä toppauspanssari vartalolle.',
+    weight: 10,
+    cost: 40,  // 4 hr
+    description: 'Kova nahkakypärä.',
   },
   {
-    id: 'chainmail',
-    name: 'Panssaripaita',
+    id: 'avokypara',
+    name: 'Avokypärä',
     category: 'armor',
-    hitLocations: ['chest', 'stomach', 'left_arm', 'right_arm'],
+    hitLocations: ['head'],
     armorPoints: 4,
-    armorType: 'soft',
+    armorType: 'hard',
     weight: 20,
-    cost: 80,
-    description: 'Rengaspanssari, joka suojaa vartaloa ja käsiä.',
+    cost: 200,  // 2 kr
+    description: 'Avoin kypärä kasvosuojalla.',
   },
   {
-    id: 'plate_chest',
-    name: 'Rintapanssari',
+    id: 'ketjuhuppu',
+    name: 'Ketjuhuppu',
     category: 'armor',
-    hitLocations: ['chest', 'stomach'],
-    armorPoints: 7,
-    armorType: 'hard',
-    weight: 25,
-    cost: 150,
-    description: 'Kova levyrintapanssari.',
-  },
-  {
-    id: 'brigandine',
-    name: 'Brigandiini',
-    category: 'armor',
-    hitLocations: ['chest', 'stomach'],
+    hitLocations: ['head'],
     armorPoints: 5,
     armorType: 'soft',
-    weight: 18,
-    cost: 60,
-    description: 'Nahkatakkiin kiinnitetyt metallilevyt.',
-  },
-
-  // ===== ARMS (both) =====
-  {
-    id: 'gambeson_arms',
-    name: 'Gambeson (kädet)',
-    category: 'armor',
-    hitLocations: ['left_arm', 'right_arm'],
-    armorPoints: 2,
-    armorType: 'soft',
-    weight: 8,
-    cost: 18,
-    description: 'Pehmeä toppauspanssari käsivarsille.',
+    weight: 40,
+    cost: 300,  // 3 kr
+    description: 'Ketjusilmäkokoinen huppu.',
   },
   {
-    id: 'pauldrons',
-    name: 'Olkapanssarit',
+    id: 'tayssikypara',
+    name: 'Täyskypärä',
     category: 'armor',
-    hitLocations: ['left_arm', 'right_arm'],
-    armorPoints: 5,
-    armorType: 'hard',
-    weight: 10,
-    cost: 60,
-    description: 'Kovat olkapanssarit.',
-  },
-  {
-    id: 'vambraces',
-    name: 'Käsivarsipanssarit',
-    category: 'armor',
-    hitLocations: ['left_arm', 'right_arm'],
-    armorPoints: 4,
-    armorType: 'hard',
-    weight: 6,
-    cost: 40,
-    description: 'Kynnet suojalevyt käsivarsille.',
-  },
-
-  // ===== LEGS (both) =====
-  {
-    id: 'gambeson_legs',
-    name: 'Gambeson (jalat)',
-    category: 'armor',
-    hitLocations: ['left_leg', 'right_leg'],
-    armorPoints: 2,
-    armorType: 'soft',
-    weight: 10,
-    cost: 20,
-    description: 'Pehmeä toppauspanssari jaloille.',
-  },
-  {
-    id: 'plate_legs',
-    name: 'Jalkapanssarit',
-    category: 'armor',
-    hitLocations: ['left_leg', 'right_leg'],
+    hitLocations: ['head'],
     armorPoints: 6,
     armorType: 'hard',
-    weight: 18,
-    cost: 100,
-    description: 'Kovat levyjalkapanssarit.',
+    weight: 60,
+    cost: 500,  // 5 kr
+    description: 'Kasvot peittävä täyskypärä.',
+  },
+
+  // ===== CHEST + STOMACH (Takit) =====
+  {
+    id: 'huopanutu',
+    name: 'Huopanutu',
+    category: 'armor',
+    hitLocations: ['chest', 'stomach'],
+    armorPoints: 1,
+    armorType: 'soft',
+    weight: 20,
+    cost: 100,  // 1 kr
+    description: 'Huopainen päällystakki.',
   },
   {
-    id: 'chainmail_legs',
-    name: 'Rengashaubio (jalat)',
+    id: 'nahkanuttu',
+    name: 'Nahkanuttu',
+    category: 'armor',
+    hitLocations: ['chest', 'stomach'],
+    armorPoints: 2,
+    armorType: 'soft',
+    weight: 40,
+    cost: 30,  // 3 hr
+    description: 'Nahkainen suojatakki.',
+  },
+  {
+    id: 'gambeson',
+    name: 'Gambeson',
+    category: 'armor',
+    hitLocations: ['chest', 'stomach'],
+    armorPoints: 3,
+    armorType: 'soft',
+    weight: 50,
+    cost: 400,  // 4 kr
+    description: 'Topattu panssaritakki.',
+  },
+  {
+    id: 'ketjuhauberkki',
+    name: 'Ketjuhauberkki',
+    category: 'armor',
+    hitLocations: ['chest', 'stomach', 'left_arm', 'right_arm'],
+    armorPoints: 7,
+    armorType: 'soft',
+    weight: 120,
+    cost: 2500,  // 25 kr
+    description: 'Ketjusilmäpaita, joka suojaa vartaloa ja käsiä.',
+  },
+
+  // ===== CHEST + STOMACH (Liivit) =====
+  {
+    id: 'nahkaliivit',
+    name: 'Nahkaliivit',
+    category: 'armor',
+    hitLocations: ['chest', 'stomach'],
+    armorPoints: 2,
+    armorType: 'soft',
+    weight: 20,
+    cost: 50,  // 5 hr
+    description: 'Nahkainen rintaliivi.',
+  },
+  {
+    id: 'nahkakyrrassi',
+    name: 'Nahkakyrrassi',
+    category: 'armor',
+    hitLocations: ['chest', 'stomach'],
+    armorPoints: 4,
+    armorType: 'soft',
+    weight: 30,
+    cost: 200,  // 2 kr
+    description: 'Kova nahkakyrrassi.',
+  },
+  {
+    id: 'rautanahka',
+    name: 'Rautanahka',
+    category: 'armor',
+    hitLocations: ['chest', 'stomach'],
+    armorPoints: 5,
+    armorType: 'soft',
+    weight: 50,
+    cost: 300,  // 3 kr
+    description: 'Rautalevyillä vahvistettu nahkapanssari.',
+  },
+  {
+    id: 'ketjuliivit',
+    name: 'Ketjuliivit',
+    category: 'armor',
+    hitLocations: ['chest', 'stomach'],
+    armorPoints: 7,
+    armorType: 'soft',
+    weight: 80,
+    cost: 1000,  // 10 kr
+    description: 'Ketjusilmäliivit.',
+  },
+  {
+    id: 'levykyrassi',
+    name: 'Levykyrassi',
+    category: 'armor',
+    hitLocations: ['chest', 'stomach'],
+    armorPoints: 9,
+    armorType: 'hard',
+    weight: 100,
+    cost: 5000,  // 50 kr
+    description: 'Levyrintapanssari.',
+  },
+
+  // ===== ARMS (Käsisuojat) =====
+  {
+    id: 'nahkasuojat',
+    name: 'Nahkasuojat',
+    category: 'armor',
+    hitLocations: ['left_arm', 'right_arm'],
+    armorPoints: 3,
+    armorType: 'soft',
+    weight: 10,
+    cost: 100,  // 1 kr
+    description: 'Nahkaiset käsivarsisuojat.',
+  },
+  {
+    id: 'terassuojat',
+    name: 'Terässuojat',
+    category: 'armor',
+    hitLocations: ['left_arm', 'right_arm'],
+    armorPoints: 6,
+    armorType: 'hard',
+    weight: 30,
+    cost: 1000,  // 10 kr
+    description: 'Teräksiset käsivarsisuojat.',
+  },
+
+  // ===== LEGS (Jalkasuojat) =====
+  {
+    id: 'huopahousut',
+    name: 'Huopahousut',
+    category: 'armor',
+    hitLocations: ['left_leg', 'right_leg'],
+    armorPoints: 1,
+    armorType: 'soft',
+    weight: 20,
+    cost: 50,  // 5 hr
+    description: 'Huopaiset suojahousut.',
+  },
+  {
+    id: 'reisisaappaat',
+    name: 'Reisisaappaat',
+    category: 'armor',
+    hitLocations: ['left_leg', 'right_leg'],
+    armorPoints: 1,
+    armorType: 'soft',
+    weight: 20,
+    cost: 60,  // 6 hr
+    description: 'Reisiin ulottuvat saappaat.',
+  },
+  {
+    id: 'nahkalahkeet',
+    name: 'Nahkalahkeet',
+    category: 'armor',
+    hitLocations: ['left_leg', 'right_leg'],
+    armorPoints: 2,
+    armorType: 'soft',
+    weight: 40,
+    cost: 200,  // 2 kr
+    description: 'Nahkaiset jalkasuojat.',
+  },
+  {
+    id: 'nahkasaarystimet',
+    name: 'Nahkasäärystimet',
     category: 'armor',
     hitLocations: ['left_leg', 'right_leg'],
     armorPoints: 3,
     armorType: 'soft',
-    weight: 12,
-    cost: 50,
-    description: 'Rengaspanssari jaloille.',
+    weight: 20,
+    cost: 200,  // 2 kr
+    description: 'Nahkaiset säärisuojat.',
+  },
+  {
+    id: 'terassaarystimet',
+    name: 'Terässäärystimet',
+    category: 'armor',
+    hitLocations: ['left_leg', 'right_leg'],
+    armorPoints: 6,
+    armorType: 'hard',
+    weight: 50,
+    cost: 1500,  // 15 kr
+    description: 'Teräksiset säärisuojat.',
+  },
+  {
+    id: 'ketjuhousut',
+    name: 'Ketjuhousut',
+    category: 'armor',
+    hitLocations: ['left_leg', 'right_leg'],
+    armorPoints: 7,
+    armorType: 'soft',
+    weight: 80,
+    cost: 2000,  // 20 kr
+    description: 'Ketjusilmähousut.',
   },
 
-  // ===== GEAR (no armor value) =====
+  // ===== GEAR (Keep existing) =====
   {
     id: 'backpack',
     name: 'Reppu',
@@ -227,64 +341,6 @@ export const armor: Equipment[] = [
     weight: 0.5,
     cost: 3,
     description: 'Pieni laukku kolikoille.',
-  },
-
-  // ===== WEAPONS (no armor value, listed for completeness) =====
-  {
-    id: 'dagger',
-    name: 'Tikari',
-    category: 'weapon',
-    weight: 1,
-    cost: 5,
-    description: 'Pieni teräase.',
-  },
-  {
-    id: 'shortsword',
-    name: 'Lyhytmiekka',
-    category: 'weapon',
-    weight: 10,
-    cost: 25,
-    description: 'Yhden käden miekka.',
-  },
-  {
-    id: 'longsword',
-    name: 'Pitkämiiekka',
-    category: 'weapon',
-    weight: 15,
-    cost: 40,
-    description: 'Kaksikäsinen miekka.',
-  },
-  {
-    id: 'axe',
-    name: 'Kirves',
-    category: 'weapon',
-    weight: 12,
-    cost: 20,
-    description: 'Yhden käden kirves.',
-  },
-  {
-    id: 'spear',
-    name: 'Keihäs',
-    category: 'weapon',
-    weight: 15,
-    cost: 15,
-    description: 'Pitkä keihäs.',
-  },
-  {
-    id: 'bow',
-    name: 'Jousi',
-    category: 'weapon',
-    weight: 10,
-    cost: 30,
-    description: 'Ampuma-ase.',
-  },
-  {
-    id: 'crossbow',
-    name: 'Jousipyssy',
-    category: 'weapon',
-    weight: 20,
-    cost: 50,
-    description: 'Jousipyssy.',
   },
 ]
 

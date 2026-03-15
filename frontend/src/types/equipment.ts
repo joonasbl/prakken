@@ -2,6 +2,8 @@
  * Equipment types for the armor and hit location system
  */
 
+import type { BaseItem } from './weapon'
+
 export type HitLocation =
   | 'head'
   | 'chest'
@@ -13,18 +15,14 @@ export type HitLocation =
 
 export type ArmorType = 'soft' | 'hard'
 
-export type EquipmentCategory = 'armor' | 'weapon' | 'gear'
+export type EquipmentCategory = 'armor' | 'gear'
 
-export interface Equipment {
-  id: string
-  name: string
-  category: EquipmentCategory
+export interface Equipment extends BaseItem {
+  category: 'armor' | 'gear'
   hitLocations?: HitLocation[]  // For armor
   armorPoints?: number  // For armor
   armorType?: ArmorType  // For armor layering
-  weight: number  // naulaa (100g units)
   cost: number
-  description: string
 }
 
 export interface EquippedItem {
@@ -40,5 +38,4 @@ export interface ArmorCalculation {
   right_arm: number
   left_leg: number
   right_leg: number
-  shield: number  // Separate from hit locations
 }
