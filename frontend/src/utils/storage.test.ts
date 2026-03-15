@@ -27,6 +27,7 @@ const createTestCharacter = (id: string, name: string): Character => ({
   id,
   name,
   background: null,
+  secondBackgroundId: null,
   attributes: [],
   advantages: [],
   disadvantages: [],

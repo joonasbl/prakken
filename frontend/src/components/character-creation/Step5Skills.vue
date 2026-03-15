@@ -10,15 +10,29 @@ const skillsStore = useSkillsStore()
 const SKILL_LEARN_COST = 2
 
 onMounted(() => {
-  // Initialize learned skills from background
+  // Initialize learned skills from background(s)
   if (wizardStore.draft.learnedSkills.length === 0) {
     const background = wizardStore.draft.background
+    const secondBackgroundId = wizardStore.draft.secondBackgroundId
     const learnedSkills: LearnedSkill[] = []
 
-    // Add background skills (automatically learned, no bonus)
+    // Add primary background skills (automatically learned, no bonus)
     if (background?.skillBonuses) {
       for (const skillName of Object.keys(background.skillBonuses)) {
         learnedSkills.push({ name: skillName, bonus: 0 })
+      }
+    }
+
+    // Add second background skills for Ottolapsi
+    if (secondBackgroundId) {
+      const secondBackground = wizardStore.getSecondBackground()
+      if (secondBackground?.skillBonuses) {
+        for (const skillName of Object.keys(secondBackground.skillBonuses)) {
+          // Only add if not already in the list (avoid duplicates)
+          if (!learnedSkills.some((s) => s.name === skillName)) {
+            learnedSkills.push({ name: skillName, bonus: 0 })
+          }
+        }
       }
     }
 
@@ -71,6 +85,7 @@ const calculateSkillRaiseCost = (baseLevel: number, currentBonus: number): numbe
 const totalSpentPoints = computed(() => {
   let total = 0
   const background = wizardStore.draft.background
+  const secondBackgroundId = wizardStore.draft.secondBackgroundId
 
   for (const learnedSkill of wizardStore.draft.learnedSkills) {
     const skillDef = skillsStore.skillList.find((s) => s.name === learnedSkill.name)
@@ -83,8 +98,11 @@ const totalSpentPoints = computed(() => {
         : undefined
     const baseLevel = attribute ? Math.ceil(attribute.value / 2) : 6
 
-    // Non-background skills cost 2 points to learn
-    if (background?.skillBonuses[learnedSkill.name] === undefined) {
+    // Skills from either background are free
+    const isFromPrimaryBackground = background?.skillBonuses[learnedSkill.name] !== undefined
+    const isFromSecondBackground = secondBackgroundId && wizardStore.getSecondBackground()?.skillBonuses[learnedSkill.name] !== undefined
+    
+    if (!isFromPrimaryBackground && !isFromSecondBackground) {
       total += SKILL_LEARN_COST
     }
 
@@ -123,13 +141,22 @@ const canRaiseSkill = (learnedSkill: LearnedSkill, baseLevel: number): boolean =
 
 const isBgSkill = (skill: string): boolean => {
   const background = wizardStore.draft.background
-  if (background?.skillBonuses) {
-    for (const skillName of Object.keys(background.skillBonuses)) {
-      if (skillName == skill) {
-        return true
-      }
+  const secondBackgroundId = wizardStore.draft.secondBackgroundId
+  
+  // Check primary background
+  if (background?.skillBonuses && background.skillBonuses[skill] !== undefined) {
+    return true
+  }
+  
+  // Check second background (for Ottolapsi)
+  if (secondBackgroundId) {
+    const secondBackground = wizardStore.getSecondBackground()
+    if (secondBackground?.skillBonuses && secondBackground.skillBonuses[skill] !== undefined) {
+      return true
     }
-  } return false
+  }
+  
+  return false
 }
 
 const handleLearn = (skill: Skill) => {

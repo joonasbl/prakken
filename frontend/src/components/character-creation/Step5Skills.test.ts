@@ -281,4 +281,301 @@ describe('Step5Skills - Background Skill Protection', () => {
       expect(wizardStore.draft.learnedSkills.find((s: LearnedSkill) => s.name === 'Erätaidot')?.bonus).toBe(2)
     })
   })
+
+  describe('Ottolapsi - Second Background', () => {
+    const setupOttolapsiCharacter = () => {
+      const wizardStore = useCharacterCreationStore()
+      
+      // Set primary background
+      wizardStore.setBackground({
+        id: 'aatelinen',
+        name: 'Aatelinen',
+        description: 'Noble background',
+        statBonuses: { Karisma: 2 },
+        skillBonuses: { 'Heraldiikka': 0, 'Ratsastus': 0, 'Miekat': 0 },
+      })
+      
+      // Set second background for Ottolapsi
+      wizardStore.setSecondBackground('pappi')
+      
+      return wizardStore
+    }
+
+    describe('skill point calculation with Ottolapsi', () => {
+      const calculateSkillPointCostWithSecondBackground = (
+        wizardStore: ReturnType<typeof useCharacterCreationStore>
+      ): number => {
+        const SKILL_LEARN_COST = 2
+        let total = 0
+        const background = wizardStore.draft.background
+        const secondBackgroundId = wizardStore.draft.secondBackgroundId
+
+        const calculateSkillRaiseCost = (baseLevel: number, currentBonus: number): number => {
+          const currentLevel = baseLevel + currentBonus
+          return currentLevel < 10 ? 1 : 2
+        }
+
+        for (const learnedSkill of wizardStore.draft.learnedSkills) {
+          const isFromPrimaryBackground = background?.skillBonuses[learnedSkill.name] !== undefined
+          const isFromSecondBackground = secondBackgroundId && 
+            wizardStore.getSecondBackground()?.skillBonuses[learnedSkill.name] !== undefined
+          
+          if (!isFromPrimaryBackground && !isFromSecondBackground) {
+            total += SKILL_LEARN_COST
+          }
+
+          for (let i = 0; i < learnedSkill.bonus; i++) {
+            total += calculateSkillRaiseCost(6, i)
+          }
+        }
+        return total
+      }
+
+      it('does not charge points for primary background skills', () => {
+        const wizardStore = setupOttolapsiCharacter()
+        wizardStore.setLearnedSkills([
+          { name: 'Heraldiikka', bonus: 0 }, // from primary (aatelinen)
+          { name: 'Ratsastus', bonus: 0 },   // from primary (aatelinen)
+        ])
+
+        const cost = calculateSkillPointCostWithSecondBackground(wizardStore)
+        expect(cost).toBe(0)
+      })
+
+      it('does not charge points for second background skills', () => {
+        const wizardStore = setupOttolapsiCharacter()
+        wizardStore.setLearnedSkills([
+          { name: 'Esiintyminen', bonus: 0 }, // from secondary (pappi)
+          { name: 'Uskonto', bonus: 0 },      // from secondary (pappi)
+        ])
+
+        const cost = calculateSkillPointCostWithSecondBackground(wizardStore)
+        expect(cost).toBe(0)
+      })
+
+      it('does not charge points for skills from both backgrounds', () => {
+        const wizardStore = setupOttolapsiCharacter()
+        wizardStore.setLearnedSkills([
+          { name: 'Heraldiikka', bonus: 0 },  // from primary (aatelinen)
+          { name: 'Miekat', bonus: 0 },       // from primary (aatelinen)
+          { name: 'Esiintyminen', bonus: 0 }, // from secondary (pappi)
+          { name: 'Haavojen hoito', bonus: 0 }, // from secondary (pappi)
+        ])
+
+        const cost = calculateSkillPointCostWithSecondBackground(wizardStore)
+        expect(cost).toBe(0)
+      })
+
+      it('charges points only for non-background skills', () => {
+        const wizardStore = setupOttolapsiCharacter()
+        wizardStore.setLearnedSkills([
+          { name: 'Heraldiikka', bonus: 0 },  // from primary - free
+          { name: 'Esiintyminen', bonus: 0 }, // from secondary - free
+          { name: 'Lyömäaseet', bonus: 0 },   // not from either - 2 points
+          { name: 'Jouset', bonus: 0 },       // not from either - 2 points
+        ])
+
+        const cost = calculateSkillPointCostWithSecondBackground(wizardStore)
+        expect(cost).toBe(4)
+      })
+
+      it('handles duplicate skills from both backgrounds (only charged once as free)', () => {
+        const wizardStore = useCharacterCreationStore()
+        
+        // Both backgrounds have the same skill
+        wizardStore.setBackground({
+          id: 'test1',
+          name: 'Test1',
+          description: 'Test',
+          statBonuses: {},
+          skillBonuses: { 'Miekat': 0 },
+        })
+        wizardStore.setSecondBackground('pappi') // Also has 'Miekat' potentially
+        
+        wizardStore.setLearnedSkills([
+          { name: 'Miekat', bonus: 0 }, // Would be duplicate
+        ])
+
+        const cost = calculateSkillPointCostWithSecondBackground(wizardStore)
+        expect(cost).toBe(0) // Free because it's in primary background
+      })
+
+      it('charges for raising skills even from background', () => {
+        const wizardStore = setupOttolapsiCharacter()
+        wizardStore.setLearnedSkills([
+          { name: 'Heraldiikka', bonus: 2 }, // from primary, but raised twice
+          { name: 'Esiintyminen', bonus: 1 }, // from secondary, raised once
+        ])
+
+        const cost = calculateSkillPointCostWithSecondBackground(wizardStore)
+        // Heraldiikka: 1 + 1 = 2 points for raises
+        // Esiintyminen: 1 point for raise
+        expect(cost).toBe(3)
+      })
+    })
+
+    describe('isBgSkill with Ottolapsi', () => {
+      const isBgSkillWithSecondBackground = (
+        skillName: string,
+        wizardStore: ReturnType<typeof useCharacterCreationStore>
+      ): boolean => {
+        const background = wizardStore.draft.background
+        const secondBackgroundId = wizardStore.draft.secondBackgroundId
+        
+        if (background?.skillBonuses && background.skillBonuses[skillName] !== undefined) {
+          return true
+        }
+        
+        if (secondBackgroundId) {
+          const secondBackground = wizardStore.getSecondBackground()
+          if (secondBackground?.skillBonuses && secondBackground.skillBonuses[skillName] !== undefined) {
+            return true
+          }
+        }
+        
+        return false
+      }
+
+      it('returns true for primary background skills', () => {
+        const wizardStore = setupOttolapsiCharacter()
+        
+        expect(isBgSkillWithSecondBackground('Heraldiikka', wizardStore)).toBe(true)
+        expect(isBgSkillWithSecondBackground('Ratsastus', wizardStore)).toBe(true)
+        expect(isBgSkillWithSecondBackground('Miekat', wizardStore)).toBe(true)
+      })
+
+      it('returns true for second background skills', () => {
+        const wizardStore = setupOttolapsiCharacter()
+        
+        expect(isBgSkillWithSecondBackground('Esiintyminen', wizardStore)).toBe(true)
+        expect(isBgSkillWithSecondBackground('Haavojen hoito', wizardStore)).toBe(true)
+        expect(isBgSkillWithSecondBackground('Uskonto', wizardStore)).toBe(true)
+      })
+
+      it('returns false for skills not in either background', () => {
+        const wizardStore = setupOttolapsiCharacter()
+        
+        expect(isBgSkillWithSecondBackground('Lyömäaseet', wizardStore)).toBe(false)
+        expect(isBgSkillWithSecondBackground('Jouset', wizardStore)).toBe(false)
+      })
+    })
+
+    describe('handleUnlearn with Ottolapsi', () => {
+      const handleUnlearnWithSecondBackground = (
+        wizardStore: ReturnType<typeof useCharacterCreationStore>,
+        skillName: string
+      ): boolean => {
+        const learnedSkill = wizardStore.draft.learnedSkills.find((s: LearnedSkill) => s.name === skillName)
+        
+        const isBgSkill = (skill: string): boolean => {
+          const background = wizardStore.draft.background
+          const secondBackgroundId = wizardStore.draft.secondBackgroundId
+          
+          if (background?.skillBonuses && background.skillBonuses[skill] !== undefined) {
+            return true
+          }
+          
+          if (secondBackgroundId) {
+            const secondBackground = wizardStore.getSecondBackground()
+            if (secondBackground?.skillBonuses && secondBackground.skillBonuses[skill] !== undefined) {
+              return true
+            }
+          }
+          
+          return false
+        }
+        
+        if (!learnedSkill || learnedSkill.bonus > 0 || isBgSkill(learnedSkill.name)) {
+          return false
+        }
+        const index = wizardStore.draft.learnedSkills.findIndex((s: LearnedSkill) => s.name === skillName)
+        if (index >= 0) {
+          wizardStore.draft.learnedSkills.splice(index, 1)
+          return true
+        }
+        return false
+      }
+
+      it('prevents unlearning skills from second background', () => {
+        const wizardStore = setupOttolapsiCharacter()
+        wizardStore.setLearnedSkills([
+          { name: 'Heraldiikka', bonus: 0 },   // from primary
+          { name: 'Esiintyminen', bonus: 0 },  // from secondary
+          { name: 'Haavojen hoito', bonus: 0 }, // from secondary
+        ])
+
+        const initialCount = wizardStore.draft.learnedSkills.length
+
+        // Try to unlearn secondary background skills
+        const result1 = handleUnlearnWithSecondBackground(wizardStore, 'Esiintyminen')
+        const result2 = handleUnlearnWithSecondBackground(wizardStore, 'Haavojen hoito')
+
+        expect(result1).toBe(false)
+        expect(result2).toBe(false)
+        expect(wizardStore.draft.learnedSkills.length).toBe(initialCount)
+      })
+
+      it('allows unlearning non-background skills when Ottolapsi is active', () => {
+        const wizardStore = setupOttolapsiCharacter()
+        wizardStore.setLearnedSkills([
+          { name: 'Heraldiikka', bonus: 0 },   // from primary - cannot unlearn
+          { name: 'Esiintyminen', bonus: 0 },  // from secondary - cannot unlearn
+          { name: 'Lyömäaseet', bonus: 0 },    // not from background - can unlearn
+        ])
+
+        const initialCount = wizardStore.draft.learnedSkills.length
+        const result = handleUnlearnWithSecondBackground(wizardStore, 'Lyömäaseet')
+
+        expect(result).toBe(true)
+        expect(wizardStore.draft.learnedSkills.length).toBe(initialCount - 1)
+        expect(wizardStore.draft.learnedSkills.some((s: LearnedSkill) => s.name === 'Lyömäaseet')).toBe(false)
+      })
+    })
+
+    describe('getSecondBackground store function', () => {
+      it('returns null when no second background is set', () => {
+        const wizardStore = useCharacterCreationStore()
+        wizardStore.setBackground({
+          id: 'test',
+          name: 'Test',
+          description: 'Test',
+          statBonuses: {},
+          skillBonuses: {},
+        })
+
+        expect(wizardStore.getSecondBackground()).toBe(null)
+      })
+
+      it('returns the second background when set', () => {
+        const wizardStore = useCharacterCreationStore()
+        wizardStore.setBackground({
+          id: 'aatelinen',
+          name: 'Aatelinen',
+          description: 'Noble',
+          statBonuses: {},
+          skillBonuses: {},
+        })
+        wizardStore.setSecondBackground('pappi')
+
+        const secondBg = wizardStore.getSecondBackground()
+        expect(secondBg).not.toBe(null)
+        expect(secondBg?.id).toBe('pappi')
+        expect(secondBg?.name).toBe('Pappi')
+      })
+
+      it('returns null for invalid second background id', () => {
+        const wizardStore = useCharacterCreationStore()
+        wizardStore.setBackground({
+          id: 'test',
+          name: 'Test',
+          description: 'Test',
+          statBonuses: {},
+          skillBonuses: {},
+        })
+        wizardStore.setSecondBackground('nonexistent')
+
+        expect(wizardStore.getSecondBackground()).toBe(null)
+      })
+    })
+  })
 })

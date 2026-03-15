@@ -122,7 +122,7 @@ const advantages: Advantage[] = [
   { id: 'lemmikki', name: 'Lemmikki', description: 'Sinulla on uskollinen eläinkumppani.', cost: 1 },
   { id: 'nopea', name: 'Nopea', description: 'Olet erityisen nopea liikkeissäsi.', cost: 2 },
   { id: 'onnekas', name: 'Onnekas', description: 'Onni on usein puolellasi.', cost: 3 },
-  { id: 'ottolapsi', name: 'Ottolapsi', description: 'Sinulla on rakastava adoptioperhe.', cost: 1 },
+  { id: 'ottolapsi', name: 'Ottolapsi', description: 'Seikkailija on kahden säädyn tai kulttuurin kasvatti. Hänellä on molempien aloitustaidot mutta vain toisen ominaisuusmuutokset.', cost: 1 },
   { id: 'raudanvatsa', name: 'Rautavatsa', description: 'Vatsasi kestää mitä tahansa.', cost: 1 },
   { id: 'rohkea', name: 'Rohkea', description: 'Pelko ei tunne sinulle tietä.', cost: 1 },
   { id: 'sitkea', name: 'Sitkeä', description: '+5 veripistettä.', cost: 3, effect: { type: 'substat', stat: 'veripisteet', value: 5 } as AdvantageEffect },
@@ -202,6 +202,7 @@ export const useCharacterCreationStore = defineStore('characterCreation', {
         attributes: JSON.parse(JSON.stringify(defaultAttributes)) as Attr[],
         learnedSkills: [] as LearnedSkill[],
         background: null,
+        secondBackgroundId: null,
         advantages: [],
         disadvantages: [],
         subStats: null,
@@ -339,6 +340,7 @@ export const useCharacterCreationStore = defineStore('characterCreation', {
         attributes: JSON.parse(JSON.stringify(defaultAttributes)) as Attr[],
         learnedSkills: [] as LearnedSkill[],
         background: null,
+        secondBackgroundId: null,
         advantages: [],
         disadvantages: [],
         subStats: null,
@@ -358,6 +360,13 @@ export const useCharacterCreationStore = defineStore('characterCreation', {
     setBackground(background: Background) {
       this.draft.background = background
     },
+    setSecondBackground(backgroundId: string | null) {
+      this.draft.secondBackgroundId = backgroundId
+    },
+    getSecondBackground(): Background | null {
+      if (!this.draft.secondBackgroundId) return null
+      return backgrounds.find((b) => b.id === this.draft.secondBackgroundId) || null
+    },
     toggleAdvantage(advantage: Advantage) {
       const index = this.draft.advantages.findIndex((a) => a.id === advantage.id)
       if (index >= 0) {
@@ -365,6 +374,10 @@ export const useCharacterCreationStore = defineStore('characterCreation', {
         // Clear attribute choices if removing Lahjakas
         if (advantage.id === 'lahjakas') {
           this.attributeChoices = {}
+        }
+        // Clear second background if removing Ottolapsi
+        if (advantage.id === 'ottolapsi') {
+          this.draft.secondBackgroundId = null
         }
       } else {
         this.draft.advantages.push(advantage)

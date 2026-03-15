@@ -14,6 +14,7 @@ const createTestCharacter = (): Character => ({
     statBonuses: { Terveys: 1 },
     skillBonuses: {},
   },
+  secondBackgroundId: null,
   attributes: [
     { name: 'Voima', value: 10 },
     { name: 'Terveys', value: 12 },

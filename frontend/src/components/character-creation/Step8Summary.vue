@@ -68,6 +68,38 @@ const totalEquipmentWeight = computed(() =>
         </div>
         <p class="background-name">{{ wizardStore.draft.background.name }}</p>
         <p class="background-description">{{ wizardStore.draft.background.description }}</p>
+        <div class="background-bonuses mt-3">
+          <div class="bonus-item">
+            <span class="bonus-icon"><i class="fas fa-plus-circle"></i></span>
+            <span class="bonus-text"><strong>Ominaisuusmuutokset:</strong>
+              <span v-if="Object.keys(wizardStore.draft.background.statBonuses).length > 0">
+                {{ Object.entries(wizardStore.draft.background.statBonuses).map(([attr, bonus]) => `${attr} ${(bonus ?? 0) >= 0 ? '+' : ''}${bonus}`).join(', ') }}
+              </span>
+              <span v-else>Ei muutoksia</span>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-4" v-if="wizardStore.draft.secondBackgroundId">
+      <div class="card-content">
+        <div class="section-header">
+          <span class="header-icon"><i class="fas fa-user-friends"></i></span>
+          <span>Toissijainen tausta (Ottolapsi)</span>
+        </div>
+        <p class="background-name">{{ wizardStore.getSecondBackground()?.name }}</p>
+        <p class="background-description">{{ wizardStore.getSecondBackground()?.description }}</p>
+        <div class="background-bonuses mt-3">
+          <div class="bonus-item">
+            <span class="bonus-icon"><i class="fas fa-book"></i></span>
+            <span class="bonus-text"><strong>Taidot:</strong>
+              <span v-if="wizardStore.getSecondBackground()?.skillBonuses">
+                {{ Object.keys(wizardStore.getSecondBackground()!.skillBonuses).join(', ') }}
+              </span>
+            </span>
+          </div>
+        </div>
       </div>
     </div>
 

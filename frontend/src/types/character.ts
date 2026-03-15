@@ -58,6 +58,7 @@ export type Character = {
   attributes: Attr[]
   learnedSkills: LearnedSkill[]  // Only learned skills (stored)
   background: Background | null
+  secondBackgroundId: string | null  // For Ottolapsi advantage
   advantages: Advantage[]
   disadvantages: Disadvantage[]
   subStats: SubStats
@@ -72,6 +73,7 @@ export type CharacterDraft = {
   attributes: Attr[]
   learnedSkills: LearnedSkill[]  // Only learned skills (stored)
   background: Background | null
+  secondBackgroundId: string | null  // For Ottolapsi advantage
   advantages: Advantage[]
   disadvantages: Disadvantage[]
   subStats: SubStats | null

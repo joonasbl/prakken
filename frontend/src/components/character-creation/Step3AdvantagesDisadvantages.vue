@@ -2,10 +2,12 @@
 import { computed, ref, watch } from 'vue'
 import { useCharacterCreationStore } from '@/stores/characterCreation'
 import AttributeChoiceModal from './AttributeChoiceModal.vue'
+import SecondBackgroundModal from './SecondBackgroundModal.vue'
 
 const wizardStore = useCharacterCreationStore()
 
-const showModal = ref(false)
+const showLahjakasModal = ref(false)
+const showOttolapsiModal = ref(false)
 
 const MAX_SELECTIONS = 5
 
@@ -16,17 +18,31 @@ const hasDisadvantage = (id: string) =>
   wizardStore.selectedDisadvantages.some((d) => d.id === id)
 
 const hasLahjakas = computed(() => hasAdvantage('lahjakas'))
+const hasOttolapsi = computed(() => hasAdvantage('ottolapsi'))
 
 watch(hasLahjakas, (newValue) => {
   if (newValue) {
-    showModal.value = true
+    showLahjakasModal.value = true
   }
 })
 
-const handleModalCancel = () => {
+watch(hasOttolapsi, (newValue) => {
+  if (newValue) {
+    showOttolapsiModal.value = true
+  }
+})
+
+const handleLahjakasModalCancel = () => {
   const lahjakasAdvantage = wizardStore.availableAdvantages.find((a) => a.id === 'lahjakas')
   if (lahjakasAdvantage && hasAdvantage('lahjakas')) {
     wizardStore.toggleAdvantage(lahjakasAdvantage)
+  }
+}
+
+const handleOttolapsiModalCancel = () => {
+  const ottolapsiAdvantage = wizardStore.availableAdvantages.find((a) => a.id === 'ottolapsi')
+  if (ottolapsiAdvantage && hasAdvantage('ottolapsi')) {
+    wizardStore.toggleAdvantage(ottolapsiAdvantage)
   }
 }
 
@@ -161,7 +177,8 @@ const selectionStatus = computed(() => {
       </div>
     </div>
 
-    <AttributeChoiceModal v-model="showModal" @close="showModal = false" @cancel="handleModalCancel" />
+    <AttributeChoiceModal v-model="showLahjakasModal" @close="showLahjakasModal = false" @cancel="handleLahjakasModalCancel" />
+    <SecondBackgroundModal v-model="showOttolapsiModal" @close="showOttolapsiModal = false" @cancel="handleOttolapsiModalCancel" />
   </div>
 </template>
 
