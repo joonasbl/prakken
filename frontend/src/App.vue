@@ -117,11 +117,11 @@ const closeMobileMenu = () => {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  color: var(--color-gold-primary);
+  color: var(--color-gold-primary, #d4af37) !important;
 }
 
 .header-row h1 .icon i {
-  color: var(--color-gold-primary);
+  color: var(--color-gold-primary, #d4af37) !important;
   filter: drop-shadow(0 0 4px rgba(212, 175, 55, 0.4));
 }
 
