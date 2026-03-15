@@ -210,7 +210,7 @@ const totalEquipmentWeight = computed(() =>
     <div class="card mb-4" v-if="wizardStore.draft.equipment.length > 0">
       <div class="card-content">
         <div class="section-header">
-          <span class="header-icon"><i class="fas fa-backpack"></i></span>
+          <span class="header-icon"><i class="fas fa-shopping-bag"></i></span>
           <span>Varusteet ({{ wizardStore.draft.equipment.length }} kpl, {{ totalEquipmentWeight }} kg)</span>
         </div>
         <ul class="content">
