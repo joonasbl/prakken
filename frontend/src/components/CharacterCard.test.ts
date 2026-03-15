@@ -27,6 +27,7 @@ const createTestCharacter = (): Character => ({
   disadvantages: [],
   learnedSkills: [],
   equipment: [],
+  equippedItems: [],
   subStats: {
     veripisteet: 11,
     vauriobonus: 0,

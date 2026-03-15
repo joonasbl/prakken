@@ -43,6 +43,7 @@ export type SubStats = {
   kantokyky: number
 }
 
+// Legacy Equipment type for backwards compatibility
 export type Equipment = {
   id: string
   name: string
@@ -62,7 +63,8 @@ export type Character = {
   advantages: Advantage[]
   disadvantages: Disadvantage[]
   subStats: SubStats
-  equipment: Equipment[]
+  equipment: Equipment[]  // Legacy: array of equipment IDs
+  equippedItems: string[]  // New: array of equipped item IDs
   createdAt: number
   updatedAt: number
   version: string
@@ -77,7 +79,18 @@ export type CharacterDraft = {
   advantages: Advantage[]
   disadvantages: Disadvantage[]
   subStats: SubStats | null
-  equipment: Equipment[]
+  equipment: Equipment[]  // Legacy
+  equippedItems: string[]  // New: equipped item IDs
 }
 
 export type CharacterCreationStep = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8
+
+export type ArmorCalculation = {
+  head: number
+  chest: number
+  stomach: number
+  left_arm: number
+  right_arm: number
+  left_leg: number
+  right_leg: number
+}

@@ -33,6 +33,7 @@ const createTestCharacter = (id: string, name: string): Character => ({
   disadvantages: [],
   learnedSkills: [],
   equipment: [],
+  equippedItems: [],
   subStats: {
     veripisteet: 10,
     vauriobonus: 0,

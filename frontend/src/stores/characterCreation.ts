@@ -207,6 +207,7 @@ export const useCharacterCreationStore = defineStore('characterCreation', {
         disadvantages: [],
         subStats: null,
         equipment: [],
+        equippedItems: [],
       },
       attributeChoices: {},
     }
@@ -345,6 +346,7 @@ export const useCharacterCreationStore = defineStore('characterCreation', {
         disadvantages: [],
         subStats: null,
         equipment: [],
+        equippedItems: [],
       }
       this.attributeChoices = {}
     },
@@ -414,6 +416,17 @@ export const useCharacterCreationStore = defineStore('characterCreation', {
       } else {
         this.draft.equipment.push(equipment)
       }
+    },
+    toggleArmorEquipment(itemId: string) {
+      const index = this.draft.equippedItems.indexOf(itemId)
+      if (index >= 0) {
+        this.draft.equippedItems.splice(index, 1)
+      } else {
+        this.draft.equippedItems.push(itemId)
+      }
+    },
+    setEquippedItems(itemIds: string[]) {
+      this.draft.equippedItems = itemIds
     },
     setName(name: string) {
       this.draft.name = name
