@@ -74,14 +74,14 @@ npm run dev
 
 ## API Endpoints
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/health` | Health check |
-| GET | `/api/characters` | List all characters |
-| GET | `/api/characters/:id` | Get character by ID |
-| POST | `/api/characters` | Create new character |
-| PUT | `/api/characters/:id` | Update character |
-| DELETE | `/api/characters/:id` | Delete character |
+| Method | Endpoint              | Description          |
+| ------ | --------------------- | -------------------- |
+| GET    | `/health`             | Health check         |
+| GET    | `/api/characters`     | List all characters  |
+| GET    | `/api/characters/:id` | Get character by ID  |
+| POST   | `/api/characters`     | Create new character |
+| PUT    | `/api/characters/:id` | Update character     |
+| DELETE | `/api/characters/:id` | Delete character     |
 
 ## Development
 
