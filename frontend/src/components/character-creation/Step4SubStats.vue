@@ -1,12 +1,15 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, watch } from 'vue'
 import { useCharacterCreationStore } from '@/stores/characterCreation'
 import type { SubStats } from '@/types/character'
 import ModifierBadge from './ModifierBadge.vue'
 
 const wizardStore = useCharacterCreationStore()
 
-const calculateDerivedStats = computed(() => {
+const substatModifiers = computed(() => wizardStore.substatModifiers)
+
+// Pure calculation function (no side effects)
+const calculateDerivedStats = (): SubStats => {
   const attrs = wizardStore.effectiveAttributes
   const getAttr = (name: string) => attrs.find((a) => a.name === name)?.value || 10
 
@@ -49,19 +52,23 @@ const calculateDerivedStats = computed(() => {
     return 10 // 39-40
   }
 
-  const subStats: SubStats = {
+  return {
     veripisteet: substatModifiers.value.veripisteet + calculateVeripisteet(terveys),
     vauriobonus: calculateVauriobonus(voima),
     syvaHaava: substatModifiers.value.syvaHaava + calculateSyvaHaava(voima, terveys),
     kantokyky: 100 + voima * 20,
   }
+}
 
-  wizardStore.setSubStats(subStats)
-
-  return subStats // ✅ Return the calculated sub-stats
-})
-
-const substatModifiers = computed(() => wizardStore.substatModifiers)
+// Auto-calculate substats when attributes or modifiers change
+watch(
+  [() => wizardStore.effectiveAttributes, substatModifiers],
+  () => {
+    const stats = calculateDerivedStats()
+    wizardStore.setSubStats(stats)
+  },
+  { immediate: true }
+)
 </script>
 
 <template>
@@ -76,7 +83,7 @@ const substatModifiers = computed(() => wizardStore.substatModifiers)
           <div class="card-content">
             <p class="is-size-7 has-text-grey mb-2">Veripisteet</p>
             <div class="is-flex is-justify-content-center is-align-items-center gap-2 mb-2">
-              <p class="is-size-2 has-text-weight-bold has-text-info">{{ calculateDerivedStats?.veripisteet }}</p>
+              <p class="is-size-2 has-text-weight-bold has-text-info">{{ wizardStore.draft.subStats?.veripisteet }}</p>
               <ModifierBadge v-if="substatModifiers.veripisteet !== 0" :modifier="substatModifiers.veripisteet"
                 source="etu/haitta" />
             </div>
@@ -88,7 +95,7 @@ const substatModifiers = computed(() => wizardStore.substatModifiers)
         <div class="card has-text-centered">
           <div class="card-content">
             <p class="is-size-7 has-text-grey mb-2">Vauriobonus</p>
-            <p class="is-size-2 has-text-weight-bold has-text-info mb-2">{{ calculateDerivedStats?.vauriobonus }}
+            <p class="is-size-2 has-text-weight-bold has-text-info mb-2">{{ wizardStore.draft.subStats?.vauriobonus }}
             </p>
             <p class="is-size-7 has-text-grey">Voima</p>
           </div>
@@ -99,7 +106,7 @@ const substatModifiers = computed(() => wizardStore.substatModifiers)
           <div class="card-content">
             <p class="is-size-7 has-text-grey mb-2">Syvä haava</p>
             <div class="is-flex is-justify-content-center is-align-items-center gap-2 mb-2">
-              <p class="is-size-2 has-text-weight-bold has-text-info">{{ calculateDerivedStats?.syvaHaava }}</p>
+              <p class="is-size-2 has-text-weight-bold has-text-info">{{ wizardStore.draft.subStats?.syvaHaava }}</p>
               <ModifierBadge v-if="substatModifiers.syvaHaava !== 0" :modifier="substatModifiers.syvaHaava"
                 source="etu/haitta" />
             </div>
@@ -111,7 +118,7 @@ const substatModifiers = computed(() => wizardStore.substatModifiers)
         <div class="card has-text-centered">
           <div class="card-content">
             <p class="is-size-7 has-text-grey mb-2">Kantokyky</p>
-            <p class="is-size-2 has-text-weight-bold has-text-info mb-2">{{ calculateDerivedStats?.kantokyky }}</p>
+            <p class="is-size-2 has-text-weight-bold has-text-info mb-2">{{ wizardStore.draft.subStats?.kantokyky }}</p>
             <p class="is-size-7 has-text-grey">Voima × 20</p>
           </div>
         </div>
