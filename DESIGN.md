@@ -205,6 +205,37 @@ Skills must be **learned** before they can be raised:
 #### Advantages (36 total)
 Aarre, Alkemisti, Asiantuntija, Eläinkuiskaaja, Haukankatse, Huuliltalukija, Hyvämaineinen, Ikä ja kokemus, Jääverinen, Kahlekuningas, Kaunis, Kissajalat, Kookas, Kovanaama, Lahjakas, Laskupää, Lemmikki, Nopea, Onnekas, Ottolapsi, Rautavatsa, Rohkea, Sitkeä, Suhteita, Sukeltaja, Suuntavaisto, Tarkkakorvainen, Tarkkamuistinen, Uhkaava, Vaikukoira, Vaisto, Valevainu, Velhonverta, Viinapää, Ystävä, Yösilmät
 
+#### Ottolapsi (Adopted Child) - Special Mechanic
+
+**Ottolapsi** is a unique advantage that allows a character to have **two backgrounds**:
+
+**How it works:**
+1. Player selects primary background in Step 2 (grants **attribute bonuses**)
+2. When Ottolapsi is selected in Step 3, a modal opens
+3. Player selects a second background (grants **skills only**)
+4. Character learns skills from **both** backgrounds automatically
+5. Character receives attribute bonuses **only from primary** background
+
+**Example:**
+- Primary: **Aatelinen** → Karisma +2, skills: Heraldiikka, Ratsastus, Miekat, etc.
+- Secondary: **Pappi** → skills: Esiintyminen, Haavojen hoito, Uskonto, etc.
+- **Result:** Karisma +2 (from Aatelinen only), but skills from both backgrounds
+
+**UI/UX:**
+- Modal title: "Ottolapsi - Valitse toinen tausta"
+- Primary background displayed with label: "Ensisijainen tausta (antaa ominaisuusmuutokset)"
+- Secondary background selection with label: "Toissijainen tausta (antaa taidot)"
+- Step 8 Summary shows both backgrounds with clear distinction
+- Skills from both backgrounds are free (no learning cost) and cannot be unlearned
+
+**Technical Implementation:**
+- `secondBackgroundId: string | null` added to Character and CharacterDraft types
+- `SecondBackgroundModal.vue` component for selection
+- Store actions: `setSecondBackground()`, `getSecondBackground()`
+- Skills initialization checks both backgrounds
+- Skill point calculation excludes skills from both backgrounds
+- `isBgSkill()` function checks both backgrounds for unlearn protection
+
 #### Disadvantages (36 total)
 Ahne, Arpi, Hentoluinen, Hidas, Huono kuulo, Hämäräsokea, Irstas, Juoppo, Kammo, Kostonhimoinen, Kunniallinen, Käsipuoli, Kääpiö, Lainsuojaton, Lähinäköinen, Lähimmäisiä, Muotopuoli, Mykkä, Nuori, Oikku, Pahamaineinen, Painajaisia, Peluri, Rampa, Rasisti, Riippuvuus, Silmäpuoli, Taikauskoinen, Tuntomerkki, Uninen, Uskovainen, Vallanahne, Vasalli, Velkaa, Vihollinen, Äkkipikainen
 
