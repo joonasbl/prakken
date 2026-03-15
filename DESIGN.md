@@ -1,551 +1,707 @@
-## Prakken – Design Document
+# Prakken – Design Document
 
-### 1. Purpose and Problem Statement
+A fantasy character management system for tabletop RPGs, built with Vue 3 and TypeScript.
 
-Prakken is a small web application for managing and adjusting character attributes (e.g., for tabletop RPGs or similar games).  
-The app provides a simple interface where a user can:
+---
 
-- Enter or display a **character name**.
-- View a list of **character attributes** (e.g. `Voima`, `Terveys`, `Ketteryys`, `Valppaus`, `Sisukkuus`, `Karisma`).
-- Quickly **adjust numeric values** for each attribute.
+## Table of Contents
 
-The primary goal is to make attribute management fast, clear, and visually organized, avoiding manual tracking on paper or scattered notes.
+1. [Overview](#1-overview)
+2. [Target Users](#2-target-users)
+3. [Core Features](#3-core-features)
+4. [Character Creation](#4-character-creation)
+5. [Game Mechanics](#5-game-mechanics)
+6. [Architecture](#6-architecture)
+7. [Data Model](#7-data-model)
+8. [User Interface](#8-user-interface)
+9. [Technical Requirements](#9-technical-requirements)
+10. [Deployment & DevOps](#10-deployment--devops)
+11. [Future Roadmap](#11-future-roadmap)
+12. [Design Principles](#12-design-principles)
 
-### 2. Target Users
+---
 
-- Players who need an always-available, lightweight character sheet for tracking stats.
-- Game masters who want a quick way to view or tweak NPC attributes.
-- Anyone who needs a simple numeric attribute panel for experimentation or prototyping.
+## 1. Overview
 
-### 3. High-Level Goals
+**Prakken** is a web application for creating, managing, and tracking fantasy RPG characters. It provides a complete character creation wizard, skill management with point-buy system, and persistent character storage.
 
-- **Clarity**: Stats and their labels should be easy to read and adjust.
-- **Speed**: Minimal navigation; the main stats screen should load immediately.
-- **Persistence-ready**: Architecture should make it straightforward to add persistence later (e.g., local storage, backend).
-- **Extensibility**: It should be easy to:
-  - Add new attributes.
-  - Add new character-related views (e.g., inventory, skills).
-  - Add calculations or derived stats (e.g., total power, modifiers).
+### Key Characteristics
 
-### 4. Core Features (Current & Planned)
+- **Platform**: Web SPA (Single Page Application)
+- **Tech Stack**: Vue 3, TypeScript, Pinia, Vite
+- **Storage**: localStorage (offline-first), with future backend sync
+- **Language**: Finnish UI (with i18n-ready architecture)
+- **Theme**: Fantasy dark theme with gold accents
 
-**Current**
-- [x] Full multi-step character creator (wizard) with 8 stages
-- [x] Persist stats and characters locally (localStorage)
-- [x] Support multiple characters and quick switching
-- [x] Add derived stats and validation (veripisteet, vauriobonus, syvä haava, kantokyky)
-- [x] Introduce routing-based views (Characters, Create Character, Character Sheet)
-- Display a list of base attributes with default numeric values.
-- Allow inline editing of each attribute via numeric input.
-- Centralize attribute state in a dedicated store for predictable updates.
-- Display numerical skill levels derived from attributes, with a point-buy system and caps.
+### Problem Solved
 
-**Planned / Future**
-- Active Character View (Play Mode) with HP, XP, gold tracking
-- Equipment weight and encumbrance system
-- Export/Import character data (JSON/PDF)
-- Character portraits and customization
-- Combat tracker integration
-### 5. UX & Interaction Design
+Prakken eliminates manual character sheet tracking by providing:
 
-- **Single main screen** focused on the stat list.
-- **Name header** component (`NameComponent`) used to show or edit the character name at the top.
-- Attributes are laid out in responsive columns:
-  - Label on one side, numeric input on the other.
-  - Inputs are compact, visually distinct, and easy to click/tap.
-- Input changes:
-  - Immediately update the central store.
-  - Can be extended to trigger derived calculations or downstream effects.
+- Digital character creation with rule validation
+- Automatic calculation of derived stats
+- Skill point management and tracking
+- Multiple character storage and quick switching
+- Mobile-responsive design for tabletop use
 
-### 6. Architecture Overview
+---
 
-- **View layer**
-  - `App.vue`:
-    - Root component.
-    - Renders the main layout shell (header) and the `StatsPage` component.
-  - `StatsPage.vue`:
-    - Main stats screen.
-    - Connects to the stats store (`useStatsStore`).
-    - Renders `NameComponent` and a list of inputs for each attribute in `attList`.
-  - `NameComponent.vue`:
-    - Responsible for rendering and (potentially) editing the character name.
+## 2. Target Users
 
-- **State management**
-  - `src/stores/stats.ts`:
-    - Pinia store defining:
-      - `attList`: array of attributes (name + value).
-      - `setVal(name, value)`: action to update a specific attribute’s value.
-    - Designed so any component can read/update stats consistently.
+| User Type        | Needs                                                                                 |
+| ---------------- | ------------------------------------------------------------------------------------- |
+| **Players**      | Always-available character sheet, quick stat/skill reference, HP tracking during play |
+| **Game Masters** | Quick NPC generation, character viewing, rule reference                               |
+| **New Players**  | Guided character creation, clear skill descriptions, point budget tracking            |
 
-- **Types**
-  - `src/types/attributes.ts`:
-    - Defines the attribute shape used in the store and components.
-    - Keeps attribute-related types centralized.
+---
 
-- **Routing**
-  - `src/views/AboutView.vue`:
-    - Example standalone view for static content.
-    - Can be expanded with more routes as the app grows.
+## 3. Core Features
 
-### 7. Data Model
+### Current Features ✅
 
-- **Attribute**
+| Feature                      | Description                                                      |
+| ---------------------------- | ---------------------------------------------------------------- |
+| **8-Step Character Wizard**  | Guided creation from stat rolling to final summary               |
+| **Multiple Characters**      | Create, save, load, delete, and switch between characters        |
+| **localStorage Persistence** | All characters saved locally with version migration support      |
+| **Background System**        | 11 backgrounds with unique stat bonuses and skill lists          |
+| **Advantages/Disadvantages** | 36 of each, with special effects and conflict detection          |
+| **Skill System**             | Learn/raise mechanics with point costs (max 15 skill level)      |
+| **Derived Stats**            | Auto-calculated: Veripisteet, Vauriobonus, Syvä haava, Kantokyky |
+| **Equipment Selection**      | Starter equipment choices during creation                        |
+| **Character Sheet View**     | Detailed view with all stats, skills, and equipment              |
+| **Character Rename**         | Edit character name from character sheet view                    |
+| **Mobile Responsive**        | Touch-friendly controls, collapsible sections, mobile navigation |
 
-  ```ts
-  export type Attr = {
-    name: string
-    value: number
-  }
-  ```
+### Planned Features 📋
 
-- **Stats store state**
+| Priority   | Feature             | Description                                                   |
+| ---------- | ------------------- | ------------------------------------------------------------- |
+| **High**   | Play Mode View      | Active character view with HP tracker, XP, gold, wound status |
+| **High**   | Equipment Weight    | Encumbrance system affecting movement and skills              |
+| **Medium** | Export/Import       | JSON and PDF character export                                 |
+| **Medium** | Character Portraits | Upload/display character images                               |
+| **Low**    | Combat Tracker      | Turn-based combat integration                                 |
+| **Low**    | Backend Sync        | Cloud storage with user accounts                              |
 
-  ```ts
-  type StatsState = {
-    attList: Attr[]
-  }
-  ```
+---
 
-Data currently lives entirely in-memory. Persistence, validation rules, and derived fields can be added on top of this model.
+## 4. Character Creation
 
-### 8. Non-Functional Requirements
+### 8-Step Wizard Flow
 
-- **Performance**: Small, client-side SPA with minimal overhead; should feel instant on modern devices.
-- **Maintainability**:
-  - Clear separation between UI (`StatsPage`, `NameComponent`) and state (`useStatsStore`).
-  - Types defined once and reused across components.
-- **Extensibility**:
-  - Easy to add new attributes or views without refactoring the core architecture.
-  - Store structure supports additional fields and actions in a straightforward way.
+```
+Step 1 → Step 2 → Step 3 → Step 4 → Step 5 → Step 6 → Step 7 → Step 8
+  ↓         ↓         ↓         ↓         ↓         ↓         ↓         ↓
+Roll     Choose    Adv/     Sub-     Skills   Equip-    Name   Summary
+Stats   Background Disadv   stats              ment     & Save
+```
 
-### 9. Derived Stats (Sub-stats)
+### Step Details
 
-The following derived stats are calculated from base attributes:
+| Step  | Name       | User Actions                                     | Validation                          |
+| ----- | ---------- | ------------------------------------------------ | ----------------------------------- |
+| **1** | Roll Stats | Roll 4d6 drop lowest OR manually adjust (3-18)   | Total points displayed              |
+| **2** | Background | Select 1 of 11 backgrounds                       | Auto-applies stat/skill bonuses     |
+| **3** | Adv/Disadv | Select 1-5 advantages, 1-5 disadvantages         | Must be balanced (equal count)      |
+| **4** | Sub-stats  | Auto-calculated from attributes                  | User confirms derived values        |
+| **5** | Skills     | Learn new skills (2 pts), raise skills (1-2 pts) | Max 100 pts (or 70/120 with traits) |
+| **6** | Equipment  | Select starter gear                              | Weight limits may apply             |
+| **7** | Name       | Enter character name                             | Required, max 50 chars              |
+| **8** | Summary    | Review all choices                               | Can go back to edit                 |
 
-#### Veripisteet (Hit Points)
-Based on **Terveys**:
+### Special Mechanics
 
-| Terveys | Veripisteet |
-|---------|-------------|
-| 1       | 10          |
-| 2-3     | 11          |
-| 4-5     | 12          |
-| 6-7     | 13          |
-| 8-9     | 14          |
-| 10-11   | 15          |
-| 12-13   | 16          |
-| 14-15   | 17          |
-| 16-17   | 18          |
-| 18-19   | 19          |
-| 20      | 20          |
+#### Ottolapsi (Adopted Child)
 
-#### Vauriobonus (Damage Bonus)
-Based on **Voima**:
+Unique advantage allowing **two backgrounds**:
 
-| Voima   | Vauriobonus |
-|---------|-------------|
-| ...5    | -2          |
-| 6-9     | -1          |
-| 10-14   | 0           |
-| 15-17   | +1          |
-| 18-19   | +2          |
-| 20      | +3          |
-
-#### Syvä haava (Severe Wound Threshold)
-Based on **Voima + Terveys** sum:
-
-| VOI+TER  | Syvä haava |
-|----------|------------|
-| ...10    | 5          |
-| 11-17    | 6          |
-| 18-24    | 7          |
-| 25-31    | 8          |
-| 32-38    | 9          |
-| 39-40    | 10         |
-
-#### Kantokyky (Carrying Capacity)
-Simple formula: **Voima × 20**
-
-### 10. Character Creation Wizard
-
-Implemented 8-step wizard for creating new characters:
-
-1. **Roll Stats** - 4d6 drop lowest for each attribute, or manual adjustment
-2. **Choose Background** - 6 backgrounds with stat and skill bonuses
-3. **Advantages & Disadvantages** - Select 1-5 of each (must be balanced)
-4. **Sub-stats** - Auto-calculate derived stats
-5. **Skills** - Learn and raise skills with point-buy system
-6. **Equipment** - Select starter equipment
-7. **Name & Details** - Enter character name
-8. **Summary** - Review and save character
-
-#### Skill Learning System
-
-Skills must be **learned** before they can be raised:
-
-| Action | Cost | Description |
-|--------|------|-------------|
-| **Learn skill** | 2 points | Makes skill available; sets level to base (attribute/2, min 6) |
-| **Raise skill** | 1-2 points | Increases level by +1 (cost 1 if level < 10, cost 2 if level ≥ 10) |
-| **Unlearn skill** | Refunds 2 points | Only possible if skill hasn't been raised |
-
-**Rules:**
-- Background skills are **automatically learned** with +1 bonus (no learning cost)
-- Maximum skill level: 15
-- Unlearned skills show level as 0 and cannot be used
-- Learning a skill doesn't raise it—only makes it available at base level
-
-**Point costs example:**
-- Learn skill (base 7): 2 points → level 7
-- Raise to 8: +1 point → level 8
-- Raise to 9: +1 point → level 9
-- Raise to 10: +2 points → level 10
-- Total for level 10: 6 points
-
-#### Advantages (36 total)
-Aarre, Alkemisti, Asiantuntija, Eläinkuiskaaja, Haukankatse, Huuliltalukija, Hyvämaineinen, Ikä ja kokemus, Jääverinen, Kahlekuningas, Kaunis, Kissajalat, Kookas, Kovanaama, Lahjakas, Laskupää, Lemmikki, Nopea, Onnekas, Ottolapsi, Rautavatsa, Rohkea, Sitkeä, Suhteita, Sukeltaja, Suuntavaisto, Tarkkakorvainen, Tarkkamuistinen, Uhkaava, Vaikukoira, Vaisto, Valevainu, Velhonverta, Viinapää, Ystävä, Yösilmät
-
-#### Ottolapsi (Adopted Child) - Special Mechanic
-
-**Ottolapsi** is a unique advantage that allows a character to have **two backgrounds**:
-
-**How it works:**
-1. Player selects primary background in Step 2 (grants **attribute bonuses**)
-2. When Ottolapsi is selected in Step 3, a modal opens
-3. Player selects a second background (grants **skills only**)
-4. Character learns skills from **both** backgrounds automatically
-5. Character receives attribute bonuses **only from primary** background
+- **Primary background** → Grants attribute bonuses + skills
+- **Secondary background** → Grants skills only
+- **Modal selection** when Ottolapsi is chosen
+- Skills from both backgrounds are free and cannot be unlearned
 
 **Example:**
-- Primary: **Aatelinen** → Karisma +2, skills: Heraldiikka, Ratsastus, Miekat, etc.
-- Secondary: **Pappi** → skills: Esiintyminen, Haavojen hoito, Uskonto, etc.
-- **Result:** Karisma +2 (from Aatelinen only), but skills from both backgrounds
 
-**UI/UX:**
-- Modal title: "Ottolapsi - Valitse toinen tausta"
-- Primary background displayed with label: "Ensisijainen tausta (antaa ominaisuusmuutokset)"
-- Secondary background selection with label: "Toissijainen tausta (antaa taidot)"
-- Step 8 Summary shows both backgrounds with clear distinction
-- Skills from both backgrounds are free (no learning cost) and cannot be unlearned
+```
+Primary:   Aatelinen → Karisma +2, skills: Heraldiikka, Ratsastus, Miekat...
+Secondary: Pappi     → skills: Esiintyminen, Haavojen hoito, Uskonto...
+Result:    Karisma +2 (from Aatelinen only), skills from BOTH backgrounds
+```
 
-**Technical Implementation:**
-- `secondBackgroundId: string | null` added to Character and CharacterDraft types
-- `SecondBackgroundModal.vue` component for selection
-- Store actions: `setSecondBackground()`, `getSecondBackground()`
-- Skills initialization checks both backgrounds
-- Skill point calculation excludes skills from both backgrounds
-- `isBgSkill()` function checks both backgrounds for unlearn protection
+#### Lahjakas (Talented)
 
-#### Disadvantages (36 total)
-Ahne, Arpi, Hentoluinen, Hidas, Huono kuulo, Hämäräsokea, Irstas, Juoppo, Kammo, Kostonhimoinen, Kunniallinen, Käsipuoli, Kääpiö, Lainsuojaton, Lähinäköinen, Lähimmäisiä, Muotopuoli, Mykkä, Nuori, Oikku, Pahamaineinen, Painajaisia, Peluri, Rampa, Rasisti, Riippuvuus, Silmäpuoli, Taikauskoinen, Tuntomerkki, Uninen, Uskovainen, Vallanahne, Vasalli, Velkaa, Vihollinen, Äkkipikainen
+- Player chooses **+1 to two attributes** (can be same attribute twice, max +2)
+- Modal dialog for attribute selection
+- Bonuses apply to final character stats
 
-#### Backgrounds (11 total)
+---
 
-| Background | Stat Bonuses | Skills Learned |
-|------------|--------------|----------------|
-| **Aatelinen** | Karisma +2 | Heraldiikka, Kilvet, Lukutaito, Ratsastus, Uskonto, Veitset, Väistö |
-| **Ritari** | Karisma +1, Voima +1 | Heraldiikka, Keihäät, Kilvet, Miekat, Ratsastus, Sotataito, Väistö |
-| **Pappi** | Karisma +1, Valppaus +1 | Esiintyminen, Haavojen hoito, Historia, Kilvet, Uskonto, Lukutaito, Väistö |
-| **Porvari** | Sisukkuus +1, Valppaus +1 | Esiintyminen, Kaupanhieronta, Kauppareitit, Kilvet, Lukutaito, Veitset, Väistö |
-| **Kaupunkilainen** | — | Esiintyminen, Ihmistuntemus, Kadut ja kapakat, Kaupanhieronta, Kilvet, Kädentaidot, Tappelu, Veitset, Väistö |
-| **Maalainen** | Terveys +1 | Haavojen hoito, Kilvet, Kädentaidot, Lyömäaseet, Tappelu, Väistö |
-| **Irtolainen** | — | Haavojen hoito, Hiivintä, Kadut ja kapakat, Kaupanhieronta, Kilvet, Sorminäppäryys, Tappelu, Uhkapeli, Väistö |
-| **Rosvo** | — | Erätaidot, Haavojen hoito, Hiivintä, Kilvet, Kovistelu, Lyömäaseet, Tappelu, Uhkapeli, Väistö |
-| **Paimentolainen** | Ketteryys +2, Sisukkuus +1, Karisma -1 | Haavojen hoito, Heittäminen, Keihäät, Kilvet, Kirottu maa, Ratsastus, Tarut ja legendat, Väistö |
-| **Vuoristolainen** | Voima +2, Terveys +1, Ketteryys -1 | Hyppy ja kiipeily, Kilvet, Erätaidot, Kädentaidot, Kovistelu, Lyömäaseet, Tappelu, Uiminen, Väistö |
-| **Metsäläinen** | Valppaus +2, Ketteryys +1, Karisma -1 | Erätaidot, Hiivintä, Jouset, Kilvet, Metsästys, Sorminäppäryys, Veitset, Väistö, Yrtit ja myrkyt |
+## 5. Game Mechanics
 
-**Note:** Background skills are automatically **learned** (no learning cost), but start at base level (no bonus). Players can raise them with skill points if desired.
+### Base Attributes
 
-#### Advantage & Disadvantage Special Effects
+| Attribute     | Finnish   | Description                      |
+| ------------- | --------- | -------------------------------- |
+| **Strength**  | Voima     | Physical power, melee damage     |
+| **Health**    | Terveys   | Constitution, disease resistance |
+| **Agility**   | Ketteryys | Dexterity, reflexes, stealth     |
+| **Vigilance** | Valppaus  | Perception, awareness            |
+| **Grit**      | Sisukkuus | Willpower, mental fortitude      |
+| **Charisma**  | Karisma   | Social influence, leadership     |
 
-Some advantages and disadvantages have special effects beyond their basic description:
+**Default value:** 10 (range: 3-18)
 
-| Trait | Type | Effect |
-|-------|------|--------|
-| **Ikä ja kokemus** | Advantage | Sets skill point pool to **120 points** (instead of 100) |
-| **Nuori** | Disadvantage | Sets skill point pool to **70 points** (instead of 100) |
-| **Lahjakas** | Advantage | Player chooses **+1 to two attributes** (can be same attribute twice, max +2 per attribute) |
-| **Sitkeä** | Advantage | **+5 veripisteet** (hit points) |
-| **Kookas** | Advantage | **+2 syvä haava** (severe wound threshold) |
-| **Hentoluinen** | Disadvantage | **-2 syvä haava** (severe wound threshold) |
+### Derived Stats (Sub-stats)
+
+#### Veripisteet (Hit Points)
+
+Based on **Terveys**:
+
+| Terveys | HP  |     | Terveys | HP  |
+| ------- | --- | --- | ------- | --- |
+| 1       | 10  |     | 12-13   | 16  |
+| 2-3     | 11  |     | 14-15   | 17  |
+| 4-5     | 12  |     | 16-17   | 18  |
+| 6-7     | 13  |     | 18-19   | 19  |
+| 8-9     | 14  |     | 20      | 20  |
+| 10-11   | 15  |     |         |     |
+
+Representation in sheet:
+
+```
+NAARMUILLA                        HAAVOITTUNUT (+1N)                SHOKISSA
+[ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ]   [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ]   [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ]
+[ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ]   [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ]   [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ]
+[ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ]   [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ]   [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ]
+
+[ ] KUOLLUT
+```
+
+#### Vauriobonus (Damage Bonus)
+
+Based on **Voima**:
+
+| Voima | Bonus |     | Voima | Bonus |
+| ----- | ----- | --- | ----- | ----- |
+| ≤5    | -2    |     | 15-17 | +1    |
+| 6-9   | -1    |     | 18-19 | +2    |
+| 10-14 | 0     |     | 20    | +3    |
+
+#### Syvä haava (Severe Wound Threshold)
+
+Based on **Voima + Terveys**:
+
+| VOI+TER | Threshold |     | VOI+TER | Threshold |
+| ------- | --------- | --- | ------- | --------- |
+| ≤10     | 5         |     | 25-31   | 8         |
+| 11-17   | 6         |     | 32-38   | 9         |
+| 18-24   | 7         |     | 39-40   | 10        |
+
+#### Kantokyky (Carrying Capacity)
+
+**Formula:** `100 + (Voima × 20)` naula (1 naula = 100g)
+
+**Example:** Voima 12 → 100 + (12 × 20) = 340 naulaa (34 kg)
+
+---
+
+### Skill System
+
+#### Learning Skills
+
+Skills must be **learned** before use:
+
+| Action      | Cost          | Result                                             |
+| ----------- | ------------- | -------------------------------------------------- |
+| **Learn**   | 2 points      | Skill available at base level (attribute/2, min 6) |
+| **Raise**   | 1-2 points    | +1 to skill level (1 pt if <10, 2 pts if ≥10)      |
+| **Unlearn** | Refunds 2 pts | Only if skill hasn't been raised                   |
+
+**Rules:**
+
+- Background skills: **Automatically learned** (free)
+- Max skill level: **15**
+- Skill point budget: **100** (base), **70** (Nuori), **120** (Ikä ja kokemus)
+
+**Example Progression:**
+
+```
+Learn skill (base 7):     2 pts → level 7
+Raise to 8:              +1 pts → level 8
+Raise to 9:              +1 pts → level 9
+Raise to 10:             +2 pts → level 10
+Total for level 10:       6 pts
+```
+
+---
+
+### Backgrounds
+
+| ID                 | Finnish        | Stat Bonuses                           | Skills                                                                                                        |
+| ------------------ | -------------- | -------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| **aatelinen**      | Aatelinen      | Karisma +2                             | Heraldiikka, Kilvet, Lukutaito, Ratsastus, Uskonto, Veitset, Väistö                                           |
+| **ritari**         | Ritari         | Karisma +1, Voima +1                   | Heraldiikka, Keihäät, Kilvet, Miekat, Ratsastus, Sotataito, Väistö                                            |
+| **pappi**          | Pappi          | Karisma +1, Valppaus +1                | Esiintyminen, Haavojen hoito, Historia, Kilvet, Uskonto, Lukutaito, Väistö                                    |
+| **porvari**        | Porvari        | Sisukkuus +1, Valppaus +1              | Esiintyminen, Kaupanhieronta, Kauppareitit, Kilvet, Lukutaito, Veitset, Väistö                                |
+| **kaupunkilainen** | Kaupunkilainen | —                                      | Esiintyminen, Ihmistuntemus, Kadut ja kapakat, Kaupanhieronta, Kilvet, Kädentaidot, Tappelu, Veitset, Väistö  |
+| **maalainen**      | Maalainen      | Terveys +1                             | Haavojen hoito, Kilvet, Kädentaidot, Lyömäaseet, Tappelu, Väistö                                              |
+| **irtolainen**     | Irtolainen     | —                                      | Haavojen hoito, Hiivintä, Kadut ja kapakat, Kaupanhieronta, Kilvet, Sorminäppäryys, Tappelu, Uhkapeli, Väistö |
+| **rosvo**          | Rosvo          | —                                      | Erätaidot, Haavojen hoito, Hiivintä, Kilvet, Kovistelu, Lyömäaseet, Tappelu, Uhkapeli, Väistö                 |
+| **paimentolainen** | Paimentolainen | Ketteryys +2, Sisukkuus +1, Karisma -1 | Haavojen hoito, Heittäminen, Keihäät, Kilvet, Kirottu maa, Ratsastus, Tarut ja legendat, Väistö               |
+| **vuoristolainen** | Vuoristolainen | Voima +2, Terveys +1, Ketteryys -1     | Hyppy ja kiipeily, Kilvet, Erätaidot, Kädentaidot, Kovistelu, Lyömäaseet, Tappelu, Uiminen, Väistö            |
+| **metsäläinen**    | Metsäläinen    | Valppaus +2, Ketteryys +1, Karisma -1  | Erätaidot, Hiivintä, Jouset, Kilvet, Metsästys, Sorminäppäryys, Veitset, Väistö, Yrtit ja myrkyt              |
+
+---
+
+### Advantages & Disadvantages
+
+**36 Advantages** and **36 Disadvantages** available. Players must select equal numbers of each (1-5).
+
+#### Special Effects
+
+| Trait              | Type         | Effect                                                 |
+| ------------------ | ------------ | ------------------------------------------------------ |
+| **Ikä ja kokemus** | Advantage    | Skill points: **120** (replaces base 100)              |
+| **Nuori**          | Disadvantage | Skill points: **70** (replaces base 100)               |
+| **Lahjakas**       | Advantage    | Choose **+1 to two attributes** (max +2 per attribute) |
+| **Sitkeä**         | Advantage    | **+5 veripisteet**                                     |
+| **Kookas**         | Advantage    | **+2 syvä haava**                                      |
+| **Hentoluinen**    | Disadvantage | **-2 syvä haava**                                      |
 
 **Notes:**
-- Skill point effects replace the base 100 points entirely (they don't stack)
-- Substat modifiers (veripisteet, syvä haava) are cumulative if multiple sources exist
-- Lahjakas opens a modal dialog for attribute selection when chosen
-- Attribute choices from Lahjakas are tracked separately and applied to final character stats
 
-### 11. Future Enhancements & Direction
+- Skill point effects don't stack (use highest)
+- Substat modifiers are cumulative
+- Conflicts prevent incompatible selections (e.g., Kookas + Hentoluinen)
 
-#### Phase 1: Core Improvements (Current Sprint)
-- ✅ **Fantasy theme overhaul** - Dark theme with gold accents, improved contrast
-- ✅ **Character creation wizard** - 8-step flow fully implemented
-- ✅ **Skill system** - Learn/raise mechanics with point costs
-- ✅ **Advantages/Disadvantages** - 36 of each with special effects
-- ✅ **Multiple character support** - List view with save/load/delete
+---
 
-#### Phase 2: Enhanced Features (Next)
-- [x] **Mobile responsiveness**
-  - [x] Mobile-first stylesheet overhaul
-  - [x] Touch-friendly controls and gestures
-  - [x] Collapsible sections for small screens
-  - [x] Mobile navigation menu
-- [ ] **Active Character View** (Play Mode)
-  - [ ] Health tracker (current/max HP) with quick adjust buttons
-  - [ ] Experience points tracker
-  - [ ] Money/gold counter
-  - [ ] Severe wound tracker with status indicators
-  - [ ] Quick equipment access (favorites/equipped items)
-  - [ ] In-game notes section
-  - [ ] One-click healing/rest recovery
-- [ ] **Character sheet improvements**
-  - [ ] Inventory management with weight tracking
-  - [ ] Equipment weight encumbrance effects
-  - [ ] Combat tracker integration
-  - [ ] Spell/magic system (if applicable)
-- [ ] **Export/Import functionality**
-  - [ ] JSON export/import for character sharing
-  - [ ] PDF character sheet generation
-  - [ ] Print-friendly styling
-- [ ] **Advanced character options**
-  - [ ] Character portraits/images
-  - [ ] Custom backgrounds (user-defined)
-  - [ ] Custom advantages/disadvantages
-  - [ ] Level-up system and experience tracking
+## 6. Architecture
 
-#### Phase 3: Backend Integration (Future)
-- [ ] **Go Backend API** (scaffolded in `/backend`)
-  - [ ] PostgreSQL database integration
-  - [ ] RESTful API endpoints for characters
-  - [ ] User authentication (optional)
-  - [ ] Cloud sync for characters
-- [ ] **Frontend API Integration**
-  - [ ] Replace localStorage with API calls
-  - [ ] Offline-first architecture with sync
-  - [ ] Real-time updates (WebSocket)
-- [ ] **Multi-user Features**
-  - [ ] User accounts and authentication
-  - [ ] Character sharing between users
-  - [ ] Campaign/group management
-  - [ ] GM tools for viewing player characters
+### Tech Stack
 
-#### Phase 4: Advanced Features (Long-term)
-- [ ] **Mobile App**
-  - [ ] Responsive design improvements
-  - [ ] PWA (Progressive Web App) support
-  - [ ] Native mobile app (React Native/Flutter)
-- [ ] **Game Master Tools**
-  - [ ] NPC generator
-  - [ ] Encounter builder
-  - [ ] Loot/random table rollers
-  - [ ] Session notes and tracking
-- [ ] **Community Features**
-  - [ ] Public character gallery
-  - [ ] Homebrew content sharing
-  - [ ] Rules reference integration
-  - [ ] Multi-language support (i18n)
+| Layer                  | Technology        | Version            |
+| ---------------------- | ----------------- | ------------------ |
+| **Frontend Framework** | Vue 3             | 3.x                |
+| **Language**           | TypeScript        | 5.x                |
+| **State Management**   | Pinia             | 2.x                |
+| **Routing**            | Vue Router        | 4.x                |
+| **Build Tool**         | Vite              | 5.x                |
+| **Styling**            | Custom CSS        | Fantasy dark theme |
+| **Testing**            | Vitest            | 2.x                |
+| **Linting**            | ESLint + Prettier | Latest             |
 
-### 12. Technical Roadmap
+### Project Structure
 
-#### Current Architecture
 ```
 Prakken/
-├── frontend/           # Vue 3 + TypeScript + Pinia
+├── frontend/
 │   ├── src/
-│   │   ├── components/
+│   │   ├── components/          # Reusable Vue components
+│   │   │   ├── character-creation/
+│   │   │   │   ├── Step1RollStats.vue
+│   │   │   │   ├── Step2Background.vue
+│   │   │   │   ├── Step3AdvantagesDisadvantages.vue
+│   │   │   │   ├── Step4SubStats.vue
+│   │   │   │   ├── Step5Skills.vue
+│   │   │   │   ├── Step6Equipment.vue
+│   │   │   │   ├── Step7NameAndDetails.vue
+│   │   │   │   ├── Step8Summary.vue
+│   │   │   │   ├── AttributeChoiceModal.vue
+│   │   │   │   └── SecondBackgroundModal.vue
+│   │   │   ├── CharacterCard.vue
+│   │   │   └── ModifierBadge.vue
 │   │   ├── views/
-│   │   ├── stores/     # Pinia state management
-│   │   ├── types/      # TypeScript types
-│   │   └── assets/     # CSS (fantasy dark theme)
-│   └── Storage: localStorage (current)
-├── backend/            # Go + Gin + PostgreSQL (future)
-│   ├── cmd/
-│   ├── api/
-│   └── internal/
-└── docker-compose.yml  # Full stack orchestration
+│   │   │   ├── CharacterListView.vue
+│   │   │   ├── CharacterSheetView.vue
+│   │   │   └── CreateCharacterView.vue
+│   │   ├── stores/
+│   │   │   ├── characterCreation.ts
+│   │   │   ├── characters.ts
+│   │   │   ├── skills.ts
+│   │   │   └── stats.ts
+│   │   ├── types/
+│   │   │   ├── character.ts
+│   │   │   ├── skills.ts
+│   │   │   └── attributes.ts
+│   │   ├── utils/
+│   │   │   ├── calculations.ts
+│   │   │   ├── skills.ts
+│   │   │   ├── storage.ts
+│   │   │   └── skills.test.ts
+│   │   ├── assets/
+│   │   │   └── fantasy-theme.css
+│   │   └── router/
+│   │       └── index.ts
+│   ├── nginx/
+│   ├── index.html
+│   ├── package.json
+│   └── vite.config.ts
+├── backend/                    # Future: Go + Gin + PostgreSQL
+├── .github/workflows/
+│   ├── deploy.yml
+│   └── frontend-ci.yml
+├── docker-compose.yml
+├── deploy.sh
+└── DESIGN.md
 ```
 
-#### Migration Path to Backend
-1. **Keep localStorage** for development and offline use
-2. **Add API service layer** in frontend for backend calls
-3. **Implement sync logic** - localStorage first, sync to backend when available
-4. **Add authentication** when multi-user features are needed
-5. **Deploy** - Docker Compose for full stack, or frontend-only for localStorage mode
+### State Management
 
-#### Performance Goals
-- Initial load: < 2 seconds
-- Character save/load: < 500ms
-- Offline support: Full functionality without backend
-- Bundle size: Keep under 500KB (gzipped)
+**Pinia Stores:**
 
-#### Deployment & CI/CD
-- **GitHub Actions workflows** configured for:
-  - Frontend CI (lint, test, build) on push to `main`
-  - Auto-deploy to VPS on tag push (triggers on any new tag)
-- **Release workflow**: 
-  - Push a git tag (e.g., `git tag v1.0.0 && git push origin v1.0.0`)
-  - GitHub Action automatically creates a release with auto-generated release notes
-  - Deployment to VPS triggers immediately after release creation
-- **Release notes**: Auto-generated from commit messages since last release
-- **VPS**: Podman containers with SSL via acme.sh
+| Store                 | Purpose                | Key State                                  |
+| --------------------- | ---------------------- | ------------------------------------------ |
+| **characterCreation** | Wizard state           | `draft`, `currentStep`, `attributeChoices` |
+| **characters**        | Saved characters       | `characters[]`, `activeCharacterId`        |
+| **skills**            | Skill definitions      | `skillList[]`                              |
+| **stats**             | Active character stats | `attList[]`                                |
 
-### 13. Design Principles
+### Key Patterns
 
-1. **Offline-first**: App works fully without backend
-2. **Progressive enhancement**: Basic features work everywhere, advanced features require backend
-3. **Dark theme by default**: Fantasy aesthetic with excellent contrast
-4. **Mobile-responsive**: Works on phones, tablets, and desktop ✅
-5. **Finnish language first**: UI in Finnish, with i18n support for future languages
-6. **Accessibility**: WCAG 2.1 AA compliance for contrast and keyboard navigation
+#### Effective Attributes Pattern
 
+Always use bonuses when displaying attributes:
 
-### 14. Active Character View (Play Mode) – Implementation Plan
+```typescript
+// ✅ Correct - includes bonuses
+const attrs = wizardStore.effectiveAttributes;
 
-#### Overview
-A dedicated view for active gameplay, optimized for quick reference and real-time tracking during game sessions.
+// ❌ Wrong - uses base attributes only
+const attrs = wizardStore.draft.attributes;
+```
+
+#### Skill Calculation Pattern
+
+```typescript
+import { calculateSkillsWithLevels } from "@/utils/skills";
+
+const skillsWithLevels = computed(() => {
+  return calculateSkillsWithLevels(
+    learnedSkills,
+    skillsStore.skillList,
+    effectiveAttributes, // Use effective attributes!
+    background,
+  );
+});
+```
+
+#### localStorage Migration
+
+```typescript
+// In utils/storage.ts - always add backwards compatibility
+if (anyChar.skills && !anyChar.learnedSkills) {
+  anyChar.learnedSkills = anyChar.skills
+    .filter((s: any) => s.learned)
+    .map((s: any) => ({ name: s.name, bonus: s.bonus || 0 }));
+  delete anyChar.skills;
+}
+```
 
 ---
 
-#### Data Model Changes
+## 7. Data Model
 
-**Add to `Character` type** (`src/types/character.ts`):
+### Core Types
 
 ```typescript
+// Character (stored in localStorage)
 export type Character = {
-  // ... existing fields ...
-  
-  // Play Mode fields
-  currentHp: number                    // Current hit points
-  experience: number                   // Experience points
-  gold: number                         // Gold pieces
-  woundStatus: 'none' | 'minor' | 'severe'  // Wound state
-  equippedItems: string[]              // Array of equipment IDs
-  notes: string                        // In-game notes
-}
-```
+  id: string;
+  name: string;
+  attributes: Attr[];
+  learnedSkills: LearnedSkill[];
+  background: Background | null;
+  secondBackgroundId: string | null; // For Ottolapsi
+  advantages: Advantage[];
+  disadvantages: Disadvantage[];
+  subStats: SubStats;
+  equipment: Equipment[];
+  createdAt: number;
+  updatedAt: number;
+  version: string;
+};
 
-**Initial values for new characters:**
-- `currentHp`: equals `subStats.veripisteet`
-- `experience`: 0
-- `gold`: 0
-- `woundStatus`: 'none'
-- `equippedItems`: []
-- `notes`: ''
+// Draft (wizard state)
+export type CharacterDraft = {
+  name: string;
+  attributes: Attr[];
+  learnedSkills: LearnedSkill[];
+  background: Background | null;
+  secondBackgroundId: string | null;
+  advantages: Advantage[];
+  disadvantages: Disadvantage[];
+  subStats: SubStats | null;
+  equipment: Equipment[];
+};
+
+// Base attribute
+export type Attr = {
+  name: string;
+  value: number;
+};
+
+// Learned skill
+export type LearnedSkill = {
+  name: string;
+  bonus: number;
+};
+
+// Background
+export type Background = {
+  id: string;
+  name: string;
+  description: string;
+  statBonuses: Partial<Record<string, number>>;
+  skillBonuses: Partial<Record<string, number>>;
+};
+
+// Derived stats
+export type SubStats = {
+  veripisteet: number;
+  vauriobonus: number;
+  syvaHaava: number;
+  kantokyky: number;
+};
+```
 
 ---
 
-#### Store Changes
+## 8. User Interface
 
-**Extend `characters.ts` store** with play mode actions:
+### Design System
+
+| Element            | Specification                                            |
+| ------------------ | -------------------------------------------------------- |
+| **Theme**          | Fantasy dark with gold accents                           |
+| **Primary Colors** | `#d4af37` (gold), `#4a90d9` (blue), `#2ea043` (green)    |
+| **Font Family**    | MedievalSharp (headings), Open Sans (body)               |
+| **Touch Targets**  | Minimum 44px on mobile, 36px on desktop                  |
+| **Breakpoints**    | 768px (tablet), 576px (large phone), 374px (extra small) |
+
+### Key Views
+
+#### CharacterListView
+
+- Grid of character cards
+- Quick stats preview
+- Actions: View, Edit, Delete, Play (future)
+
+#### CreateCharacterView
+
+- 8-step wizard with progress indicator
+- Step navigation (Previous/Next)
+- Validation feedback per step
+
+#### CharacterSheetView
+
+- Collapsible sections for each category
+- Editable character name with pen icon
+- Full skill list with levels
+- Equipment list
+
+### Accessibility
+
+- ARIA labels on icon buttons
+- Keyboard navigation support
+- Focus indicators
+- Color contrast WCAG 2.1 AA compliant
+- Screen reader friendly (semantic HTML)
+
+---
+
+## 9. Technical Requirements
+
+### Performance Goals
+
+| Metric                 | Target            |
+| ---------------------- | ----------------- |
+| Initial load           | < 2 seconds       |
+| Character save/load    | < 500ms           |
+| Bundle size            | < 500KB (gzipped) |
+| First Contentful Paint | < 1.5 seconds     |
+
+### Quality Gates
+
+| Check          | Requirement            |
+| -------------- | ---------------------- |
+| **TypeScript** | 0 errors               |
+| **ESLint**     | 0 errors               |
+| **Unit Tests** | 100% pass (118+ tests) |
+| **Build**      | Success                |
+
+### Browser Support
+
+- Chrome (latest 2 versions)
+- Firefox (latest 2 versions)
+- Safari (latest 2 versions)
+- Edge (latest 2 versions)
+- Mobile Safari (iOS 12+)
+- Chrome for Android
+
+---
+
+## 10. Deployment & DevOps
+
+### Environments
+
+| Environment | URL                        | Purpose     |
+| ----------- | -------------------------- | ----------- |
+| **Local**   | `http://localhost:5173`    | Development |
+| **VPS**     | `https://prakken.dedyn.io` | Production  |
+
+### CI/CD Pipeline
+
+**GitHub Actions Workflows:**
+
+1. **frontend-ci.yml** - Runs on every push
+   - `npm run type-check`
+   - `npm run lint`
+   - `npm run test:unit -- --run`
+   - `npm run build`
+
+2. **deploy.yml** - Runs on tag push
+   - Creates GitHub release with auto-generated notes
+   - Builds Docker image
+   - Attaches Docker tar to release
+   - Deploys to VPS via Podman
+
+### Release Process
+
+```bash
+# 1. Create and push tag
+git tag -a v1.2.0 -m "Prakken v1.2.0 - Feature name"
+git push origin v1.2.0
+
+# 2. GitHub Actions automatically:
+#    - Creates release with notes
+#    - Builds and deploys to VPS
+```
+
+### VPS Deployment (Podman)
+
+```bash
+# Manual deploy (alternative)
+./deploy.sh
+```
+
+**Deploy steps:**
+
+1. Build Docker image locally
+2. Save to tar file
+3. Transfer via scp to VPS
+4. Load with Podman
+5. Run container with SSL certificates
+
+---
+
+## 11. Future Roadmap
+
+### Phase 2: Enhanced Features (Q2 2026)
+
+| Feature                    | Priority | Status     |
+| -------------------------- | -------- | ---------- |
+| Play Mode View             | High     | 📋 Planned |
+| Equipment Weight System    | High     | 📋 Planned |
+| HP Tracker with Visual Bar | High     | 📋 Planned |
+| Export/Import (JSON/PDF)   | Medium   | 📋 Planned |
+| Character Portraits        | Medium   | 📋 Planned |
+
+### Phase 3: Backend Integration (Q3-Q4 2026)
+
+| Feature             | Priority | Status        |
+| ------------------- | -------- | ------------- |
+| Go Backend API      | Medium   | 🔨 Scaffolded |
+| PostgreSQL Database | Medium   | 📋 Planned    |
+| User Authentication | Low      | 📋 Planned    |
+| Cloud Sync          | Low      | 📋 Planned    |
+
+### Phase 4: Advanced Features (2027+)
+
+| Feature               | Priority | Status     |
+| --------------------- | -------- | ---------- |
+| PWA Support           | Low      | 📋 Planned |
+| Combat Tracker        | Low      | 📋 Planned |
+| GM Tools              | Low      | 📋 Planned |
+| Multi-language (i18n) | Low      | 📋 Planned |
+
+---
+
+## 12. Design Principles
+
+1. **Offline-first** - App works fully without backend
+2. **Progressive enhancement** - Basic features everywhere, advanced with backend
+3. **Dark theme by default** - Fantasy aesthetic with excellent contrast
+4. **Mobile-responsive** - Works on phones, tablets, desktop ✅
+5. **Finnish language first** - UI in Finnish, i18n-ready architecture
+6. **Accessibility** - WCAG 2.1 AA compliance
+7. **Type safety** - TypeScript throughout, no `any` types
+8. **Test coverage** - Tests for all critical functionality
+9. **Backwards compatibility** - localStorage migrations for schema changes
+10. **Defensive coding** - Optional chaining, fallback values, null handling
+
+---
+
+## Appendix A: Testing Strategy
+
+### Unit Tests
+
+- **Location**: `*.test.ts` alongside source files
+- **Framework**: Vitest + Pinia test utils
+- **Coverage**: Stores, utils, critical components
+
+### Test Structure
 
 ```typescript
-actions: {
-  // ... existing actions ...
-  
-  updatePlayState(id: string, playState: Partial<PlayState>): boolean
-  adjustHp(id: string, delta: number): boolean
-  adjustExperience(id: string, delta: number): boolean
-  adjustGold(id: string, delta: number): boolean
-  toggleEquipment(id: string, equipmentId: string): boolean
-  restAndHeal(id: string): boolean
-}
+import { describe, it, expect, beforeEach } from "vitest";
+import { setActivePinia, createPinia } from "pinia";
+
+describe("Store Name", () => {
+  beforeEach(() => {
+    setActivePinia(createPinia());
+  });
+
+  it("does something", () => {
+    // Test implementation
+  });
+});
+```
+
+### Running Tests
+
+```bash
+cd frontend
+npm run test:unit -- --run
 ```
 
 ---
 
-#### New Components
+## Appendix B: Development Commands
 
-**`src/views/PlayView.vue`** – Main play mode view
+```bash
+cd frontend
 
-Features:
-- Large, touch-friendly HP controls with visual bar
-- Quick +/- buttons for XP and gold
-- Wound status toggle buttons
-- Collapsible equipped items list
-- Expandable notes textarea
-- Rest/heal action buttons
+# Install dependencies
+npm install
 
-**Layout (mobile-first):**
-```
-┌─────────────────────────────────┐
-│ ← Back    CHARACTER NAME    ⚙️  │
-├─────────────────────────────────┤
-│  ❤️ HP: [−] 12/14 [+]          │
-│     ████████████░░  (bar)      │
-├─────────────────────────────────┤
-│  ⚔️ Vauriobonus: +1             │
-│  🩸 Syvä haava: 7               │
-├─────────────────────────────────┤
-│  ✨ XP: [−] 45 [+]             │
-│  💰 Gold: [−] 120 [+]          │
-├─────────────────────────────────┤
-│  🎒 Equipped (3) [▼]           │
-│    • Longsword                 │
-│    • Shield                    │
-│    • Armor                     │
-├─────────────────────────────────┤
-│  📝 Notes [✏️]                 │
-│    [text area...]              │
-├─────────────────────────────────┤
-│  [REST] [HEAL +5] [HEAL +10]   │
-└─────────────────────────────────┘
+# Development server
+npm run dev
+
+# Build production
+npm run build
+
+# Type check
+npm run type-check
+
+# Lint
+npm run lint
+
+# Run tests
+npm run test:unit
 ```
 
 ---
 
-#### Route Changes
-
-**Add to `src/router/index.ts`:**
-
-```typescript
-{
-  path: '/play/:id',
-  name: 'PlayView',
-  component: PlayView,
-}
-```
-
-**Add navigation:**
-- "Play" button on CharacterListView (each character card)
-- "Play" button on CharacterSheetView
-- "Back to Sheet" link on PlayView
-
----
-
-#### Implementation Tasks
-
-**Phase 2.1: Data Layer**
-- [ ] Update `Character` type with play state fields
-- [ ] Add play state actions to `characters.ts` store
-- [ ] Update storage to persist play state fields
-
-**Phase 2.2: Play View Component**
-- [ ] Create `PlayView.vue` with HP tracker
-- [ ] Add XP and gold trackers
-- [ ] Add wound status toggle
-- [ ] Add equipped items list
-- [ ] Add notes section
-- [ ] Add rest/heal buttons
-
-**Phase 2.3: Navigation**
-- [ ] Add route for `/play/:id`
-- [ ] Add "Play" button to CharacterListView
-- [ ] Add "Play" button to CharacterSheetView
-- [ ] Add "Back" navigation in PlayView
-
-**Phase 2.4: Polish**
-- [ ] HP visual bar (color-coded: green→yellow→red)
-- [ ] Wound status visual indicators
-- [ ] Confirmation dialogs for rest/heal
-- [ ] Mobile-responsive layout testing
-
----
-
-#### Future Enhancements (Post-Phase 2)
-
-- Equipment weight calculation and encumbrance
-- Combat tracker integration
-- Spell/magic slot tracking
-- Character portrait display
-- Multiple play states per character (different campaigns)
+_Last updated: March 2026_
+_Version: 1.2.0_
