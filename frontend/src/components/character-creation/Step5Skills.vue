@@ -207,7 +207,7 @@ const handleUnlearn = (skillName: string) => {
               </button>
               <button type="button" class="button is-light is-small is-rounded"
                 :disabled="getLearnedSkill(skill.name)!.bonus > 0 || isBgSkill(skill.name)"
-                :title="getLearnedSkill(skill.name)!.bonus > 0 ? 'Ei voi poistaa kun taito on korotettu' : 'Poista opittu taito'"
+                :title="isBgSkill(skill.name) ? 'Ei voi poistaa syntyperäistä taitoa' : (getLearnedSkill(skill.name)!.bonus > 0 ? 'Ei voi poistaa kun taito on korotettu' : 'Poista opittu taito')"
                 @click="handleUnlearn(skill.name)">
                 <span class="icon is-small"><i class="fas fa-times"></i></span>
               </button>
