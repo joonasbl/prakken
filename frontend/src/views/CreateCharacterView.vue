@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useCharacterCreationStore } from '@/stores/characterCreation'
 import { useCharactersStore } from '@/stores/characters'
@@ -29,6 +29,36 @@ const stepTitles: Record<number, string> = {
 }
 
 const stepTitle = computed(() => stepTitles[currentStep.value] || '')
+
+// Check if user has made any progress in the wizard
+const hasMadeProgress = computed(() => {
+  return (
+    wizardStore.draft.background !== null ||
+    wizardStore.draft.advantages.length > 0 ||
+    wizardStore.draft.disadvantages.length > 0 ||
+    wizardStore.draft.learnedSkills.length > 0 ||
+    wizardStore.draft.equippedItems.length > 0 ||
+    wizardStore.draft.name.trim().length > 0
+  )
+})
+
+// Prevent accidental navigation away from wizard (browser back button, refresh, close tab)
+const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+  if (hasMadeProgress.value) {
+    event.preventDefault()
+    event.returnValue = '' // Required for some browsers
+    return ''
+  }
+}
+
+// Register/unregister navigation guards
+onMounted(() => {
+  window.addEventListener('beforeunload', handleBeforeUnload)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('beforeunload', handleBeforeUnload)
+})
 
 const canProceed = computed(() => {
   switch (currentStep.value) {
@@ -81,11 +111,24 @@ const saveCharacter = () => {
 }
 
 const cancelWizard = () => {
-  if (confirm('Haluatko varmasti peruuttaa hahmon luonnin?')) {
-    wizardStore.resetWizard()
-    router.push('/')
+  if (hasMadeProgress.value) {
+    const confirmed = window.confirm(
+      'Haluatko varmasti peruuttaa hahmon luonnin? Menetät kaikki tekemäsi muutokset.'
+    )
+    if (!confirmed) return
   }
+  wizardStore.resetWizard()
+  router.push('/')
 }
+
+// Register/unregister navigation guards
+onMounted(() => {
+  window.addEventListener('beforeunload', handleBeforeUnload)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('beforeunload', handleBeforeUnload)
+})
 </script>
 
 <template>
