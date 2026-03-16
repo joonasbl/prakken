@@ -41,6 +41,18 @@ jobs:
         working-directory: ./frontend
         run: npm ci
 
+      - name: Run tests
+        working-directory: ./frontend
+        run: npm run test:unit -- --run
+
+      - name: Run type check
+        working-directory: ./frontend
+        run: npm run type-check
+
+      - name: Run lint
+        working-directory: ./frontend
+        run: npm run lint
+
       - name: Build
         working-directory: ./frontend
         run: npm run build
@@ -99,24 +111,83 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           script: |
-            echo "Loading image..."
+            set -e
+            
+            echo "=========================================="
+            echo "  Deploying Prakken Frontend"
+            echo "=========================================="
+            echo ""
+            
+            # Stop and remove old container
+            echo "[1/6] Stopping old container..."
+            podman stop prakken-frontend 2>/dev/null || true
+            podman rm prakken-frontend 2>/dev/null || true
+            
+            # Remove old image
+            echo "[2/6] Removing old image..."
+            podman rmi prakken-frontend:latest 2>/dev/null || true
+            
+            # Load new image
+            echo "[3/6] Loading new image..."
             podman load -i /tmp/prakken-frontend-${{ github.ref_name }}.tar
-
-            echo "Stopping existing container..."
-            podman rm -f prakken-frontend 2>/dev/null || true
-
-            echo "Starting new container..."
+            
+            # Run container (HTTP only on port 3000, Caddy handles SSL)
+            echo "[4/6] Starting new container..."
             podman run -d --name prakken-frontend \
-              -p 80:80 -p 443:443 \
-              -v /home/opc/.acme.sh/prakken.dedyn.io_ecc/fullchain.cer:/etc/ssl/certs/fullchain.cer:ro \
-              -v /home/opc/.acme.sh/prakken.dedyn.io_ecc/prakken.dedyn.io.key:/etc/ssl/private/prakken.key:ro \
+              --restart=always \
+              -p 3000:80 \
               prakken-frontend:${{ github.ref_name }}
-
-            echo "Cleaning up tar file..."
-            rm /tmp/prakken-frontend-${{ github.ref_name }}.tar
-
-            echo "Container status:"
+            
+            # Wait for container to start
+            echo "[5/6] Waiting for container to start..."
+            sleep 2
+            
+            # Check status
+            echo "[6/6] Checking container status..."
             podman ps --filter name=prakken-frontend
+            
+            echo ""
+            echo "=========================================="
+            echo "  Container Logs (last 20 lines)"
+            echo "=========================================="
+            podman logs --tail 20 prakken-frontend
+            
+            echo ""
+            echo "=========================================="
+            echo "  Testing Local Connection"
+            echo "=========================================="
+            if curl -s -o /dev/null -w "%{http_code}" http://localhost:3000 | grep -q "200"; then
+              echo "✓ Container is responding on port 3000"
+            else
+              echo "⚠ Container may not be ready yet. Check logs above."
+            fi
+            
+            echo ""
+            echo "=========================================="
+            echo "  Cleanup"
+            echo "=========================================="
+            rm -f /tmp/prakken-frontend-${{ github.ref_name }}.tar
+            echo "✓ Cleaned up tar file"
+            
+            echo ""
+            echo "=========================================="
+            echo "  Deployment Complete!"
+            echo "=========================================="
+            echo ""
+            echo "Site: https://prakken.dedyn.io"
+            echo ""
 
       - name: Cleanup local artifacts
         run: rm -f prakken-frontend-${{ github.ref_name }}.tar
+
+      - name: Verify deployment
+        run: |
+          echo "Waiting 5 seconds for deployment to propagate..."
+          sleep 5
+          
+          echo "Testing HTTPS endpoint..."
+          if curl -s -o /dev/null -w "%{http_code}" https://prakken.dedyn.io | grep -q "200"; then
+            echo "✓ Deployment successful! Site is live."
+          else
+            echo "⚠ Site may not be ready yet. Check Caddy logs."
+          fi
