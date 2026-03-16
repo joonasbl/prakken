@@ -64,7 +64,7 @@ export type Character = {
   disadvantages: Disadvantage[]
   subStats: SubStats
   equipment: Equipment[]  // Legacy: array of equipment IDs
-  equippedItems: string[]  // New: array of equipped item IDs
+  equippedItems: string[]  // New: array of equipped item IDs (weapons + armor)
   createdAt: number
   updatedAt: number
   version: string
@@ -80,7 +80,7 @@ export type CharacterDraft = {
   disadvantages: Disadvantage[]
   subStats: SubStats | null
   equipment: Equipment[]  // Legacy
-  equippedItems: string[]  // New: equipped item IDs
+  equippedItems: string[]  // New: array of equipped item IDs
 }
 
 export type CharacterCreationStep = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8

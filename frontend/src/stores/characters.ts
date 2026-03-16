@@ -53,6 +53,7 @@ export const useCharactersStore = defineStore('characters', {
           kantokyky: 200,
         },
         learnedSkills: draft.learnedSkills || [],
+        equippedItems: draft.equippedItems || [],
       }
 
       this.characters.push(character)
