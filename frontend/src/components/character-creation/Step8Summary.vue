@@ -3,6 +3,7 @@ import { computed, ref } from 'vue'
 import { useCharacterCreationStore } from '@/stores/characterCreation'
 import { useSkillsStore } from '@/stores/skills'
 import { calculateSkillsWithLevels, calculateUnlearnedSkills } from '@/utils/skills'
+import EquipmentList from '@/components/EquipmentList.vue'
 
 const wizardStore = useCharacterCreationStore()
 const skillsStore = useSkillsStore()
@@ -25,10 +26,6 @@ const unlearnedSkills = computed(() => {
     wizardStore.draft.attributes || []
   )
 })
-
-const totalEquipmentWeight = computed(() =>
-  wizardStore.draft.equipment.reduce((sum, e) => sum + e.weight, 0)
-)
 </script>
 
 <template>
@@ -207,17 +204,18 @@ const totalEquipmentWeight = computed(() =>
       </div>
     </div>
 
-    <div class="card mb-4" v-if="wizardStore.draft.equipment.length > 0">
+    <div class="card mb-4" v-if="wizardStore.draft.equippedItems && wizardStore.draft.equippedItems.length > 0">
       <div class="card-content">
         <div class="section-header">
-          <span class="header-icon"><i class="fas fa-shopping-bag"></i></span>
-          <span>Varusteet ({{ wizardStore.draft.equipment.length }} kpl, {{ totalEquipmentWeight }} kg)</span>
+          <span class="header-icon"><i class="fas fa-backpack"></i></span>
+          <span>Varusteet</span>
         </div>
-        <ul class="content">
-          <li v-for="item in wizardStore.draft.equipment" :key="item.id">
-            {{ item.name }}
-          </li>
-        </ul>
+        <EquipmentList 
+          :item-ids="wizardStore.draft.equippedItems"
+          :show-filter="true"
+          :show-weight="true"
+          :max-weight="wizardStore.draft.subStats?.kantokyky || 200"
+        />
       </div>
     </div>
   </div>

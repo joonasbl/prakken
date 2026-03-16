@@ -4,6 +4,7 @@ import { useRouter, useRoute } from 'vue-router'
 import { useCharactersStore } from '@/stores/characters'
 import { useSkillsStore } from '@/stores/skills'
 import { calculateSkillsWithLevels, calculateUnlearnedSkills } from '@/utils/skills'
+import EquipmentList from '@/components/EquipmentList.vue'
 
 const router = useRouter()
 const route = useRoute()
@@ -297,17 +298,19 @@ onMounted(() => {
       </div>
 
       <!-- Equipment Section -->
-      <div class="section equipment-section" v-if="character.equipment.length > 0">
+      <div class="section equipment-section" v-if="character.equippedItems && character.equippedItems.length > 0">
         <button class="section-header" @click="toggleSection('equipment')" :aria-expanded="expandedSections.equipment" aria-controls="equipment-content">
           <h2>Varusteet</h2>
           <span class="section-toggle" aria-hidden="true">
             <i :class="expandedSections.equipment ? 'fas fa-chevron-down' : 'fas fa-chevron-right'"></i>
           </span>
         </button>
-        <div v-show="expandedSections.equipment" id="equipment-content" class="equipment-list">
-          <li v-for="item in character.equipment" :key="item.id">
-            {{ item.name }}
-          </li>
+        <div v-show="expandedSections.equipment" id="equipment-content">
+          <EquipmentList 
+            :item-ids="character.equippedItems"
+            :show-filter="true"
+            :show-weight="false"
+          />
         </div>
       </div>
     </div>
