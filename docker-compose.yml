@@ -1,7 +1,7 @@
 services:
   # PostgreSQL Database
   postgres:
-    image: postgres:15-alpine
+    image: postgres:18.3
     container_name: prakken-db
     environment:
       POSTGRES_USER: postgres
@@ -10,7 +10,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 5s
@@ -36,22 +36,20 @@ services:
       - ./backend:/app
     command: go run cmd/main.go
 
-  # Vue Frontend
+  # Vue Frontend (Production build with Nginx)
   frontend:
     build:
       context: ./frontend
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.prod
     container_name: prakken-frontend
     environment:
-      VITE_API_URL: http://localhost:8080
+      VITE_API_URL: /api
     ports:
-      - "3000:5173"
-    volumes:
-      - ./frontend:/app
-      - /app/node_modules
-    command: npm run dev -- --host 0.0.0.0
+      - "80:80"
     depends_on:
       - backend
+    restart: unless-stopped
 
 volumes:
   postgres_data:
+  frontend_node_modules:
