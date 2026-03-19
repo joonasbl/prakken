@@ -1,97 +1,25 @@
-# Prakken Deployment Scripts
+# Prakken Deployment Guide
 
-This folder contains scripts for deploying Prakken to your VPS.
+This guide covers deploying Prakken to your VPS using Podman.
 
 ## Quick Start
 
-### Full Deployment (Build + Transfer + Deploy)
+### Deploy to Production
 
 ```bash
 # From project root
-./scripts/deploy-frontend.sh opc 79.76.40.176
-./scripts/remote-deploy-vps.sh opc 79.76.40.176
+./deploy.sh
 ```
 
-That's it! Your site will be live at https://prakken.dedyn.io
-
----
-
-## Scripts Overview
-
-### 1. `deploy-frontend.sh` (Local Machine)
-
-Builds the Docker image and transfers it to the VPS.
-
-**Usage:**
+### Deploy to Test Environment
 
 ```bash
-./scripts/deploy-frontend.sh [VPS_USER] [VPS_HOST]
+./deploy.sh test
 ```
 
-**Example:**
-
-```bash
-./scripts/deploy-frontend.sh opc 79.76.40.176
-```
-
-**What it does:**
-
-1. ✅ Checks dependencies (Docker, SCP)
-2. ✅ Builds Docker image (`prakken-frontend:latest`)
-3. ✅ Saves to tar file (`prakken-frontend.tar`)
-4. ✅ Transfers to VPS (`/tmp/prakken-frontend.tar`)
-5. ✅ Cleans up local tar file
-
----
-
-### 2. `remote-deploy-vps.sh` (Local Machine)
-
-SSHs into the VPS and deploys the container.
-
-**Usage:**
-
-```bash
-./scripts/remote-deploy-vps.sh [VPS_USER] [VPS_HOST]
-```
-
-**Example:**
-
-```bash
-./scripts/remote-deploy-vps.sh opc 79.76.40.176
-```
-
-**What it does:**
-
-1. ✅ Stops old container
-2. ✅ Removes old image
-3. ✅ Loads new image from tar
-4. ✅ Runs new container on port 3000
-5. ✅ Verifies container is running
-6. ✅ Cleans up tar file
-
-**Requirements:**
-
-- SSH key-based authentication (no password)
-- Run `deploy-frontend.sh` first to transfer the image
-
----
-
-### 3. `provision_subdomain.py` (DNS Management)
-
-Creates DNS records via deSEC.io API.
-
-**Usage:**
-
-```bash
-python3 scripts/provision_subdomain.py \
-  --token YOUR_TOKEN \
-  --domain prakken.dedyn.io \
-  --subname www \
-  --type A \
-  --records 79.76.40.176
-```
-
-**See full documentation:** `provision.readme.md`
+That's it! Your site will be live at:
+- **Production**: https://prakken.dedyn.io
+- **Test**: https://test.prakken.dedyn.io
 
 ---
 
@@ -100,94 +28,241 @@ python3 scripts/provision_subdomain.py \
 ```
 ┌─────────────────────────────────────────────────────────┐
 │                    Internet (HTTPS)                      │
-└────────────────────┬────────────────────────────────────┘
-                     │
-                     ▼
+└────────────┬────────────────────────────────────────────┘
+             │
+             ▼
 ┌─────────────────────────────────────────────────────────┐
 │  Caddy Container (Port 443)                              │
 │  - Handles SSL/TLS (Let's Encrypt)                       │
 │  - Auto-renews certificates                              │
 │  - Reverse proxy to Prakken                              │
-└────────────────────┬────────────────────────────────────┘
-                     │ (HTTP port 3000)
-                     ▼
+└────────────┬────────────────────────────────────────────┘
+             │ (HTTP port 80)
+             ▼
 ┌─────────────────────────────────────────────────────────┐
-│  Prakken Container (Port 3000)                           │
-│  - Nginx serving Vue.js app                              │
-│  - Plain HTTP (no SSL needed)                            │
-│  - SPA routing                                           │
+│  Prakken Frontend (Nginx, Port 80)                       │
+│  - Vue.js production build                               │
+│  - Nginx reverse proxy to backend                        │
+│  - Gzip compression & caching                            │
+└────────────┬────────────────────────────────────────────┘
+             │ (HTTP port 8080)
+             ▼
+┌─────────────────────────────────────────────────────────┐
+│  Prakken Backend (Go, Port 8080)                         │
+│  - Gin REST API                                          │
+│  - Shopping system                                       │
+│  - Character management                                  │
+└────────────┬────────────────────────────────────────────┘
+             │
+             ▼
+┌─────────────────────────────────────────────────────────┐
+│  PostgreSQL 18.3 (Port 5432)                             │
+│  - Character data                                        │
+│  - Shopping items & categories                           │
 └─────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## Manual Deployment (Alternative)
+## Deployment Methods
 
-If you prefer manual commands:
+### Method 1: Git Sync + Build on VPS (Recommended)
 
-### On Local Machine:
+Best for full-stack deployments with PostgreSQL.
+
+**Steps:**
+
+1. **SSH to VPS:**
+   ```bash
+   ssh opc@prakken.dedyn.io
+   ```
+
+2. **Navigate to project:**
+   ```bash
+   cd /home/opc/prakken
+   ```
+
+3. **Pull latest code:**
+   ```bash
+   git pull origin master
+   ```
+
+4. **Rebuild and restart:**
+   ```bash
+   podman-compose down
+   podman-compose up -d --build
+   ```
+
+5. **View logs:**
+   ```bash
+   podman-compose logs -f
+   ```
+
+**Advantages:**
+- ✅ PostgreSQL pulls from Docker Hub (no transfer needed)
+- ✅ Only code transfers (fast)
+- ✅ Backend and Frontend build quickly on VPS
+- ✅ Cleaner workflow with docker-compose
+
+---
+
+### Method 2: Local Build + Transfer (Legacy)
+
+For frontend-only updates.
+
+**Deploy Script:**
 
 ```bash
-cd frontend
+# Production
+./deploy.sh
 
-# Build image
-docker build -t prakken-frontend:latest -f Dockerfile.prod .
-
-# Save to tar
-docker save -o prakken-frontend.tar prakken-frontend:latest
-
-# Transfer to VPS
-scp prakken-frontend.tar opc@79.76.40.176:/tmp/
+# Test environment
+./deploy.sh test
 ```
 
-### On VPS:
+**What it does:**
+
+1. ✅ Builds Docker image locally (`prakken-frontend:latest`)
+2. ✅ Saves to tar file
+3. ✅ Transfers to VPS via SCP
+4. ✅ Deploys with Podman
+5. ✅ Cleans up temporary files
+
+**Manual Steps (if needed):**
 
 ```bash
-# Stop old container
-podman stop prakken-frontend
+# On local machine
+cd frontend
+docker build -t prakken-frontend:latest -f Dockerfile.prod .
+docker save -o prakken-frontend.tar prakken-frontend:latest
+scp prakken-frontend.tar opc@prakken.dedyn.io:~/
+
+# On VPS
+podman load -i ~/prakken-frontend.tar
+podman stop prakken-frontend 2>/dev/null || true
 podman rm prakken-frontend
-
-# Load new image
-podman load -i /tmp/prakken-frontend.tar
-
-# Run container
 podman run -d --name prakken-frontend \
   --restart=always \
-  -p 3000:80 \
+  -p 80:80 \
   prakken-frontend:latest
+rm ~/prakken-frontend.tar
+```
 
-# Check logs
-podman logs -f prakken-frontend
+---
+
+## Configuration Files
+
+### Docker Compose (docker-compose.yml)
+
+Full-stack orchestration:
+
+```yaml
+services:
+  postgres:      # PostgreSQL 18.3 database
+  backend:       # Go API server
+  frontend:      # Vue.js + Nginx
+```
+
+### Frontend Dockerfile (frontend/Dockerfile.prod)
+
+Multi-stage build:
+
+```dockerfile
+# Stage 1: Build Vue.js app
+FROM node:22-alpine AS builder
+RUN npm ci && npm run build
+
+# Stage 2: Serve with Nginx
+FROM nginx:alpine
+COPY nginx/nginx.conf /etc/nginx/conf.d/default.conf
+COPY --from=builder /app/dist /usr/share/nginx/html
+```
+
+### Nginx Config (frontend/nginx/nginx.conf)
+
+Production configuration:
+
+- Gzip compression
+- Static asset caching (1 year)
+- API proxy to backend (`/api/` → `http://backend:8080`)
+- SPA routing support
+- Security headers
+
+---
+
+## Environment Variables
+
+### Frontend (.env.example)
+
+```bash
+VITE_API_URL=/api
+```
+
+### Backend (docker-compose.yml)
+
+```bash
+DATABASE_URL=postgres://postgres:postgres@postgres:5432/prakken?sslmode=disable
+PORT=8080
+GIN_MODE=release
 ```
 
 ---
 
 ## Troubleshooting
 
-### SSH Connection Fails
+### Check Container Status
 
 ```bash
-# Set up SSH key
-ssh-copy-id opc@79.76.40.176
+# All containers
+podman ps -a
 
-# Test connection
-ssh opc@79.76.40.176
-```
+# Specific container
+podman ps --filter name=prakken
 
-### Container Won't Start
-
-```bash
-# Check logs
+# View logs
 podman logs prakken-frontend
-
-# Check if port is in use
-sudo ss -tlnp | grep :3000
-
-# Check container status
-podman ps -a | grep prakken
+podman logs prakken-backend
+podman logs prakken-db
 ```
 
-### HTTPS Not Working
+### Database Issues
+
+```bash
+# Check PostgreSQL is healthy
+podman ps --filter name=prakken-db
+
+# View database logs
+podman logs prakken-db
+
+# Connect to database
+podman exec -it prakken-db psql -U postgres -d prakken
+```
+
+### Backend API Issues
+
+```bash
+# Test API locally on VPS
+curl http://localhost:8080/health
+curl http://localhost:8080/api/shopping/items
+
+# Check backend logs
+podman logs prakken-backend
+```
+
+### Frontend Issues
+
+```bash
+# Test Nginx locally on VPS
+curl http://localhost:80
+
+# Check Nginx config
+podman exec prakken-frontend nginx -t
+
+# View Nginx logs
+podman logs prakken-frontend
+```
+
+### HTTPS/SSL Issues
 
 ```bash
 # Check Caddy is running
@@ -196,79 +271,138 @@ podman ps | grep caddy
 # Check Caddy logs
 podman logs caddy
 
-# Test SSL
+# Test SSL certificate
 curl -I https://prakken.dedyn.io
 ```
 
-### DNS Not Resolving
+### DNS Issues
 
 ```bash
-# Check DNS propagation
+# Check DNS resolution
 dig prakken.dedyn.io
+dig test.prakken.dedyn.io
 
-# Or use online tool
+# Check DNS propagation
 # https://dnschecker.org/
+```
+
+### Port Conflicts
+
+```bash
+# Check what's using ports
+sudo ss -tlnp | grep :80
+sudo ss -tlnp | grep :8080
+sudo ss -tlnp | grep :5432
+```
+
+### Rebuild Specific Service
+
+```bash
+# Frontend only
+podman-compose up -d --build frontend
+
+# Backend only
+podman-compose up -d --build backend
+
+# All services
+podman-compose up -d --build
+```
+
+### Reset Everything
+
+```bash
+# Stop and remove all containers + volumes
+podman-compose down -v
+
+# Start fresh
+podman-compose up -d --build
 ```
 
 ---
 
-## Configuration Files
+## Monitoring
 
-### Nginx Config
+### View Live Logs
 
-Location: `frontend/nginx/nginx.conf`
+```bash
+# All services
+podman-compose logs -f
 
-- HTTP only (port 80)
-- No SSL configuration
-- SPA routing for Vue.js
-- Gzip compression
-- Security headers
+# Specific service
+podman-compose logs -f frontend
+podman-compose logs -f backend
+```
 
-### Dockerfile
+### Check Resource Usage
 
-Location: `frontend/Dockerfile.prod`
+```bash
+podman stats
+```
 
-- Multi-stage build
-- Node.js for building
-- Nginx Alpine for serving
-- Exposes port 80
+### Database Health
+
+```bash
+podman exec prakken-db pg_isready -U postgres
+```
+
+---
+
+## Backup and Restore
+
+### Backup Database
+
+```bash
+podman exec prakken-db pg_dump -U postgres prakken > backup.sql
+```
+
+### Restore Database
+
+```bash
+podman exec -i prakken-db psql -U postgres prakken < backup.sql
+```
+
+### Backup Volumes
+
+```bash
+# Create backup archive
+tar -czf prakken-data-backup.tar.gz /var/lib/containers/storage/volumes/prakken_postgres_data
+```
 
 ---
 
 ## Best Practices
 
-1. **Always run both scripts** in order:
-   - `deploy-frontend.sh` first (builds & transfers)
-   - `remote-deploy-vps.sh` second (deploys)
-
-2. **Set up SSH keys** to avoid password prompts:
-
+1. **Always test locally first:**
    ```bash
-   ssh-copy-id opc@79.76.40.176
+   docker-compose up -d --build
    ```
 
-3. **Test locally** before deploying:
-
+2. **Monitor after deploy:**
    ```bash
-   cd frontend
-   npm run build
-   npm run preview
+   podman-compose logs -f
    ```
 
-4. **Monitor after deploy**:
-
+3. **Keep git synced:**
    ```bash
-   # Watch container logs
-   podman logs -f prakken-frontend
-
-   # Watch Caddy logs
-   podman logs -f caddy
+   git pull origin master
    ```
 
-5. **Backup before major updates**:
+4. **Clean up old images:**
    ```bash
-   # Save current image
-   podman save -o prakken-backup.tar prakken-frontend:latest
+   podman image prune -f
+   ```
+
+5. **Monitor disk space:**
+   ```bash
+   df -h
+   podman system df
+   ```
+
+6. **Set up log rotation** (in `/etc/containers/containers.conf`):
+   ```ini
+   [containers]
+   log_size_max = "10m"
+   log_max_size = "5"
    ```
 
 ---
@@ -277,7 +411,19 @@ Location: `frontend/Dockerfile.prod`
 
 For issues or questions:
 
-1. Check logs: `podman logs prakken-frontend`
-2. Check Caddy logs: `podman logs caddy`
-3. Verify DNS: `dig prakken.dedyn.io`
-4. Test connection: `curl -I https://prakken.dedyn.io`
+1. Check logs: `podman-compose logs -f`
+2. Verify services: `podman ps`
+3. Test connectivity: `curl http://localhost:8080/health`
+4. Check DNS: `dig prakken.dedyn.io`
+5. Test SSL: `curl -I https://prakken.dedyn.io`
+
+---
+
+## Version History
+
+| Version | Date       | Changes                          |
+|---------|------------|----------------------------------|
+| 2.0.0   | Mar 2026   | Full-stack with PostgreSQL       |
+| 1.4.0   | Feb 2026   | Nginx production build           |
+| 1.3.0   | Jan 2026   | Shopping system                  |
+| 1.0.0   | Dec 2025   | Initial release                  |
