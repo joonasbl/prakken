@@ -17,13 +17,15 @@ This guide covers deploying Prakken to your VPS using Podman.
 ./deploy.sh test
 ```
 
-That's it! Your site will be live at:
+**URLs:**
 - **Production**: https://prakken.dedyn.io
 - **Test**: https://test.prakken.dedyn.io
 
 ---
 
 ## Architecture
+
+### Production Environment
 
 ```
 ┌─────────────────────────────────────────────────────────┐
@@ -62,6 +64,51 @@ That's it! Your site will be live at:
 └─────────────────────────────────────────────────────────┘
 ```
 
+### Test Environment
+
+```
+┌─────────────────────────────────────────────────────────┐
+│                    Internet (HTTPS)                      │
+└────────────┬────────────────────────────────────────────┘
+             │
+             ▼
+┌─────────────────────────────────────────────────────────┐
+│  Caddy Container (Port 443)                              │
+│  - Reverse proxy to test environment                     │
+└────────────┬────────────────────────────────────────────┘
+             │ (HTTP port 3001)
+             ▼
+┌─────────────────────────────────────────────────────────┐
+│  Prakken Test Frontend (Nginx, Port 3001)                │
+│  - Separate test instance                                │
+│  - Isolated from production                              │
+└────────────┬────────────────────────────────────────────┘
+             │ (HTTP port 8081)
+             ▼
+┌─────────────────────────────────────────────────────────┐
+│  Prakken Test Backend (Go, Port 8081)                    │
+│  - Test API instance                                     │
+│  - Separate test database                                │
+└────────────┬────────────────────────────────────────────┘
+             │
+             ▼
+┌─────────────────────────────────────────────────────────┐
+│  PostgreSQL 18.3 Test (Port 5433)                        │
+│  - Database: prakken_test                                │
+│  - Isolated test data                                    │
+└─────────────────────────────────────────────────────────┘
+```
+
+### Environment Comparison
+
+| Service | Production | Test |
+|---------|-----------|------|
+| Frontend | Port 80 | Port 3001 |
+| Backend | Port 8080 | Port 8081 |
+| PostgreSQL | Port 5432 | Port 5433 |
+| Database | prakken | prakken_test |
+| URL | prakken.dedyn.io | test.prakken.dedyn.io |
+
 ---
 
 ## Deployment Methods
@@ -70,33 +117,43 @@ That's it! Your site will be live at:
 
 Best for full-stack deployments with PostgreSQL.
 
-**Steps:**
+#### Deploy Production
 
-1. **SSH to VPS:**
-   ```bash
-   ssh opc@prakken.dedyn.io
-   ```
+```bash
+# SSH to VPS
+ssh opc@prakken.dedyn.io
 
-2. **Navigate to project:**
-   ```bash
-   cd /home/opc/prakken
-   ```
+# Navigate to project
+cd /home/opc/prakken
 
-3. **Pull latest code:**
-   ```bash
-   git pull origin master
-   ```
+# Pull latest code
+git pull origin master
 
-4. **Rebuild and restart:**
-   ```bash
-   podman-compose down
-   podman-compose up -d --build
-   ```
+# Rebuild and restart
+podman-compose down
+podman-compose up -d --build
 
-5. **View logs:**
-   ```bash
-   podman-compose logs -f
-   ```
+# View logs
+podman-compose logs -f
+```
+
+#### Deploy Test Environment
+
+```bash
+# SSH to VPS
+ssh opc@prakken.dedyn.io
+cd /home/opc/prakken
+
+# Pull latest code
+git pull origin master
+
+# Deploy test environment
+podman-compose --profile test down
+podman-compose --profile test up -d --build
+
+# View test logs
+podman-compose --profile test logs -f
+```
 
 **Note:** The VPS build skips TypeScript type-checking to save memory. Always run `npm run type-check` locally before committing.
 
@@ -121,6 +178,9 @@ For frontend-only updates.
 
 # Test environment
 ./deploy.sh test
+
+# Legacy build mode
+./deploy.sh --build
 ```
 
 **What it does:**
@@ -149,6 +209,163 @@ podman run -d --name prakken-frontend \
   -p 80:80 \
   prakken-frontend:latest
 rm ~/prakken-frontend.tar
+```
+
+---
+
+## Test Environment Management
+
+### Deploy Test Environment
+
+```bash
+# Using deploy script (recommended)
+./deploy.sh test
+
+# Or manually on VPS
+ssh opc@prakken.dedyn.io
+cd /home/opc/prakken
+podman-compose --profile test up -d --build
+```
+
+### View Test Environment Status
+
+```bash
+# Check running test containers
+podman ps --filter name=prakken-test
+
+# View all test services
+podman-compose --profile test ps
+```
+
+### View Test Logs
+
+```bash
+# All test services
+podman-compose --profile test logs -f
+
+# Specific service
+podman-compose --profile test logs -f frontend-test
+podman-compose --profile test logs -f backend-test
+podman-compose --profile test logs -f postgres-test
+```
+
+### Rebuild Test Environment
+
+```bash
+# Rebuild all test services
+podman-compose --profile test up -d --build
+
+# Rebuild specific service
+podman-compose --profile test up -d --build frontend-test
+
+# Force rebuild (no cache)
+podman-compose --profile test build --no-cache
+podman-compose --profile test up -d
+```
+
+### Stop Test Environment
+
+```bash
+# Stop all test services
+podman-compose --profile test down
+
+# Stop and remove volumes (cleans test data)
+podman-compose --profile test down -v
+```
+
+### Test Environment URLs
+
+| Service | Port | URL | Direct Access |
+|---------|------|-----|---------------|
+| Frontend | 3001 | https://test.prakken.dedyn.io | http://VPS_IP:3001 |
+| Backend API | 8081 | https://test.prakken.dedyn.io:8081 | http://VPS_IP:8081 |
+| PostgreSQL | 5433 | - | localhost:5433 |
+
+### Testing API Endpoints
+
+```bash
+# Test health check
+curl http://localhost:8081/health
+
+# Get shopping items
+curl http://localhost:8081/api/shopping/items
+
+# Get categories
+curl http://localhost:8081/api/shopping/categories
+```
+
+### Database Access
+
+```bash
+# Connect to test database
+podman exec -it prakken-db-test psql -U postgres -d prakken_test
+
+# List tables
+psql> \dt
+
+# View shopping items
+psql> SELECT * FROM shopping_items;
+
+# View categories
+psql> SELECT * FROM shopping_categories;
+
+# Exit
+psql> \q
+```
+
+### Backup Test Data
+
+```bash
+# Export test database
+podman exec prakken-db-test pg_dump -U postgres prakken_test > test-backup.sql
+
+# Import test database
+podman exec -i prakken-db-test psql -U postgres prakken_test < test-backup.sql
+```
+
+### Reset Test Environment
+
+```bash
+# Complete reset (removes all test data)
+podman-compose --profile test down -v
+podman-compose --profile test up -d --build
+```
+
+---
+
+## Production vs Test Workflow
+
+### When to Use Test Environment
+
+- ✅ Testing new features before production
+- ✅ Validating database migrations
+- ✅ Testing shopping system price rolls
+- ✅ Verifying API changes
+- ✅ Load testing
+
+### Typical Workflow
+
+```bash
+# 1. Develop and test locally
+cd frontend
+npm run dev
+
+# 2. Commit and push
+git add .
+git commit -m "feat: new feature"
+git push origin master
+
+# 3. Deploy to test environment
+./deploy.sh test
+
+# 4. Test on VPS
+# Visit https://test.prakken.dedyn.io
+
+# 5. Deploy to production when ready
+./deploy.sh
+
+# 6. Verify production
+# Visit https://prakken.dedyn.io
 ```
 
 ---
