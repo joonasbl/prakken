@@ -103,11 +103,14 @@ This guide covers deploying Prakken to your VPS using Podman.
 
 | Service | Production | Test |
 |---------|-----------|------|
-| Frontend | Port 80 | Port 3001 |
+| Frontend | Port 3000 | Port 3001 |
 | Backend | Port 8080 | Port 8081 |
 | PostgreSQL | Port 5432 | Port 5433 |
 | Database | prakken | prakken_test |
-| URL | prakken.dedyn.io | test.prakken.dedyn.io |
+| URL (with Caddy) | prakken.dedyn.io | test.prakken.dedyn.io |
+| Direct Access | VPS_IP:3000 | VPS_IP:3001 |
+
+**Note:** Ports 3000+ are used for rootless Podman compatibility. Use Caddy reverse proxy for HTTPS on port 443.
 
 ---
 
@@ -280,6 +283,14 @@ podman-compose --profile test down -v
 | Frontend | 3001 | https://test.prakken.dedyn.io | http://VPS_IP:3001 |
 | Backend API | 8081 | https://test.prakken.dedyn.io:8081 | http://VPS_IP:8081 |
 | PostgreSQL | 5433 | - | localhost:5433 |
+
+### Production Environment URLs
+
+| Service | Port | URL | Direct Access |
+|---------|------|-----|---------------|
+| Frontend | 3000 | https://prakken.dedyn.io | http://VPS_IP:3000 |
+| Backend API | 8080 | https://prakken.dedyn.io:8080 | http://VPS_IP:8080 |
+| PostgreSQL | 5432 | - | localhost:5432 |
 
 ### Testing API Endpoints
 
