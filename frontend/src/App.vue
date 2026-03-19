@@ -44,6 +44,10 @@ const closeMobileMenu = () => {
       <div class="container">
         <div class="navbar-menu is-active">
           <div class="navbar-end has-text-centered">
+            <RouterLink to="/shopping" class="navbar-item" @click="closeMobileMenu">
+              <span class="icon"><i class="fas fa-store"></i></span>
+              <span>Ihmeiden katu</span>
+            </RouterLink>
             <RouterLink to="/characters" class="navbar-item" @click="closeMobileMenu">
               <span class="icon"><i class="fas fa-users"></i></span>
               <span>Hahmot</span>
@@ -51,6 +55,10 @@ const closeMobileMenu = () => {
             <RouterLink to="/create-character" class="navbar-item" @click="closeMobileMenu">
               <span class="icon"><i class="fas fa-user-plus"></i></span>
               <span>Luo uusi</span>
+            </RouterLink>
+            <RouterLink to="/admin/shopping" class="navbar-item" @click="closeMobileMenu">
+              <span class="icon"><i class="fas fa-tools"></i></span>
+              <span>Admin</span>
             </RouterLink>
           </div>
         </div>
@@ -62,6 +70,10 @@ const closeMobileMenu = () => {
       <div class="container">
         <div class="navbar-menu">
           <div class="navbar-end has-text-centered">
+            <RouterLink to="/shopping" class="navbar-item" @click="closeMobileMenu">
+              <span class="icon"><i class="fas fa-store"></i></span>
+              <span>Ihmeiden katu</span>
+            </RouterLink>
             <RouterLink to="/characters" class="navbar-item" @click="closeMobileMenu">
               <span class="icon"><i class="fas fa-users"></i></span>
               <span>Hahmot</span>
@@ -69,6 +81,10 @@ const closeMobileMenu = () => {
             <RouterLink to="/create-character" class="navbar-item" @click="closeMobileMenu">
               <span class="icon"><i class="fas fa-user-plus"></i></span>
               <span>Luo uusi</span>
+            </RouterLink>
+            <RouterLink to="/admin/shopping" class="navbar-item" @click="closeMobileMenu">
+              <span class="icon"><i class="fas fa-tools"></i></span>
+              <span>Admin</span>
             </RouterLink>
           </div>
         </div>
