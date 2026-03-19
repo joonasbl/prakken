@@ -58,14 +58,6 @@ log_step() { echo -e "${BLUE}==>${NC} $1"; }
 # Method 1: Git Sync + Build on VPS (Recommended)
 # =============================================================================
 deploy_git() {
-    local compose_cmd="podman-compose"
-    local profile_args=""
-    
-    # Add test profile if deploying test environment
-    if [ "${DEPLOY_TARGET}" = "test" ]; then
-        profile_args="--profile test"
-    fi
-    
     log_step "Deploying ${DEPLOY_TARGET} via git sync..."
     log_info "This method builds containers on the VPS (recommended)"
     
@@ -111,15 +103,15 @@ if [ "${DEPLOY_TARGET}" = "test" ]; then
     echo "  Test Environment Ready!"
     echo "=========================================="
     echo ""
-    echo "Test site: https://test.${VPS_HOST}"
-    echo "Test API: https://test.${VPS_HOST}:8081"
+    echo "Test site: http://${VPS_HOST}:3001"
+    echo "Test API: http://${VPS_HOST}:8081"
     echo ""
 else
-    echo "[3/6] Stopping existing containers..."
-    podman-compose down || true
+    echo "[3/6] Stopping existing production containers..."
+    podman-compose --profile production down || true
     
-    echo "[4/6] Building and starting containers..."
-    podman-compose up -d --build
+    echo "[4/6] Building and starting production environment..."
+    podman-compose --profile production up -d --build
     
     echo "[5/6] Cleaning up old images..."
     podman image prune -f
@@ -134,14 +126,14 @@ else
     echo "=========================================="
     echo "  Recent Logs"
     echo "=========================================="
-    podman-compose logs --tail=10
+    podman-compose --profile production logs --tail=10
     
     echo ""
     echo "=========================================="
     echo "  Deployment Complete!"
     echo "=========================================="
     echo ""
-    echo "Production site: https://${VPS_HOST}"
+    echo "Production site: http://${VPS_HOST}:3000"
     echo ""
 fi
 EOF
