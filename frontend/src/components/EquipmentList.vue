@@ -10,6 +10,7 @@ const props = defineProps<{
   showFilter?: boolean
   showWeight?: boolean
   maxWeight?: number
+  compact?: boolean
 }>()
 
 // Filter state
@@ -271,10 +272,22 @@ const showGear = computed(() => {
       </ul>
     </div>
 
-    <!-- Armor Section (grouped by hit location) -->
+    <!-- Armor Section (grouped by hit location or compact list) -->
     <div v-if="showArmor && armorItems.length > 0" class="equipment-category">
       <h3 class="category-title">Panssarit</h3>
-      <div
+      
+      <!-- Compact mode: simple list -->
+      <ul v-if="compact" class="item-list">
+        <li v-for="item in armorItems" :key="item.id" class="item-row armor-row">
+          <span class="item-name">{{ item.name }}</span>
+          <span class="item-stats">
+            {{ item.armorPoints }} AP
+          </span>
+        </li>
+      </ul>
+      
+      <!-- Normal mode: grouped by hit location -->
+      <div v-else
         v-for="(items, location) in armorByLocation"
         :key="location"
         class="location-group"

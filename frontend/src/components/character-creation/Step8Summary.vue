@@ -210,11 +210,12 @@ const unlearnedSkills = computed(() => {
           <span class="header-icon"><i class="fas fa-backpack"></i></span>
           <span>Varusteet</span>
         </div>
-        <EquipmentList 
+        <EquipmentList
           :item-ids="wizardStore.draft.equippedItems"
-          :show-filter="true"
+          :show-filter="false"
           :show-weight="true"
           :max-weight="wizardStore.draft.subStats?.kantokyky || 200"
+          :compact="true"
         />
       </div>
     </div>
