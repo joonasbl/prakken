@@ -133,11 +133,11 @@ cd /home/opc/prakken
 git pull origin master
 
 # Rebuild and restart
-podman-compose down
-podman-compose up -d --build
+podman-compose --profile production down
+podman-compose --profile production up -d --build
 
 # View logs
-podman-compose logs -f
+podman-compose --profile production logs -f
 ```
 
 #### Deploy Test Environment
@@ -157,6 +157,12 @@ podman-compose --profile test up -d --build
 # View test logs
 podman-compose --profile test logs -f
 ```
+
+**How Profiles Work:**
+
+- `--profile production` → Starts only production containers (frontend, backend, postgres)
+- `--profile test` → Starts only test containers (frontend-test, backend-test, postgres-test)
+- No profile = no containers started (explicit selection required)
 
 **Note:** The VPS build skips TypeScript type-checking to save memory. Always run `npm run type-check` locally before committing.
 
