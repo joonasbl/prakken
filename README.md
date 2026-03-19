@@ -83,6 +83,112 @@ npm run dev
 | PUT    | `/api/characters/:id` | Update character     |
 | DELETE | `/api/characters/:id` | Delete character     |
 
+## Deployment
+
+### Production Deployment
+
+The application is deployed to a VPS using Podman with Caddy as a reverse proxy for automatic SSL.
+
+#### Deploy to Production
+
+```bash
+# From project root
+./deploy.sh
+```
+
+This will:
+1. Build the Docker image locally
+2. Transfer to VPS via SCP
+3. Deploy with Podman on port 3000
+4. Caddy handles SSL automatically
+
+**Production URL:** https://prakken.dedyn.io
+
+#### Deploy to Test Environment
+
+```bash
+# Deploy to test subdomain
+./deploy.sh test
+
+# Deploy specific version to test
+./deploy.sh test --tag v1.4.0
+```
+
+**Test URL:** https://test.prakken.dedyn.io
+
+### Configuration
+
+The deployment script uses these environment variables (with defaults):
+
+```bash
+VPS_USER=opc              # VPS username
+VPS_HOST=prakken.dedyn.io # VPS hostname/IP
+IMAGE_NAME=prakken-frontend
+```
+
+Override as needed:
+
+```bash
+VPS_USER=myuser VPS_HOST=mydomain.com ./deploy.sh
+```
+
+### CI/CD with GitHub Actions
+
+The application automatically deploys when you push a version tag:
+
+```bash
+# Create and push a version tag
+git tag -a v1.4.0 -m "Release v1.4.0"
+git push origin v1.4.0
+```
+
+GitHub Actions will:
+1. Run tests, type-check, and lint
+2. Build the Docker image
+3. Create a GitHub release
+4. Deploy to VPS
+5. Verify the deployment
+
+**Workflow:** `.github/workflows/deploy.yml`
+
+### Managing Containers on VPS
+
+```bash
+# SSH to VPS
+ssh opc@prakken.dedyn.io
+
+# List containers
+podman ps | grep prakken
+
+# View logs
+podman logs -f prakken-frontend    # Production
+podman logs -f prakken-test        # Test
+podman logs -f caddy              # SSL/Reverse proxy
+
+# Restart containers
+podman restart prakken-frontend
+podman restart prakken-test
+podman restart caddy
+```
+
+### Caddy Configuration
+
+Caddy handles SSL termination and reverse proxying. Configuration is at `/opt/caddy/Caddyfile`:
+
+```caddy
+prakken.dedyn.io {
+    reverse_proxy localhost:3000
+}
+
+test.prakken.dedyn.io {
+    reverse_proxy localhost:3001
+}
+```
+
+Caddy automatically obtains and renews Let's Encrypt SSL certificates.
+
+---
+
 ## Development
 
 ### Backend Commands

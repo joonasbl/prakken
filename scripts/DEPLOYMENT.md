@@ -23,16 +23,19 @@ That's it! Your site will be live at https://prakken.dedyn.io
 Builds the Docker image and transfers it to the VPS.
 
 **Usage:**
+
 ```bash
 ./scripts/deploy-frontend.sh [VPS_USER] [VPS_HOST]
 ```
 
 **Example:**
+
 ```bash
 ./scripts/deploy-frontend.sh opc 79.76.40.176
 ```
 
 **What it does:**
+
 1. ✅ Checks dependencies (Docker, SCP)
 2. ✅ Builds Docker image (`prakken-frontend:latest`)
 3. ✅ Saves to tar file (`prakken-frontend.tar`)
@@ -46,16 +49,19 @@ Builds the Docker image and transfers it to the VPS.
 SSHs into the VPS and deploys the container.
 
 **Usage:**
+
 ```bash
 ./scripts/remote-deploy-vps.sh [VPS_USER] [VPS_HOST]
 ```
 
 **Example:**
+
 ```bash
 ./scripts/remote-deploy-vps.sh opc 79.76.40.176
 ```
 
 **What it does:**
+
 1. ✅ Stops old container
 2. ✅ Removes old image
 3. ✅ Loads new image from tar
@@ -64,6 +70,7 @@ SSHs into the VPS and deploys the container.
 6. ✅ Cleans up tar file
 
 **Requirements:**
+
 - SSH key-based authentication (no password)
 - Run `deploy-frontend.sh` first to transfer the image
 
@@ -74,6 +81,7 @@ SSHs into the VPS and deploys the container.
 Creates DNS records via deSEC.io API.
 
 **Usage:**
+
 ```bash
 python3 scripts/provision_subdomain.py \
   --token YOUR_TOKEN \
@@ -118,6 +126,7 @@ python3 scripts/provision_subdomain.py \
 If you prefer manual commands:
 
 ### On Local Machine:
+
 ```bash
 cd frontend
 
@@ -132,6 +141,7 @@ scp prakken-frontend.tar opc@79.76.40.176:/tmp/
 ```
 
 ### On VPS:
+
 ```bash
 # Stop old container
 podman stop prakken-frontend
@@ -155,6 +165,7 @@ podman logs -f prakken-frontend
 ## Troubleshooting
 
 ### SSH Connection Fails
+
 ```bash
 # Set up SSH key
 ssh-copy-id opc@79.76.40.176
@@ -164,6 +175,7 @@ ssh opc@79.76.40.176
 ```
 
 ### Container Won't Start
+
 ```bash
 # Check logs
 podman logs prakken-frontend
@@ -176,6 +188,7 @@ podman ps -a | grep prakken
 ```
 
 ### HTTPS Not Working
+
 ```bash
 # Check Caddy is running
 podman ps | grep caddy
@@ -188,6 +201,7 @@ curl -I https://prakken.dedyn.io
 ```
 
 ### DNS Not Resolving
+
 ```bash
 # Check DNS propagation
 dig prakken.dedyn.io
@@ -201,6 +215,7 @@ dig prakken.dedyn.io
 ## Configuration Files
 
 ### Nginx Config
+
 Location: `frontend/nginx/nginx.conf`
 
 - HTTP only (port 80)
@@ -210,6 +225,7 @@ Location: `frontend/nginx/nginx.conf`
 - Security headers
 
 ### Dockerfile
+
 Location: `frontend/Dockerfile.prod`
 
 - Multi-stage build
@@ -226,11 +242,13 @@ Location: `frontend/Dockerfile.prod`
    - `remote-deploy-vps.sh` second (deploys)
 
 2. **Set up SSH keys** to avoid password prompts:
+
    ```bash
    ssh-copy-id opc@79.76.40.176
    ```
 
 3. **Test locally** before deploying:
+
    ```bash
    cd frontend
    npm run build
@@ -238,10 +256,11 @@ Location: `frontend/Dockerfile.prod`
    ```
 
 4. **Monitor after deploy**:
+
    ```bash
    # Watch container logs
    podman logs -f prakken-frontend
-   
+
    # Watch Caddy logs
    podman logs -f caddy
    ```
@@ -257,6 +276,7 @@ Location: `frontend/Dockerfile.prod`
 ## Support
 
 For issues or questions:
+
 1. Check logs: `podman logs prakken-frontend`
 2. Check Caddy logs: `podman logs caddy`
 3. Verify DNS: `dig prakken.dedyn.io`

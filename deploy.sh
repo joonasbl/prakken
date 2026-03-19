@@ -140,7 +140,7 @@ echo ""
 echo "=========================================="
 echo "  Cleanup old image"
 echo "=========================================="
-podman rmi ${IMAGE_NAME}:${IMAGE_TAG} 2>/dev/null || true
+# podman rmi ${IMAGE_NAME}:${IMAGE_TAG} 2>/dev/null || true
 echo "✓ Cleaned up old image"
 
 echo ""
