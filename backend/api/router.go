@@ -37,5 +37,21 @@ func NewRouter(db *database.Database) *gin.Engine {
 		characters.DELETE("/:id", deleteCharacter(db))
 	}
 
+	// Shopping routes
+	shopping := router.Group("/api/shopping")
+	{
+		shopping.GET("/categories", getCategories(db))
+		shopping.GET("/items", getItems(db))
+		shopping.GET("/items/:id", getItem(db))
+		shopping.POST("/items", createItem(db))
+		shopping.PUT("/items/:id", updateItem(db))
+		shopping.DELETE("/items/:id", deleteItem(db))
+		shopping.POST("/items/:id/reroll-price", rerollItemPrice(db))
+		shopping.POST("/items/:id/reroll-availability", rerollItemAvailability(db))
+		shopping.POST("/items/:id/price", updateItemPrice(db))
+		shopping.POST("/items/:id/toggle-availability", toggleItemAvailability(db))
+		shopping.POST("/reroll-all", rerollAll(db))
+	}
+
 	return router
 }
