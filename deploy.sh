@@ -58,6 +58,14 @@ log_step() { echo -e "${BLUE}==>${NC} $1"; }
 # Method 1: Git Sync + Build on VPS (Recommended)
 # =============================================================================
 deploy_git() {
+    local compose_cmd="podman-compose"
+    local profile_args=""
+    
+    # Add test profile if deploying test environment
+    if [ "${DEPLOY_TARGET}" = "test" ]; then
+        profile_args="--profile test"
+    fi
+    
     log_step "Deploying ${DEPLOY_TARGET} via git sync..."
     log_info "This method builds containers on the VPS (recommended)"
     
@@ -70,44 +78,72 @@ echo "  Method: Git Sync + Build on VPS"
 echo "=========================================="
 echo ""
 
-echo "[1/5] Navigating to project..."
+echo "[1/6] Navigating to project..."
 cd ${VPS_PATH}
 
-echo "[2/5] Pulling latest code..."
+echo "[2/6] Pulling latest code..."
 git pull origin master
 
-echo "[3/5] Stopping existing containers..."
-podman-compose down || true
-
-echo "[4/5] Building and starting containers..."
-podman-compose up -d --build
-
-echo "[5/5] Cleaning up old images..."
-podman image prune -f
-
-echo ""
-echo "=========================================="
-echo "  Container Status"
-echo "=========================================="
-podman ps --filter name=prakken
-
-echo ""
-echo "=========================================="
-echo "  Recent Logs"
-echo "=========================================="
-podman-compose logs --tail=10
-
-echo ""
-echo "=========================================="
-echo "  Deployment Complete!"
-echo "=========================================="
-echo ""
 if [ "${DEPLOY_TARGET}" = "test" ]; then
-  echo "Test site: https://test.${VPS_HOST}"
+    echo "[3/6] Stopping existing test containers..."
+    podman-compose --profile test down || true
+    
+    echo "[4/6] Building and starting test environment..."
+    podman-compose --profile test up -d --build
+    
+    echo "[5/6] Cleaning up old images..."
+    podman image prune -f
+    
+    echo ""
+    echo "=========================================="
+    echo "  Test Environment Status"
+    echo "=========================================="
+    podman ps --filter name=prakken-test
+    
+    echo ""
+    echo "=========================================="
+    echo "  Recent Logs"
+    echo "=========================================="
+    podman-compose --profile test logs --tail=10
+    
+    echo ""
+    echo "=========================================="
+    echo "  Test Environment Ready!"
+    echo "=========================================="
+    echo ""
+    echo "Test site: https://test.${VPS_HOST}"
+    echo "Test API: https://test.${VPS_HOST}:8081"
+    echo ""
 else
-  echo "Production site: https://${VPS_HOST}"
+    echo "[3/6] Stopping existing containers..."
+    podman-compose down || true
+    
+    echo "[4/6] Building and starting containers..."
+    podman-compose up -d --build
+    
+    echo "[5/6] Cleaning up old images..."
+    podman image prune -f
+    
+    echo ""
+    echo "=========================================="
+    echo "  Container Status"
+    echo "=========================================="
+    podman ps --filter name=prakken
+    
+    echo ""
+    echo "=========================================="
+    echo "  Recent Logs"
+    echo "=========================================="
+    podman-compose logs --tail=10
+    
+    echo ""
+    echo "=========================================="
+    echo "  Deployment Complete!"
+    echo "=========================================="
+    echo ""
+    echo "Production site: https://${VPS_HOST}"
+    echo ""
 fi
-echo ""
 EOF
 }
 

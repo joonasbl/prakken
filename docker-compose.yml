@@ -50,6 +50,63 @@ services:
       - backend
     restart: unless-stopped
 
+  # Vue Frontend (Test Environment)
+  frontend-test:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.vps
+    container_name: prakken-frontend-test
+    environment:
+      VITE_API_URL: /api
+    ports:
+      - "3001:80"
+    depends_on:
+      - backend-test
+    profiles:
+      - test
+    restart: unless-stopped
+
+  # Go Backend API (Test Environment)
+  backend-test:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: prakken-backend-test
+    environment:
+      DATABASE_URL: postgres://postgres:postgres@postgres-test:5432/prakken_test?sslmode=disable
+      PORT: 8080
+      GIN_MODE: release
+    ports:
+      - "8081:8080"
+    depends_on:
+      postgres-test:
+        condition: service_healthy
+    profiles:
+      - test
+    restart: unless-stopped
+
+  # PostgreSQL Database (Test Environment)
+  postgres-test:
+    image: postgres:18.3
+    container_name: prakken-db-test
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: prakken_test
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_test_data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    profiles:
+      - test
+    restart: unless-stopped
+
 volumes:
   postgres_data:
+  postgres_test_data:
   frontend_node_modules:
