@@ -98,11 +98,14 @@ Best for full-stack deployments with PostgreSQL.
    podman-compose logs -f
    ```
 
+**Note:** The VPS build skips TypeScript type-checking to save memory. Always run `npm run type-check` locally before committing.
+
 **Advantages:**
 - ✅ PostgreSQL pulls from Docker Hub (no transfer needed)
 - ✅ Only code transfers (fast)
 - ✅ Backend and Frontend build quickly on VPS
 - ✅ Cleaner workflow with docker-compose
+- ✅ Optimized for low-memory VPS (skips type-check)
 
 ---
 

@@ -40,7 +40,7 @@ services:
   frontend:
     build:
       context: ./frontend
-      dockerfile: Dockerfile.prod
+      dockerfile: Dockerfile.vps
     container_name: prakken-frontend
     environment:
       VITE_API_URL: /api

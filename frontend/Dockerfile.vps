@@ -14,7 +14,6 @@ COPY . .
 
 # Build for production (skip type-check to save memory on VPS)
 # Type-check should be run locally before committing
-ENV VITE_SKIP_TYPE_CHECK=true
 RUN npm run build-only
 
 # Production stage with Nginx
